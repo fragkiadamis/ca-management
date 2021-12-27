@@ -1,42 +1,40 @@
-# app/auth/forms.py
-
-from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, ValidationError
-from wtforms.validators import DataRequired, Email, EqualTo
+from functools import wraps
+from flask import request
+import re
 
 from ..models import Member
 
 
-class RegistrationForm(FlaskForm):
-    """
-    Form for users to create new account
-    """
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    username = StringField('Username', validators=[DataRequired()])
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[
-        DataRequired(),
-        EqualTo('confirm_password')
-    ])
-    confirm_password = PasswordField('Confirm Password')
-    submit = SubmitField('Register')
+def validate_form(form_type):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if request.method == 'POST':
+                request.errors = []
+                form_data = request.json
+                # Check that all fields are filled
+                for key in form_data:
+                    if not form_data[key]:
+                        request.errors.append({'field': key, 'msg': 'This field is required'})
 
-    @staticmethod
-    def validate_email(field):
-        if Member.query.filter_by(email=field.data).first():
-            raise ValidationError('Email is already in use.')
+                # Validate email
+                email_pattern = re.compile("^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
+                if not email_pattern.match(form_data['email']):
+                    request.errors.append({'field': 'email', 'msg': 'Invalid email'})
 
-    @staticmethod
-    def validate_username(self, field):
-        if Member.query.filter_by(username=field.data).first():
-            raise ValidationError('Username is already in use.')
-
-
-class LoginForm(FlaskForm):
-    """
-    Form for users to login
-    """
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Login')
+                # Validate password and unique fields
+                if form_type == 'register':
+                    if not form_data['password'] == form_data['confirm_password']:
+                        request.errors.append({'field': 'password', 'msg': 'The passwords do not match'})
+                    if Member.query.filter_by(email=form_data['email']).first():
+                        request.errors.append({'field': 'email', 'msg': 'Email already exists'})
+                    if Member.query.filter_by(username=form_data['username']).first():
+                        request.errors.append({'field': 'username', 'msg': 'Username already exists'})
+                    if Member.query.filter_by(telephone=form_data['telephone']).first():
+                        request.errors.append({'field': 'telephone', 'msg': 'Telephone already exists'})
+                    if Member.query.filter_by(uni_reg_number=form_data['uni_reg_number']).first():
+                        request.errors.append(
+                            {'field': 'uni_reg_number', 'msg': 'University Registration Number already exists'})
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator

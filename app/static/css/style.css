@@ -1,3 +1,11 @@
 .register-container {
     max-width: 960px;
 }
+
+.errorTag {
+    color: #df4759;
+}
+
+.error {
+    border-color: #df4759;
+}

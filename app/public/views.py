@@ -1,4 +1,4 @@
-# app/public/views.py
+# app/public/controller.py
 
 from flask import render_template
 

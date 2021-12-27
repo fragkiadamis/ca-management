@@ -1,0 +1,86 @@
+{% extends "main.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+    <div class="py-5 text-center">
+        <h2>Φόρμα Αίτησης Εγγραφής</h2>
+        <p class="lead">Καταχωρίστε σωστά τα στοιχεία σας για να κάνετε αίτηση εγγραφής.</p>
+    </div>
+    <div class="register-container mx-auto">
+        <form class="p-4 p-md-5 border rounded-3 bg-light">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label for="first_name" class="form-label">Όνομα</label>
+                    <input type="text" class="form-control" id="first_name" placeholder="π.χ. Μανούσος" value=""
+                           required>
+                </div>
+                <div class="col-sm-6">
+                    <label for="last_name" class="form-label">Επίθετο</label>
+                    <input type="text" class="form-control" id="last_name" placeholder="π.χ. Κατσικογάμης"
+                           value="" required>
+                </div>
+                <div class="col-12">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text">@</span>
+                        <input type="text" class="form-control" id="username" placeholder="π.χ. gidomanousos4"
+                               required>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="π.χ. you@example.com"
+                           required>
+                </div>
+                <div class="col-12">
+                    <label for="password" class="form-label">Κωδικός</label>
+                    <input type="password" class="form-control" id="password" placeholder="Ο κωδικός σας"
+                           required>
+                </div>
+                <div class="col-12">
+                    <label for="confirm_password" class="form-label">Επαναλάβετε τον κωδικό</label>
+                    <input type="password" class="form-control" id="confirm_password" placeholder="Ο κωδικός σας"
+                           required>
+                </div>
+                <div>
+                    <label for="telephone" class="form-label">Τηλέφωνο</label>
+                    <input type="tel" class="form-control" id="telephone" placeholder="π.χ. +306912345678"
+                           required>
+                </div>
+                <div class="col-12">
+                    <label for="semester" class="form-label">Τρέχον Εξάμηνο</label>
+                    <input type="number" class="form-control" min="1" max="100" id="semester" placeholder="π.χ. 2"
+                           required>
+                </div>
+                <div class="col-12">
+                    <label for="uni_reg_number" class="form-label">Αριθμός Μητρώου Σχολής</label>
+                    <input type="text" class="form-control" id="uni_reg_number" placeholder="π.χ. tp12345"
+                           required>
+                </div>
+                <div class="col-md-5">
+                    <label for="city" class="form-label">Πόλη</label>
+                    <input type="text" class="form-control" id="city" placeholder="π.χ. Ηράκλειο" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="address" class="form-label">Διεύθηνση</label>
+                    <input type="text" class="form-control" id="address" placeholder="π.χ. Αγ. Μηνά 1" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="department" class="form-label">Τμήμα Σπουδών</label>
+                    <select class="form-select" id="department" required>
+                        <option value="">Επίλεξε...</option>
+                        <option>ΕΠΠ</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="team" class="form-label">Ομάδα</label>
+                    <select class="form-select" id="team" required>
+                        <option value="">Επίλεξε...</option>
+                        <option>Πολιτιστικός Σύλλογος</option>
+                    </select>
+                </div>
+            </div>
+            <hr class="my-4">
+            <button class="w-100 btn btn-warning btn-lg" type="submit">Αίτηση Εγγραφής</button>
+        </form>
+    </div>
+{% endblock %}

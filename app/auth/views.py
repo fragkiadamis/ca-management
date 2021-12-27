@@ -17,14 +17,10 @@ def register():
     """
     form = RegistrationForm()
     if form.validate_on_submit():
-        employee = Member(email=form.email.data,
-                            username=form.username.data,
-                            first_name=form.first_name.data,
-                            last_name=form.last_name.data,
-                            password=form.password.data)
+        member = Member(email=form.email.data, username=form.username.data)
 
         # add employee to the database
-        db.session.add(employee)
+        db.session.add(member)
         db.session.commit()
         flash('You have successfully registered! You may now login.')
 
@@ -32,10 +28,10 @@ def register():
         return redirect(url_for('auth.login'))
 
     # load registration template
-    return render_template('auth/register.html', form=form, title='Register')
+    return render_template('register.html', form=form, title='Register')
 
 
-@auth.route('/login', methods=['GET', 'POST'])
+@auth.route('/login', methods=['POST'])
 def login():
     """
     Handle requests to the /login route
@@ -46,21 +42,18 @@ def login():
 
         # check whether employee exists in the database and whether
         # the password entered matches the password in the database
-        employee = Member.query.filter_by(email=form.email.data).first()
-        if employee is not None and employee.verify_password(
+        member = Member.query.filter_by(email=form.email.data).first()
+        if member is not None and member.verify_password(
                 form.password.data):
             # log employee in
-            login_user(employee)
+            login_user(member)
 
             # redirect to the dashboard page after login
-            return redirect(url_for('home.dashboard'))
+            return redirect(url_for('public.dashboard'))
 
         # when login details are incorrect
         else:
             flash('Invalid email or password.')
-
-    # load login template
-    return render_template('auth/login.html', form=form, title='Login')
 
 
 @auth.route('/logout')
@@ -74,4 +67,4 @@ def logout():
     flash('You have successfully been logged out.')
 
     # redirect to the login page
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('index'))

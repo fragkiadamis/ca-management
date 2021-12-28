@@ -28,6 +28,10 @@
                     <div class="row g-3">
                         {{ render_field(form.email) }}
                         {{ render_field(form.password) }}
+                        <div class="checkbox mb-3">
+                            {{ form.remember_me(class='form-check-input') }}
+                            {{ form.remember_me.label(class='form-check-label') }}
+                        </div>
                     </div>
                     {{ form.submit(class='w-100 btn btn-lg btn-warning') }}
                 </form>

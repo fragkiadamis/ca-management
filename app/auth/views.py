@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, url_for
+from flask import flash, redirect, render_template, url_for, session
 from flask_login import login_user, login_required, logout_user
 
 from . import auth
@@ -45,7 +45,7 @@ def login():
         if member is not None and member.verify_password(
                 form.password.data):
             # log employee in
-            login_user(member)
+            login_user(member, form.remember_me.data)
 
             # redirect to the dashboard page after login
             return redirect(url_for('ca.dashboard'))

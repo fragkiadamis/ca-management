@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request
+from flask import request, redirect, url_for, session
 import re
 
 from ..models import Member
@@ -38,3 +38,12 @@ def validate_form(form_type):
             return func(*args, **kwargs)
         return wrapper
     return decorator
+
+
+def login_required(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if session['id'] is None:
+            return redirect(url_for('public.homepage', next=request.url))
+        return func(*args, **kwargs)
+    return decorated_function

@@ -25,7 +25,6 @@ const logFormErrors = (errors) => {
     document.querySelectorAll('.errorTag').forEach(tag => (tag.innerText = ''));
 
     /* Check for errors and display them if any */
-    console.log(errors)
     for (const error of errors) {
         /* Get incorrect field and it's error tag */
         const field = document.getElementById(error.field);
@@ -45,7 +44,6 @@ submit.addEventListener('click', async e => {
         const res = await submitForm();
         submit.disabled = false;
         /* Redirect if needed, display errors on error, reload on success */
-        console.log(res.errors)
         if (res.redirect) return (window.location = res.redirect);
         else if (res.errors?.length) logFormErrors(res.errors);
         else location.reload();

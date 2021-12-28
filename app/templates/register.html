@@ -1,3 +1,4 @@
+{% from "./macros/_formhelpers.html" import render_field %}
 {% extends "main.html" %}
 {% block title %}Home{% endblock %}
 {% block body %}
@@ -6,107 +7,23 @@
         <p class="lead">Καταχωρίστε σωστά τα στοιχεία σας για να κάνετε αίτηση εγγραφής.</p>
     </div>
     <div class="register-container mb-5 mx-auto">
-        <form id="ca_form" class="p-4 p-md-5 border rounded-3 bg-light" method="post"
-              action="{{ url_for('auth.register') }}">
+        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('auth.register') }}">
+            {{ form.csrf_token() }}
             <div class="row g-3">
-                <div class="col-sm-6">
-                    <label for="first_name" class="form-label">Όνομα</label>
-                    <input type="text" name="first_name" class="form-control ca-form-field" id="first_name"
-                           placeholder="π.χ. Μανούσος" value=""
-                           required>
-                    <div class="errorTag" data-target-field="first_name"></div>
-                </div>
-                <div class="col-sm-6">
-                    <label for="last_name" class="form-label">Επίθετο</label>
-                    <input type="text" name="last_name" class="form-control ca-form-field" id="last_name"
-                           placeholder="π.χ. Κατσικογάμης"
-                           value="" required>
-                    <div class="errorTag" data-target-field="last_name"></div>
-                </div>
-                <div class="col-12">
-                    <label for="username" class="form-label">Username</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text">@</span>
-                        <input type="text" name="username" class="form-control ca-form-field" id="username"
-                               placeholder="π.χ. gidomanousos4"
-                               required>
-                    </div>
-                    <div class="errorTag" data-target-field="username"></div>
-                </div>
-                <div class="col-12">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control ca-form-field" id="email"
-                           placeholder="π.χ. you@example.com"
-                           required>
-                    <div class="errorTag" data-target-field="email"></div>
-                </div>
-                <div class="col-12">
-                    <label for="password" class="form-label">Κωδικός</label>
-                    <input type="password" name="password" class="form-control ca-form-field" id="password"
-                           placeholder="Ο κωδικός σας"
-                           required>
-                    <div class="errorTag" data-target-field="password"></div>
-                </div>
-                <div class="col-12">
-                    <label for="confirm_password" class="form-label">Επαναλάβετε τον κωδικό</label>
-                    <input type="password" name="confirm_password" class="form-control ca-form-field"
-                           id="confirm_password" placeholder="Ο κωδικός σας"
-                           required>
-                    <div class="errorTag" data-target-field="confirm_password"></div>
-                </div>
-                <div>
-                    <label for="telephone" class="form-label">Τηλέφωνο</label>
-                    <input type="tel" name="telephone" class="form-control ca-form-field" id="telephone"
-                           placeholder="π.χ. +306912345678"
-                           required>
-                    <div class="errorTag" data-target-field="telephone"></div>
-                </div>
-                <div class="col-12">
-                    <label for="semester" class="form-label">Τρέχον Εξάμηνο</label>
-                    <input type="number" name="semester" class="form-control ca-form-field" min="1" max="100"
-                           id="semester" placeholder="π.χ. 2"
-                           required>
-                    <div class="errorTag" data-target-field="semester"></div>
-                </div>
-                <div class="col-12">
-                    <label for="uni_reg_number" class="form-label">Αριθμός Μητρώου Σχολής</label>
-                    <input type="text" name="uni_reg_number" class="form-control ca-form-field" id="uni_reg_number"
-                           placeholder="π.χ. tp12345"
-                           required>
-                    <div class="errorTag" data-target-field="uni_reg_number"></div>
-                </div>
-                <div class="col-md-6">
-                    <label for="city" class="form-label">Πόλη</label>
-                    <input type="text" name="city" class="form-control ca-form-field" id="city"
-                           placeholder="π.χ. Ηράκλειο" required>
-                    <div class="errorTag" data-target-field="city"></div>
-                </div>
-                <div class="col-md-6">
-                    <label for="address" class="form-label">Διεύθηνση</label>
-                    <input type="text" name="address" class="form-control ca-form-field" id="address"
-                           placeholder="π.χ. Αγ. Μηνά 1" required>
-                    <div class="errorTag" data-target-field="address"></div>
-                </div>
-                <div class="col-md-6">
-                    <label for="department" class="form-label">Τμήμα Σπουδών</label>
-                    <select class="form-select ca-form-field" name="department" id="department" required>
-                        <option value="">Επίλεξε...</option>
-                        <option>ΕΠΠ</option>
-                    </select>
-                    <div class="errorTag" data-target-field="department"></div>
-                </div>
-                <div class="col-md-6">
-                    <label for="team" class="form-label">Ομάδα</label>
-                    <select class="form-select ca-form-field" name="team" id="team" required>
-                        <option value="">Επίλεξε...</option>
-                        <option>Πολιτιστικός Σύλλογος</option>
-                    </select>
-                    <div class="errorTag" data-target-field="team"></div>
-                </div>
+                {{ render_field(form.first_name, 'col-md-6') }}
+                {{ render_field(form.last_name, 'col-md-6') }}
+                {{ render_field(form.username, 'col-12') }}
+                {{ render_field(form.email, 'col-12') }}
+                {{ render_field(form.password, 'col-12') }}
+                {{ render_field(form.confirm_password, 'col-12') }}
+                {{ render_field(form.telephone, 'col-12') }}
+                {{ render_field(form.semester, 'col-12') }}
+                {{ render_field(form.uni_reg_number, 'col-12') }}
+                {{ render_field(form.city, 'col-md-6') }}
+                {{ render_field(form.address, 'col-md-6') }}
+                <hr class="my-4">
+                {{ form.submit(class='btn btn-warning btn-lg') }}
             </div>
-            <hr class="my-4">
-            <button class="w-100 btn btn-warning btn-lg" id="submit">Αίτηση Εγγραφής</button>
         </form>
     </div>
-    <script src="{{ url_for('static', filename='js/form.js') }}"></script>
 {% endblock %}

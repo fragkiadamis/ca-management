@@ -1,0 +1,9 @@
+{% macro render_field(field, grid_cols) %}
+    <div class="form-floating mb-3 {{ grid_cols }}">
+        {{ field(class='form-control', placeholder='') }}
+        {{ field.label }}
+        {% if field.errors %}
+            <div class="text-danger">{{ field.errors[0] }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}

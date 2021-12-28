@@ -1,9 +1,10 @@
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import db
+from app import db, login_manager
 
 
-class Member(db.Model):
+class Member(UserMixin, db.Model):
     __tablename__ = 'members'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
@@ -18,11 +19,18 @@ class Member(db.Model):
     ca_reg_number = db.Column(db.String(60), unique=True)
     address = db.Column(db.String(60), nullable=False)
 
-    def hash(self, password):
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute.')
+
+    @password.setter
+    def password(self, password):
         self.password_hash = generate_password_hash(password)
 
-    def verify_hash(self, password):
+    def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def __repr__(self):
-        return '<Member: {}>'.format(self.username)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Member.query.get(int(user_id))

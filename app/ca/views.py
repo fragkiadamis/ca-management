@@ -1,12 +1,10 @@
-# app/public/controller.py
-
 from flask import render_template
 from flask_login import login_required
 
 from . import admin
 
 
-@admin.route('/admin/dashboard')
+@admin.route('/ca/dashboard')
 @login_required
 def dashboard():
     """

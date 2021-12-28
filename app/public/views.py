@@ -1,13 +1,13 @@
-# app/public/controller.py
-
 from flask import render_template
 
 from . import home
+from ..auth.forms import LoginForm
 
 
 @home.route('/')
 def homepage():
-    return render_template('index.html', title="Welcome")
+    form = LoginForm()
+    return render_template('index.html', form=form, title="Welcome")
 
 
 @home.route('/about')

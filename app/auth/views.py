@@ -46,6 +46,7 @@ def login():
                 form.password.data):
             # log employee in
             login_user(member, form.remember_me.data)
+            session['_username'] = member.username
 
             # redirect to the dashboard page after login
             return redirect(url_for('ca.dashboard'))
@@ -62,5 +63,6 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session.pop('_username')
     # redirect to the homepage
     return redirect(url_for('public.homepage'))

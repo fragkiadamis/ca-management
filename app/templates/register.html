@@ -1,4 +1,4 @@
-{% from "./macros/_formhelpers.html" import render_field %}
+{% from "./macros/_formhelpers.html" import render_field, render_mul_select_field %}
 {% extends "main.html" %}
 {% block title %}Home{% endblock %}
 {% block body %}
@@ -6,21 +6,41 @@
         <h2>Φόρμα Αίτησης Εγγραφής</h2>
         <p class="lead">Καταχωρίστε σωστά τα στοιχεία σας για να κάνετε αίτηση εγγραφής.</p>
     </div>
-    <div class="register-container mb-5 mx-auto">
+    <div class="container mb-5 mx-auto">
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('auth.register') }}">
             {{ form.csrf_token() }}
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <fieldset>
+                        <legend>Στοιχεία</legend>
+                        {{ render_field(form.first_name) }}
+                        {{ render_field(form.last_name) }}
+                        {{ render_field(form.username) }}
+                        {{ render_field(form.email) }}
+                        {{ render_field(form.telephone) }}
+                        {{ render_field(form.city) }}
+                        {{ render_field(form.address) }}
+                    </fieldset>
+                    <fieldset>
+                        <legend>Κωδικός</legend>
+                        {{ render_field(form.password) }}
+                        {{ render_field(form.confirm_password) }}
+                    </fieldset>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <fieldset class="-5">
+                        <legend>Σχολή</legend>
+                        {{ render_field(form.uni_reg_number) }}
+                        {{ render_field(form.department) }}
+                        {{ render_field(form.semester) }}
+                    </fieldset>
+                    <fieldset>
+                        <legend>Ομάδες</legend>
+                        {{ render_mul_select_field(form.teams) }}
+                    </fieldset>
+                </div>
+            </div>
             <div class="row g-3">
-                {{ render_field(form.first_name, 'col-md-6') }}
-                {{ render_field(form.last_name, 'col-md-6') }}
-                {{ render_field(form.username, 'col-12') }}
-                {{ render_field(form.email, 'col-12') }}
-                {{ render_field(form.password, 'col-12') }}
-                {{ render_field(form.confirm_password, 'col-12') }}
-                {{ render_field(form.telephone, 'col-12') }}
-                {{ render_field(form.semester, 'col-12') }}
-                {{ render_field(form.uni_reg_number, 'col-12') }}
-                {{ render_field(form.city, 'col-md-6') }}
-                {{ render_field(form.address, 'col-md-6') }}
                 <hr class="my-4">
                 {{ form.submit(class='btn btn-warning btn-lg') }}
             </div>

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, ValidationError, IntegerField, SelectField
+from wtforms import PasswordField, StringField, SubmitField, ValidationError, IntegerField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, Email, EqualTo
 
 from ..models import Member
@@ -11,17 +11,19 @@ class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[
-                                        DataRequired(),
-                                        EqualTo('confirm_password')
-                                        ])
+        DataRequired(),
+        EqualTo('confirm_password')
+    ])
     confirm_password = PasswordField('Confirm Password')
     telephone = StringField('Telephone', validators=[DataRequired()])
     semester = IntegerField('Semester', validators=[DataRequired()])
     uni_reg_number = StringField('University Registration Number', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     address = StringField('Address', validators=[DataRequired()])
-    # department = SelectField('Department', validators=[DataRequired()])
-    # team = SelectField('Team', validators=[DataRequired()])
+    department = SelectField('Department', validators=[DataRequired()],
+                             choices=[('1', 'ΕΠΠ'), ('2', 'ΗΜΜΥ'), ('3', 'Μηχανολογία')])
+    teams = SelectMultipleField('Team', validators=[DataRequired()],
+                       choices=[('1', 'Studio FM1'), ('2', 'Θεατρική'), ('3', 'Software')])
     submit = SubmitField('Register')
 
     def validate_email(self, field):

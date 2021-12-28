@@ -62,7 +62,5 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('You have successfully been logged out.')
-
-    # redirect to the login page
+    # redirect to the homepage
     return redirect(url_for('public.homepage'))

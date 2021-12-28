@@ -26,8 +26,8 @@
                     <h2>Συνδέσου</h2>
                     {{ form.csrf_token() }}
                     <div class="row g-3">
-                        {{ render_field(form.email, 'col-12') }}
-                        {{ render_field(form.password, 'col-12') }}
+                        {{ render_field(form.email) }}
+                        {{ render_field(form.password) }}
                     </div>
                     {{ form.submit(class='w-100 btn btn-lg btn-warning') }}
                 </form>

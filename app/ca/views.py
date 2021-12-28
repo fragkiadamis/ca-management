@@ -4,7 +4,7 @@ from flask_login import login_required
 from . import admin
 
 
-@admin.route('/ca/dashboard')
+@admin.route('/dashboard')
 @login_required
 def dashboard():
     """

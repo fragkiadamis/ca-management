@@ -43,8 +43,7 @@ def login():
         # check whether member exists in the database and whether
         # the password entered matches the password in the database
         member = Member.query.filter_by(email=form.email.data).first()
-        if member is not None and member.verify_password(
-                form.password.data):
+        if member is not None and member.is_verified and member.is_active and member.verify_password(form.password.data):
             # log employee in
             login_user(member, form.remember_me.data)
             session['_username'] = member.username
@@ -54,7 +53,10 @@ def login():
 
         # when login details are incorrect
         else:
-            flash('Invalid email or password.')
+            if not member.is_verified:
+                flash('Your verification is pending')
+            else:
+                flash('Invalid email or password.')
 
     # load login template
     return render_template('index.html', form=form, title='Login')

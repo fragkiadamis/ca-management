@@ -1,0 +1,34 @@
+{% extends "./main.html" %}
+{% block title %}Profile{% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        <main class="p-5">
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Telephone</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Address</th>
+                    </tr>
+                    </thead>
+                    {% for member in members %}
+                        <tbody>
+                        <tr id="{{ member['id'] }}">
+                            <td>{{ member['first_name'] }}</td>
+                            <td>{{ member['last_name'] }}</td>
+                            <td>{{ member['email'] }}</td>
+                            <td>{{ member['telephone'] }}</td>
+                            <td>{{ member['city'] }}</td>
+                            <td>{{ member['address'] }}</td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </main>
+    </div>
+{% endblock %}

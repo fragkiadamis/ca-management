@@ -43,3 +43,12 @@ def profile(member_id):
         flash('You have successfully updated your profile.')
 
     return render_template('private/profile.html', form=form, member=member, title='Profile')
+
+
+@ca.route('/members', methods=['GET', 'POST'])
+@login_required
+def list_members():
+    members = Member.query.all()
+
+    return render_template('private/members.html', member={'id': session['_user_id'], 'username': session['_username']},
+                           members=members, title='Members')

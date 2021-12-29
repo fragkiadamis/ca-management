@@ -30,15 +30,15 @@ def list_members():
     if listing == 'pending':
         members = {'Pending': Member.query.filter(Member.is_verified == 0)}
     elif listing == 'active':
-        members = {'Active': Member.query.filter(Member.is_verified == 0)}
+        members = {'Active': Member.query.filter(Member.is_active == 1, Member.is_verified == 1)}
     elif listing == 'inactive':
-        members = {'Inactive': Member.query.filter(Member.is_verified == 0)}
+        members = {'Inactive': Member.query.filter(Member.is_active == 0, Member.is_verified == 1)}
     elif listing == 'admin':
-        members = {'Admin': Member.query.filter(Member.is_verified == 0)}
+        members = {'Admin': Member.query.filter(Member.role == 'admin', Member.is_verified == 1)}
     elif listing == 'ca_admin':
-        members = {'CA Admin': Member.query.filter(Member.is_verified == 0)}
+        members = {'CA Admin': Member.query.filter(Member.role == 'ca_admin', Member.is_verified == 1)}
     elif listing == 'basic':
-        members = {'Basic': Member.query.filter(Member.is_verified == 0)}
+        members = {'Basic': Member.query.filter(Member.role == 'basic', Member.is_verified == 1)}
     elif listing == 'role':
         all_members = Member.query.filter(Member.is_verified == 1)
         admins = [d for d in all_members if d.role == 'admin']
@@ -86,3 +86,27 @@ def profile(member_id):
         flash('You have successfully updated your profile.')
 
     return render_template('private/profile.html', form=form, member=member, title='Profile')
+
+
+@ca.route('/status/<int:member_id>')
+@login_required
+def toggle_status(member_id):
+    member = Member.query.get_or_404(member_id)
+    member.is_active = not member.is_active
+    db.session.commit()
+    return redirect(url_for('ca.list_members'))
+
+
+@ca.route('/verify/<int:member_id>')
+@login_required
+def verify(member_id):
+    member = Member.query.get_or_404(member_id)
+    action = request.args.get('action')
+
+    if action == 'accept':
+        member.is_verified = member.is_active = 1
+    else:
+        Member.query.filter_by(member_id).delete()
+
+    db.session.commit()
+    return redirect(url_for('ca.list_members'))

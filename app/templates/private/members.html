@@ -21,25 +21,25 @@
                             data-bs-toggle="dropdown" aria-expanded="false">Filter By
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Verified') }}">Verified
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='current') }}">Current
                             Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Pending') }}">Pending
-                            Members</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Active') }}">Active
-                            Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Inactive') }}">Inactive
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='pending') }}">Pending
                             Members</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Admin') }}">Admin
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='active') }}">Active
                             Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='CA admin') }}">CA
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='inactive') }}">Inactive
+                            Members</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='admin') }}">Admin
+                            Members</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='ca_admin') }}">CA
                             Admin Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Basic') }}">Basic
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='basic') }}">Basic
                             Members</a></li>
                     </ul>
                 </div>
@@ -63,6 +63,7 @@
                         <th scope="col">Telephone</th>
                         <th scope="col">Role</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
                     </tr>
                     </thead>
                     {% for member in members[key] %}
@@ -73,11 +74,14 @@
                             <td>{{ member['email'] }}</td>
                             <td>{{ member['telephone'] }}</td>
                             <td>{{ member['role'] }}</td>
+                            <td>{{ 'Active' if member['is_active'] else 'Inactive' }}</td>
                             <td>
-                                {% if member['is_active'] %}
-                                    Active
+                                {% if not member['is_verified'] %}
+                                    <a href="{{ url_for('ca.verify', member_id=member['id'], action='accept') }}">Accept</a>
+                                    |
+                                    <a href="{{ url_for('ca.verify', member_id=member['id'], action='deny') }}">Deny</a>
                                 {% else %}
-                                    Inactive
+                                    <a href="{{ url_for('ca.toggle_status', member_id=member['id']) }}">{{ 'Deactivate' if member['is_active'] else 'Activate' }}</a>
                                 {% endif %}
                             </td>
                         </tr>

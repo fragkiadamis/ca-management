@@ -1,0 +1,30 @@
+{% macro render_field(field) %}
+    <div class="form-floating mb-3">
+        {{ field(class='form-control', placeholder='') }}
+        {{ field.label }}
+        {% if field.errors %}
+            <div class="text-danger">{{ field.errors[0] }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_mul_select_field(field) %}
+    <div class="mb-3">
+        {{ field(class='form-control mb-3', placeholder='', multiple=True, size=10) }}
+        {{ field.label(class='d-none') }}
+        <span>You can select multiple teams by holding the <b>Ctrl</b> key</span>
+        {% if field.errors %}
+            <div class="text-danger">{{ field.errors[0] }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_field_with_value(field, value) %}
+    <div class="form-floating mb-3">
+        {{ field(class='form-control', placeholder='', value=value) }}
+        {{ field.label }}
+        {% if field.errors %}
+            <div class="text-danger">{{ field.errors[0] }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}

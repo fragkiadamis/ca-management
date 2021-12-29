@@ -1,49 +1,50 @@
-from functools import wraps
-from flask import request, redirect, url_for, session
-import re
+from flask_wtf import FlaskForm
+from wtforms import PasswordField, StringField, SubmitField, ValidationError, IntegerField, SelectField, SelectMultipleField, BooleanField
+from wtforms.validators import DataRequired, Email, EqualTo
 
 from ..models import Member
 
 
-def validate_form(form_type):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            if request.method == 'POST':
-                request.errors = []
-                form_data = request.json
-                # Check that all fields are filled
-                for key in form_data:
-                    if not form_data[key]:
-                        request.errors.append({'field': key, 'msg': 'This field is required'})
+class RegistrationForm(FlaskForm):
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[
+        DataRequired(),
+        EqualTo('confirm_password')
+    ])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired()])
+    telephone = StringField('Telephone', validators=[DataRequired()])
+    semester = IntegerField('Semester', validators=[DataRequired()])
+    uni_reg_number = StringField('University Registration Number', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    department = SelectField('Department', validators=[DataRequired()],
+                             choices=[('1', 'ΕΠΠ'), ('2', 'ΗΜΜΥ'), ('3', 'Μηχανολογία')])
+    teams = SelectMultipleField('Team', validators=[DataRequired()],
+                       choices=[('1', 'Studio FM1'), ('2', 'Θεατρική'), ('3', 'Software')])
+    submit = SubmitField('Register')
 
-                # Validate email
-                email_pattern = re.compile("^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
-                if not email_pattern.match(form_data['email']):
-                    request.errors.append({'field': 'email', 'msg': 'Invalid email'})
+    def validate_email(self, field):
+        if Member.query.filter_by(email=field.data).first():
+            raise ValidationError('Email is already in use.')
 
-                # Validate password and unique fields
-                if form_type == 'register':
-                    if not form_data['password'] == form_data['confirm_password']:
-                        request.errors.append({'field': 'password', 'msg': 'The passwords do not match'})
-                    if Member.query.filter_by(email=form_data['email']).first():
-                        request.errors.append({'field': 'email', 'msg': 'Email already exists'})
-                    if Member.query.filter_by(username=form_data['username']).first():
-                        request.errors.append({'field': 'username', 'msg': 'Username already exists'})
-                    if Member.query.filter_by(telephone=form_data['telephone']).first():
-                        request.errors.append({'field': 'telephone', 'msg': 'Telephone already exists'})
-                    if Member.query.filter_by(uni_reg_number=form_data['uni_reg_number']).first():
-                        request.errors.append(
-                            {'field': 'uni_reg_number', 'msg': 'University Registration Number already exists'})
-            return func(*args, **kwargs)
-        return wrapper
-    return decorator
+    def validate_username(self, field):
+        if Member.query.filter_by(username=field.data).first():
+            raise ValidationError('Username is already in use.')
+
+    def validate_telephone(self, field):
+        if Member.query.filter_by(telephone=field.data).first():
+            raise ValidationError('Telephone is already in use.')
+
+    def validate_uni_reg_number(self, field):
+        if Member.query.filter_by(uni_reg_number=field.data).first():
+            raise ValidationError('University Registration Number is already in use.')
 
 
-def login_required(func):
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        if session['id'] is None:
-            return redirect(url_for('public.homepage', next=request.url))
-        return func(*args, **kwargs)
-    return decorated_function
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember me')
+    submit = SubmitField('Login')

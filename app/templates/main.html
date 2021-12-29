@@ -7,7 +7,11 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 </head>
 <body>
-{% include "partials/header.html" %}
+{% if not member %}
+    {% include "partials/header.html" %}
+{% else %}
+    {% include "partials/private/ca_header.html" %}
+{% endif %}
 <main class="wrapper">
     <h1 class="d-none">Πολιτιστικός Σύλλογος Σχολών ΕΛΜΕΠΑ Ηρακλείου</h1>
     {% block body %}

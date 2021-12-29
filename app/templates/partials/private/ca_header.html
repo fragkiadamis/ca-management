@@ -1,0 +1,30 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li><a href="{{ url_for('ca.dashboard') }}" class="nav-link px-2 text-secondary">Dashboard</a>
+                    </li>
+                    <li><a href="{{ url_for('ca.list_members', list='verified') }}" class="nav-link px-2 text-white">Members</a></li>
+                </ul>
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="producerDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">{{ member.username }}</a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="producerDropdown">
+                            <li><a class="dropdown-item"
+                                   href="{{ url_for('ca.profile', member_id=member.id) }}">Profile</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

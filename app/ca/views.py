@@ -49,23 +49,29 @@ def profile(member_id):
 @login_required
 def list_members():
     listing = request.args.get('list')
-    members = []
+    members = {}
 
     # Filter Members according to url parameter
-    if listing == 'pending':
-        members = Member.query.filter(Member.is_verified == 0)
-    elif listing == 'active':
-        members = Member.query.filter(Member.is_active == 1)
-    elif listing == 'inactive':
-        members = Member.query.filter(Member.is_active == 0)
-    elif listing == 'admin':
-        members = Member.query.filter(Member.role == 'admin')
-    elif listing == 'ca_admin':
-        members = Member.query.filter(Member.role == 'ca_admin')
-    elif listing == 'basic':
-        members = Member.query.filter(Member.role == 'basic')
+    if listing == 'Pending':
+        members = {'Pending': Member.query.filter(Member.is_verified == 0)}
+    elif listing == 'Active':
+        members = {'Active': Member.query.filter(Member.is_verified == 0)}
+    elif listing == 'Inactive':
+        members = {'Inactive': Member.query.filter(Member.is_verified == 0)}
+    elif listing == 'Admin':
+        members = {'Admin': Member.query.filter(Member.is_verified == 0)}
+    elif listing == 'CA Admin':
+        members = {'CA Admin': Member.query.filter(Member.is_verified == 0)}
+    elif listing == 'Basic':
+        members = {'Basic': Member.query.filter(Member.is_verified == 0)}
+    elif listing == 'role':
+        all_members = Member.query.all()
+        admins = all_members(lambda role: role == 'admin', all_members)
+        ca_admins = all_members(lambda role: role == 'ca_admin', all_members)
+        basics = all_members(lambda role: role == 'basic', all_members)
+        members = {'Admins': admins, 'CA Admins': ca_admins, 'Basic': basics}
     else:
-        members = Member.query.filter(Member.is_verified == 1)
+        members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1)}
 
     return render_template('private/members.html', member={'id': session['_user_id'], 'username': session['_username']},
                            members=members, title='Members')

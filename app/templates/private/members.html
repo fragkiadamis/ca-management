@@ -1,32 +1,63 @@
 {% extends "./main.html" %}
 {% block title %}Profile{% endblock %}
 {% block body %}
-    <div class="container-fluid">
-        <main class="p-5">
-            <div class="content-title table-title clearfix">
-                <h2 class="float-start">Members <b>Management</b></h2>
-                <div class="float-end d-flex align-items-center mt-1">
-                    <div class="dropdown me-2">
-                        <button class="btn btn-warning dropdown-toggle" type="button" id="viewByButton"
-                                data-bs-toggle="dropdown" aria-expanded="false">Filter By
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="viewByButton">
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='verified') }}">Verified Members</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='pending') }}">Pending Members</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='active') }}">Active Members</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='inactive') }}">Inactive Members</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='admin') }}">Admin Members</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='ca_admin') }}">CA Admin Members</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='basic') }}">Basic Members</a></li>
-                        </ul>
-                    </div>
-                </div>
+    <div class="content-title p-3 bg-light table-title clearfix">
+        <div class="float-start d-flex align-items-center mt-1">
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">Group By
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="viewByButton">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='role') }}">Role</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='status') }}">Status</a></li>
+                    <li>
+                </ul>
             </div>
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">Filter By
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="viewByButton">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Verified') }}">Verified
+                        Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Pending') }}">Pending
+                        Members</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Active') }}">Active
+                        Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Inactive') }}">Inactive
+                        Members</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Admin') }}">Admin
+                        Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='CA admin') }}">CA
+                        Admin Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', list='Basic') }}">Basic
+                        Members</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="float-end">
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% for key in members %}
             <table class="table table-hover">
                 <thead>
                 <tr>
+                    <th scope="col">
+                        <div class="form-check">
+                            <input class="form-check-input master-checkbox" type="checkbox" data-role="<%= prop %>">
+                        </div>
+                    </th>
                     <th scope="col">First Name</th>
                     <th scope="col">Last Name</th>
                     <th scope="col">Email</th>
@@ -35,9 +66,16 @@
                     <th scope="col">Status</th>
                 </tr>
                 </thead>
-                {% for member in members %}
+                {% for member in members[key] %}
+                    <h2>{{ key }} <b>Members</b></h2>
                     <tbody>
                     <tr id="{{ member['id'] }}">
+                        <td class="fm1-td">
+                            <div class="form-check">
+                                <input class="form-check-input slave-checkbox" type="checkbox"
+                                       data-id="<%= producer._id %>">
+                            </div>
+                        </td>
                         <td>{{ member['first_name'] }}</td>
                         <td>{{ member['last_name'] }}</td>
                         <td>{{ member['email'] }}</td>
@@ -54,6 +92,6 @@
                     </tbody>
                 {% endfor %}
             </table>
-        </main>
+        {% endfor %}
     </div>
 {% endblock %}

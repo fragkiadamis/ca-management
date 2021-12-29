@@ -27,17 +27,17 @@ def list_members():
     members = {}
 
     # Filter Members according to url parameter
-    if listing == 'Pending':
+    if listing == 'pending':
         members = {'Pending': Member.query.filter(Member.is_verified == 0)}
-    elif listing == 'Active':
+    elif listing == 'active':
         members = {'Active': Member.query.filter(Member.is_verified == 0)}
-    elif listing == 'Inactive':
+    elif listing == 'inactive':
         members = {'Inactive': Member.query.filter(Member.is_verified == 0)}
-    elif listing == 'Admin':
+    elif listing == 'admin':
         members = {'Admin': Member.query.filter(Member.is_verified == 0)}
-    elif listing == 'CA Admin':
+    elif listing == 'ca_admin':
         members = {'CA Admin': Member.query.filter(Member.is_verified == 0)}
-    elif listing == 'Basic':
+    elif listing == 'basic':
         members = {'Basic': Member.query.filter(Member.is_verified == 0)}
     elif listing == 'role':
         all_members = Member.query.filter(Member.is_verified == 1)
@@ -45,6 +45,11 @@ def list_members():
         ca_admins = [d for d in all_members if d.role == 'ca_admin']
         basics = [d for d in all_members if d.role == 'basic']
         members = {'Admins': admins, 'CA Admins': ca_admins, 'Basic': basics}
+    elif listing == 'status':
+        all_members = Member.query.filter(Member.is_verified == 1)
+        active = [d for d in all_members if d.is_active]
+        inactive = [d for d in all_members if not d.is_active]
+        members = {'Active': active, 'Inactive': inactive}
     else:
         members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1)}
 

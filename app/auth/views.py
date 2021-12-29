@@ -52,11 +52,10 @@ def login():
             return redirect(url_for('ca.dashboard'))
 
         # when login details are incorrect
+        elif not member.is_verified:
+            flash('Your verification is pending')
         else:
-            if not member.is_verified:
-                flash('Your verification is pending')
-            else:
-                flash('Invalid email or password.')
+            flash('Invalid email or password.')
 
     # load login template
     return render_template('index.html', form=form, title='Login')

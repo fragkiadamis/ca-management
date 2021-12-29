@@ -12,6 +12,7 @@ class Member(UserMixin, db.Model):
     last_name = db.Column(db.String(60), nullable=False)
     username = db.Column(db.String(60), unique=True, nullable=False)
     email = db.Column(db.String(60), unique=True, nullable=False)
+    role = db.Column(db.String(60), nullable=False, default='basic')
     password_hash = db.Column(db.String(255), nullable=False)
     telephone = db.Column(db.String(60), unique=True, nullable=False)
     semester = db.Column(db.String(60), nullable=False)
@@ -19,6 +20,8 @@ class Member(UserMixin, db.Model):
     ca_reg_number = db.Column(db.String(60), unique=True)
     city = db.Column(db.String(60), nullable=False)
     address = db.Column(db.String(60), nullable=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=False)
+    is_verified = db.Column(db.Boolean, nullable=False, default=False)
 
     @property
     def password(self):

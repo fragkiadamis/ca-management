@@ -1,4 +1,4 @@
-from flask import render_template, session, flash
+from flask import render_template, session, flash, request
 from flask_login import login_required
 
 from . import ca
@@ -48,7 +48,24 @@ def profile(member_id):
 @ca.route('/members', methods=['GET', 'POST'])
 @login_required
 def list_members():
-    members = Member.query.all()
+    listing = request.args.get('list')
+    members = []
+
+    # Filter Members according to url parameter
+    if listing == 'pending':
+        members = Member.query.filter(Member.is_verified == 0)
+    elif listing == 'active':
+        members = Member.query.filter(Member.is_active == 1)
+    elif listing == 'inactive':
+        members = Member.query.filter(Member.is_active == 0)
+    elif listing == 'admin':
+        members = Member.query.filter(Member.role == 'admin')
+    elif listing == 'ca_admin':
+        members = Member.query.filter(Member.role == 'ca_admin')
+    elif listing == 'basic':
+        members = Member.query.filter(Member.role == 'basic')
+    else:
+        members = Member.query.filter(Member.is_verified == 1)
 
     return render_template('private/members.html', member={'id': session['_user_id'], 'username': session['_username']},
                            members=members, title='Members')

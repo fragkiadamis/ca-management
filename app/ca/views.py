@@ -65,10 +65,10 @@ def list_members():
     elif listing == 'Basic':
         members = {'Basic': Member.query.filter(Member.is_verified == 0)}
     elif listing == 'role':
-        all_members = Member.query.all()
-        admins = all_members(lambda role: role == 'admin', all_members)
-        ca_admins = all_members(lambda role: role == 'ca_admin', all_members)
-        basics = all_members(lambda role: role == 'basic', all_members)
+        all_members = Member.query.filter(Member.is_verified == 1)
+        admins = [d for d in all_members if d.role == 'admin']
+        ca_admins = [d for d in all_members if d.role == 'ca_admin']
+        basics = [d for d in all_members if d.role == 'basic']
         members = {'Admins': admins, 'CA Admins': ca_admins, 'Basic': basics}
     else:
         members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1)}

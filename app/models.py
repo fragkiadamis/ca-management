@@ -17,6 +17,7 @@ class Member(UserMixin, db.Model):
     semester = db.Column(db.String(60), nullable=False)
     uni_reg_number = db.Column(db.String(60), unique=True, nullable=False)
     ca_reg_number = db.Column(db.String(60), unique=True)
+    city = db.Column(db.String(60), nullable=False)
     address = db.Column(db.String(60), nullable=False)
 
     @property

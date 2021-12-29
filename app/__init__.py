@@ -26,7 +26,7 @@ def create_app(config_name):
     from app import models
 
     # from .ca import ca as admin_blueprint
-    from .ca import admin as ca_blueprint
+    from .ca import ca as ca_blueprint
     app.register_blueprint(ca_blueprint, url_prefix='/ca')
 
     from .auth import auth as auth_blueprint

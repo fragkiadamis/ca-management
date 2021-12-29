@@ -14,7 +14,7 @@ class RegistrationForm(FlaskForm):
         DataRequired(),
         EqualTo('confirm_password')
     ])
-    confirm_password = PasswordField('Confirm Password')
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired()])
     telephone = StringField('Telephone', validators=[DataRequired()])
     semester = IntegerField('Semester', validators=[DataRequired()])
     uni_reg_number = StringField('University Registration Number', validators=[DataRequired()])

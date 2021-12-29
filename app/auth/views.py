@@ -20,7 +20,8 @@ def register():
             telephone=form.telephone.data,
             semester=form.semester.data,
             uni_reg_number=form.uni_reg_number.data,
-            address=f"{form.city.data}, {form.address.data}"
+            city=form.city.data,
+            address=form.address.data
         )
 
         db.session.add(member)

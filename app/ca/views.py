@@ -1,3 +1,5 @@
+from typing import re
+
 from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
 
@@ -104,9 +106,13 @@ def verify(member_id):
     action = request.args.get('action')
 
     if action == 'accept':
+        # Get last verified member's ca reg number and increase it to one and assign to new verified member
+        last_member = Member.query.filter(Member.is_verified == 1).order_by(Member.id.desc()).first()
+        incremental = int(''.join(x for x in last_member.ca_reg_number if x.isdigit())) + 1
+        member.ca_reg_number = f'ca{incremental}'
         member.is_verified = member.is_active = 1
-    else:
-        Member.query.filter_by(member_id).delete()
+    elif action == 'deny':
+        db.session.delete(member)
 
     db.session.commit()
-    return redirect(url_for('ca.list_members'))
+    return redirect(url_for('ca.list_members', list='pending'))

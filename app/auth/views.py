@@ -11,6 +11,18 @@ from ..models import Member
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        member_exists = db.session.query(Member).first()
+
+        ca_number = None
+        role = None
+        is_active = 0
+        is_verified = 0
+        if not member_exists:
+            ca_number = 'ca1'
+            role = 'admin'
+            is_active = 1
+            is_verified = 1
+
         member = Member(
             first_name=form.first_name.data,
             last_name=form.last_name.data,
@@ -21,7 +33,11 @@ def register():
             semester=form.semester.data,
             uni_reg_number=form.uni_reg_number.data,
             city=form.city.data,
-            address=form.address.data
+            address=form.address.data,
+            ca_reg_number = ca_number,
+            role = role,
+            is_active = is_active,
+            is_verified = is_verified
         )
 
         db.session.add(member)

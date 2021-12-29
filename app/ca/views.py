@@ -56,7 +56,7 @@ def list_members():
         members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1)}
 
     return render_template('private/members.html', member={'id': session['_user_id'], 'username': session['_username']},
-                           members=members, title='Members')
+                           members=members, title='Members', list=listing)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])
@@ -93,10 +93,11 @@ def profile(member_id):
 @ca.route('/status/<int:member_id>')
 @login_required
 def toggle_status(member_id):
+    listing = request.args.get('list')
     member = Member.query.get_or_404(member_id)
     member.is_active = not member.is_active
     db.session.commit()
-    return redirect(url_for('ca.list_members'))
+    return redirect(url_for('ca.list_members', list=listing))
 
 
 @ca.route('/verify/<int:member_id>')

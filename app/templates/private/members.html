@@ -57,12 +57,11 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th scope="col">CA Number</th>
+                        <th scope="col">#</th>
                         <th scope="col">First Name</th>
                         <th scope="col">Last Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Telephone</th>
-                        <th scope="col">Role</th>
                         <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -70,20 +69,23 @@
                     {% for member in members[key] %}
                         <tbody>
                         <tr id="{{ member['id'] }}">
-                            <td>{{ member['ca_reg_number'] }}</td>
+                            <td>{{ member['ca_reg_number'] if member['ca_reg_number'] }}</td>
                             <td>{{ member['first_name'] }}</td>
                             <td>{{ member['last_name'] }}</td>
                             <td>{{ member['email'] }}</td>
                             <td>{{ member['telephone'] }}</td>
-                            <td>{{ member['role'] }}</td>
-                            <td>{{ 'Active' if member['is_active'] else 'Inactive' }}</td>
+                            <td><span
+                                    class="{{ 'text-success' if member['is_active'] else 'text-danger' }}">{{ 'Active' if member['is_active'] else 'Inactive' }}</span>
+                            </td>
                             <td>
                                 {% if not member['is_verified'] %}
-                                    <a href="{{ url_for('ca.verify', member_id=member['id'], action='accept') }}" class="text-success">Accept</a>
+                                    <a href="{{ url_for('ca.verify', member_id=member['id'], action='accept', list=list) }}"
+                                       class="text-success">Accept</a>
                                     |
-                                    <a href="{{ url_for('ca.verify', member_id=member['id'], action='deny') }}" class="text-danger">Deny</a>
+                                    <a href="{{ url_for('ca.verify', member_id=member['id'], action='deny', list=list) }}"
+                                       class="text-danger">Deny</a>
                                 {% else %}
-                                    <a href="{{ url_for('ca.toggle_status', member_id=member['id']) }}">{{ 'Deactivate' if member['is_active'] else 'Activate' }}</a>
+                                    <a href="{{ url_for('ca.toggle_status', member_id=member['id'], list=list) }}">{{ 'Deactivate' if member['is_active'] else 'Activate' }}</a>
                                 {% endif %}
                             </td>
                         </tr>

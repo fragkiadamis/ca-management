@@ -51,6 +51,7 @@ class Team(db.Model):
 
 # Treasury
 class Treasury(db.Model):
+    id = db.Column(db.Float, primary_key=True, nullable=False, unique=True)
     totalSum = db.Column(db.Float, nullable=False)
     caBalance = db.Column(db.Float, nullable=False)
 
@@ -70,14 +71,14 @@ class Transaction(db.Model):
     description = db.Column(db.String(60), nullable=False)
 
 
-class Subscription:
-    # member = db.Column()
-    semester = db.Column(db.String(60), nullable=False)
-
-
-class RegistrationFee:
-    # member = db.Column()
-    name = db.Column(db.String(60)) # de xreiazetai
+# class Subscription:
+#     # member = db.Column()
+#     semester = db.Column(db.String(60), nullable=False)
+#
+#
+# class RegistrationFee:
+#     # member = db.Column()
+#     name = db.Column(db.String(60)) # de xreiazetai
 
 
 # Files

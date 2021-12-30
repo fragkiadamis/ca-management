@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 </head>
 <body>
-{% if not member %}
+{% if not user %}
     {% include "partials/header.html" %}
 {% else %}
     {% include "partials/private/ca_header.html" %}

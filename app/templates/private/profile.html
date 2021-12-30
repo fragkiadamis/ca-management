@@ -19,7 +19,7 @@
             {% endif %}
         {% endwith %}
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post"
-              action="{{ url_for('ca.profile', member_id=member.id) }}">
+              action="{{ url_for('ca.profile', member_id=user.id) }}">
             {{ form.csrf_token() }}
             <div class="row">
                 <div class="col-12">

@@ -1,9 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, ValidationError, IntegerField, SelectField, \
-    SelectMultipleField, BooleanField
+from wtforms import PasswordField, StringField, SubmitField, BooleanField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo
 
-from ..models import Member
+from app.models import Member
 
 
 class ProfileForm(FlaskForm):
@@ -18,3 +17,8 @@ class ProfileForm(FlaskForm):
     address = StringField('Address', validators=[DataRequired()])
     confirm_changes = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Update')
+
+
+class BooleanForm(FlaskForm):
+    status = BooleanField()
+    submit = SubmitField()

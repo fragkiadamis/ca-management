@@ -93,24 +93,19 @@ def list_teams():
 @ca.route('/teams/add', methods=['GET', 'POST'])
 @login_required
 def add_team():
-    # Add a specific team
+    # Add a team
     add_team = True
 
     form = TeamForm()
     if form.validate_on_submit():
         team = Team(name=form.name.data, description=form.description.data, email=form.email.data, telephone=form.telephone.data)
-
-        try:
-            # Add team to database
-            db.session.add(team)
-            db.session.commit()
-            flash('You have successfully added a new team.')
-        except:
-            # If team name already exists
-            flash('Error: Team name already exists.')
+        # Add team to database
+        db.session.add(team)
+        db.session.commit()
+        flash('You have successfully added a new team.')
 
         # redirect to teams page
-        # return redirect(url_for('ca.list_teams'))
+        return redirect(url_for('ca.list_teams'))
 
     # Load Team template
     return render_template('private/team.html',
@@ -136,17 +131,17 @@ def edit_team(id):
         flash('You have successfully edited the team.')
 
         # Redirect to teams page
-        # return redirect(url_for('ca.list_teams'))
+        return redirect(url_for('ca.list_teams'))
 
-        form.description.data = team.description
-        form.name.data = team.name
-        form.email.data = team.email
-        form.telephone.data = team.telephone
+    form.name.data = team.name
+    form.description.data = team.description
+    form.email.data = team.email
+    form.telephone.data = team.telephone
 
-        return render_template('private/team.html', action="Edit",
-                               add_team=add_team, form=form, team=team,
-                               member={'id': session['_user_id'], 'username': session['_username']},
-                               title="Edit Team")
+    return render_template('private/team.html', action="Edit",
+                           add_team=add_team, form=form, team=team,
+                           member={'id': session['_user_id'], 'username': session['_username']},
+                           title="Edit Team")
 
 
 @ca.route('/teams/delete/<int:id>', methods=['GET', 'POST'])
@@ -155,15 +150,14 @@ def delete_team(id):
     # Delete a team with a specific id
 
     # check_admin()
+
     team = Team.query.get_or_404(id)
     db.session.delete(team)
     db.session.commit()
     flash('You have successfully delete the team.')
 
     # Redirect to the departments page
-    # return redirect(url_for(ca.list_teams))
+    return redirect(url_for('ca.list_teams'))
 
-    return render_template('private/team.html', action="Edit", add_team=add_team, form=form, team=team,
-                           member={'id': session['_user_id'], 'username': session['_username']},
-                           title="Delete Team")
+    # return render_template(title="Delete Team")
 

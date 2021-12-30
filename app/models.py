@@ -41,6 +41,8 @@ def load_user(user_id):
 
 # Teams
 class Team(db.Model):
+    __tablename__ = 'teams'
+
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
     # teamMembers = db.Column()
@@ -49,78 +51,78 @@ class Team(db.Model):
     telephone = db.Column(db.String(60), unique=True, nullable=False)
 
 
-# Treasury
-class Treasury(db.Model):
-    id = db.Column(db.Float, primary_key=True, nullable=False, unique=True)
-    totalSum = db.Column(db.Float, nullable=False)
-    caBalance = db.Column(db.Float, nullable=False)
-
-
-class TeamTreasury(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    balance = db.Column(db.Float, nullable=False)
-    # team = db.Column()
-
-
-class Transaction(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    amount = db.Column(db.Float, nullable=False)
-    # addedBy = db.Column()
-    # team = db.Column()
-    transactionDate = db.Column(db.Date, nullable=False)
-    description = db.Column(db.String(60), nullable=False)
-
-
-# class Subscription:
-#     # member = db.Column()
-#     semester = db.Column(db.String(60), nullable=False)
+# # Treasury
+# class Treasury(db.Model):
+#     id = db.Column(db.Float, primary_key=True, nullable=False, unique=True)
+#     totalSum = db.Column(db.Float, nullable=False)
+#     caBalance = db.Column(db.Float, nullable=False)
 #
 #
-# class RegistrationFee:
-#     # member = db.Column()
-#     name = db.Column(db.String(60)) # de xreiazetai
-
-
-# Files
-class File(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(60), nullable=False)
-    path = db.Column(db.String(60), nullable=False)
-    type = db.Column(db.String(60), nullable=False)
-
-
-# Institutions
-class Institution(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(60), nullable=False)
-
-
-class School(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(60), nullable=False)
-    # institution = db.Column()
-
-
-class Department(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(60), nullable=False)
-    # school = db.Column()
-
-
-# Announcements
-class Announcement(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    title = db.Column(db.String(60), nullable=False)
-    description = db.Column(db.String(60), nullable=False)
-    createDate = db.Column(db.Date, nullable=True)
-    # addedBy = db.Column()
-
-
-# Activities
-class Activity(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    title = db.Column(db.String(60), nullable=False)
-    description = db.Column(db.String(60), nullable=False)
-    createDate = db.Column(db.Date, nullable=True)
-    activityDate = db.Column(db.Date, nullable=True)
+# class TeamTreasury(db.Model):
+#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+#     balance = db.Column(db.Float, nullable=False)
+#     # team = db.Column()
+#
+#
+# class Transaction(db.Model):
+#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+#     amount = db.Column(db.Float, nullable=False)
+#     # addedBy = db.Column()
+#     # team = db.Column()
+#     transactionDate = db.Column(db.Date, nullable=False)
+#     description = db.Column(db.String(60), nullable=False)
+#
+#
+# # class Subscription:
+# #     # member = db.Column()
+# #     semester = db.Column(db.String(60), nullable=False)
+# #
+# #
+# # class RegistrationFee:
+# #     # member = db.Column()
+# #     name = db.Column(db.String(60)) # de xreiazetai
+#
+#
+# # Files
+# class File(db.Model):
+#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+#     name = db.Column(db.String(60), nullable=False)
+#     path = db.Column(db.String(60), nullable=False)
+#     type = db.Column(db.String(60), nullable=False)
+#
+#
+# # Institutions
+# class Institution(db.Model):
+#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+#     name = db.Column(db.String(60), nullable=False)
+#
+#
+# class School(db.Model):
+#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+#     name = db.Column(db.String(60), nullable=False)
+#     # institution = db.Column()
+#
+#
+# class Department(db.Model):
+#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+#     name = db.Column(db.String(60), nullable=False)
+#     # school = db.Column()
+#
+#
+# # Announcements
+# class Announcement(db.Model):
+#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+#     title = db.Column(db.String(60), nullable=False)
+#     description = db.Column(db.String(60), nullable=False)
+#     createDate = db.Column(db.Date, nullable=True)
+#     # addedBy = db.Column()
+#
+#
+# # Activities
+# class Activity(db.Model):
+#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+#     title = db.Column(db.String(60), nullable=False)
+#     description = db.Column(db.String(60), nullable=False)
+#     createDate = db.Column(db.Date, nullable=True)
+#     activityDate = db.Column(db.Date, nullable=True)
 

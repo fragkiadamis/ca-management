@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 # local imports
-from config import app_config
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -23,7 +22,7 @@ def create_app(config_name):
     login_manager.login_view = "public.homepage"
     migrate = Migrate(app, db)
 
-    from app import models
+    from app.ca.members import model
 
     # from .ca import ca as admin_blueprint
     from .ca import ca as ca_blueprint

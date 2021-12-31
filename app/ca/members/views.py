@@ -1,9 +1,9 @@
-from flask import render_template, session, flash, request, redirect, url_for, json
+from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
 
 from .. import ca
 from .forms import ProfileForm, BooleanForm
-from ...models import Member
+from app.ca.members.model import Member
 
 
 @ca.route('/members', methods=['GET', 'POST'])

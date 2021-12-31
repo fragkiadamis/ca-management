@@ -4,7 +4,7 @@ from flask_login import login_user, login_required, logout_user
 from . import auth
 from .forms import RegistrationForm, LoginForm
 from .. import db
-from ..models import Member
+from app.ca.members.model import Member
 
 
 @auth.route('/register', methods=['GET', 'POST'])

@@ -82,13 +82,37 @@ class Team(db.Model):
 # #     # member = db.Column()
 # #     name = db.Column(db.String(60)) # de xreiazetai
 #
-#
-# # Files
-# class File(db.Model):
-#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-#     name = db.Column(db.String(60), nullable=False)
-#     path = db.Column(db.String(60), nullable=False)
-#     type = db.Column(db.String(60), nullable=False)
+
+# Files
+class File(db.Model):
+    __tablename__ = 'files'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    name = db.Column(db.String(60), nullable=False)
+    path = db.Column(db.String(60), nullable=False)
+    type = db.Column(db.String(60), nullable=False)
+
+
+# Announcements
+class Announcement(db.Model):
+    __tablename__ = 'announcements'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    title = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60), nullable=False)
+    createDate = db.Column(db.Date, nullable=True)
+    # addedBy = db.Column()
+
+
+# Activities
+class Activity(db.Model):
+    __tablename__ = 'activities'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    title = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60), nullable=False)
+    createDate = db.Column(db.Date, nullable=True)
+    activityDate = db.Column(db.Date, nullable=True)
 #
 #
 # # Institutions
@@ -107,22 +131,4 @@ class Team(db.Model):
 #     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
 #     name = db.Column(db.String(60), nullable=False)
 #     # school = db.Column()
-#
-#
-# # Announcements
-# class Announcement(db.Model):
-#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-#     title = db.Column(db.String(60), nullable=False)
-#     description = db.Column(db.String(60), nullable=False)
-#     createDate = db.Column(db.Date, nullable=True)
-#     # addedBy = db.Column()
-#
-#
-# # Activities
-# class Activity(db.Model):
-#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-#     title = db.Column(db.String(60), nullable=False)
-#     description = db.Column(db.String(60), nullable=False)
-#     createDate = db.Column(db.Date, nullable=True)
-#     activityDate = db.Column(db.Date, nullable=True)
 

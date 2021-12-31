@@ -3,7 +3,7 @@ from wtforms import PasswordField, StringField, SubmitField, ValidationError, In
     SelectMultipleField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo
 
-from ..models import Member, Team
+from ..models import Member, Team, Activity, Announcement
 
 
 class ProfileForm(FlaskForm):
@@ -38,3 +38,27 @@ class TeamForm(FlaskForm):
     def validate_telephone(self, field):
         if Team.query.filter_by(telephone=field.data).first():
             raise ValidationError('Telephone is already in use.')
+
+
+class ActivityForm(FlaskForm):
+    title = StringField('Activity Name', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    createDate = StringField('Create Date', validators=[DataRequired()])
+    activityDate = StringField('Activity Date', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_title(self, field):
+        if Activity.query.filter_by(title=field.data).first():
+            raise ValidationError('Activity title is already in use')
+
+
+class AnnouncementForm(FlaskForm):
+    title = StringField('Announcement Name', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    createDate = StringField('Create Date', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_title(self, field):
+        if Announcement.query.filter_by(title=field.data).first():
+            raise ValidationError('Announcement title is already in use')
+

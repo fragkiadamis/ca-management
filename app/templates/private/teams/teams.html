@@ -1,38 +1,58 @@
 {% extends "./main.html" %}
 {% block title %}Teams{% endblock %}
 {% block body %}
-    <h1>Teams</h1>
-    {% if teams %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Email</th>
-                    <th>Telephone</th>
-                </tr>
-            </thead>
-            <tbody>
+{#    <div class="bg-light clearfix">#}
+{#        <div class="container-fluid">#}
+{#            <div class="float-end d-flex align-items-center py-3">#}
+{#                #}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+    <h1 style="text-align: center"><b>Teams</b></h1>
+{#    <div class="float-end d-flex align-items-center py-3">#}
+{#        <a href="{{ url_for('ca.add_team') }}">Add Team</a>#}
+{#    </div>#}
+    <div class="float-end py-3">
+        <form class="d-flex">
+            <button class="btn btn-outline-primary" type="button" >
+                <a href="{{ url_for('ca.add_team') }}" style="text-decoration: none;">Add Team</a>
+            </button>
+        </form>
+    </div>
+    <div class="container-fluid">
+        {% if teams %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Telephone</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
                 {% for team in teams %}
-                <tr>
-                    <td>
-                        <a href="{{ url_for('ca.get_team', id=team.id) }}">{{ team.name }}</a>
-                    </td>
-                    <td>{{ team.description }}</td>
-                    <td>{{ team.email }}</td>
-                    <td>{{ team.telephone }}</td>
-                    <td>
-                        <a href="{{ url_for('ca.edit_team', id=team.id) }}">Edit</a>
-                    </td>
-                    <td>
-                        <a href="{{ url_for('ca.delete_team', id=team.id) }}">Delete</a>
-                    </td>
-                </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('ca.get_team', team_id=team.id) }}">{{ team.name }}</a>
+                            </td>
+                            <td>{{ team.description }}</td>
+                            <td>{{ team.email }}</td>
+                            <td>{{ team.telephone }}</td>
+                            <td>
+                                <a href="{{ url_for('ca.edit_team', team_id=team.id) }}">Edit</a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('ca.delete_team', team_id=team.id) }}">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <h3>No teams have been added</h3>
-    {% endif %}
-    <a href="{{ url_for('ca.add_team') }}">Add Team</a>
+            </table>
+        {% else %}
+            <h3>No teams have been added</h3>
+        {% endif %}
+    </div>
 {% endblock %}

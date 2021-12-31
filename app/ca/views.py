@@ -84,10 +84,21 @@ def list_teams():
     # List all teams
     teams = Team.query.all()
 
-    return render_template('private/teams.html',
+    return render_template('private/teams/teams.html',
                            teams=teams,
                            member={'id': session['_user_id'], 'username': session['_username']},
                            title="Teams")
+
+
+@ca.route('/teams/team/<int:id>', methods=['GET', 'POST'])
+@login_required
+def get_team(id):
+    # Get a specific team
+    team = Team.query.get_or_404(id)
+
+    return render_template('private/teams/team.html', team=team,
+                           member={'id': session['_user_id'], 'username': session['_username']},
+                           title=team.name)
 
 
 @ca.route('/teams/add', methods=['GET', 'POST'])
@@ -108,7 +119,7 @@ def add_team():
         return redirect(url_for('ca.list_teams'))
 
     # Load Team template
-    return render_template('private/team.html',
+    return render_template('private/teams/add-team.html',
                            action="Add", add_team=add_team, form=form,
                            member={'id': session['_user_id'], 'username': session['_username']},
                            title="Add Team")
@@ -138,7 +149,7 @@ def edit_team(id):
     form.email.data = team.email
     form.telephone.data = team.telephone
 
-    return render_template('private/team.html', action="Edit",
+    return render_template('private/teams/add-team.html', action="Edit",
                            add_team=add_team, form=form, team=team,
                            member={'id': session['_user_id'], 'username': session['_username']},
                            title="Edit Team")

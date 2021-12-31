@@ -15,7 +15,9 @@
             <tbody>
                 {% for team in teams %}
                 <tr>
-                    <td>{{ team.name }}</td>
+                    <td>
+                        <a href="{{ url_for('ca.get_team', id=team.id) }}">{{ team.name }}</a>
+                    </td>
                     <td>{{ team.description }}</td>
                     <td>{{ team.email }}</td>
                     <td>{{ team.telephone }}</td>

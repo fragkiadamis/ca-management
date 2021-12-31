@@ -13,5 +13,5 @@ def ca_home():
 @ca.route('/dashboard')
 @login_required
 def dashboard():
-    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'role': session['_user_role']}
+    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/dashboard.html', user=sess_user, title="Dashboard")

@@ -3,25 +3,27 @@ from flask_login import login_required
 
 from .. import ca
 from .forms import ProfileForm, BooleanForm
-from app.ca.members.model import Member
+from app.models.member import Member
+from ...decorators import permissions_required
 
 
 @ca.route('/members', methods=['GET', 'POST'])
 @login_required
 def list_members():
     display = request.args.get('display')
-    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'role': session['_user_role']}
 
     # Filter Members according to url parameter
-    members = Member.filter_members(display)
+    # TODO implement filters for basic users
+    members = Member.filter_members(display, session['_user_roles'])
 
+    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/members.html', boolean_form=BooleanForm(), user=sess_user, members=members, title='Members', display=display)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])
 @login_required
 def profile(member_id):
-    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'role': session['_user_role']}
+    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
 
     form = ProfileForm()
     member = Member.query.get_or_404(member_id)
@@ -40,6 +42,7 @@ def profile(member_id):
 
 @ca.route('/status/<int:member_id>', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'CA Admin'])
 def toggle_status(member_id):
     form = BooleanForm()
     if form.validate_on_submit():
@@ -52,6 +55,7 @@ def toggle_status(member_id):
 
 @ca.route('/verify/<int:member_id>', methods=['POST'])
 @login_required
+@permissions_required(['Admin', 'CA Admin'])
 def verify(member_id):
     form = BooleanForm()
     if form.validate_on_submit():

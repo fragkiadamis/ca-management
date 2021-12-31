@@ -23,11 +23,11 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='current') }}">Current
                             Members</a></li>
-                        {% if user.role == 'admin' %}
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='pending') }}">Pending
-                                Members</a></li>
-                            <li>
-                        {% endif %}
+{#                        {% if user.role == 'admin' %}#}
+{#                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='pending') }}">Pending#}
+{#                                Members</a></li>#}
+{#                            <li>#}
+{#                        {% endif %}#}
                         <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='active') }}">Active
@@ -64,7 +64,7 @@
                         <th scope="col">Last Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Status</th>
-                        {% if user.role == 'ca_admin' or user.role == 'admin' %}
+                        {% if 'Admin' in user.roles or 'CA Admin' in user.roles %}
                             <th scope="col">Actions</th>
                         {% endif %}
                     </tr>
@@ -81,7 +81,7 @@
                                     {{ 'Active' if member['is_active'] else 'Inactive' }}
                                 </span>
                             </td>
-                            {% if user.role == 'ca_admin' or user.role == 'admin' %}
+                            {% if 'Admin' in user.roles or 'CA Admin' in user.roles %}
                                 <td>
                                     {% if not member['is_verified'] %}
                                         <form class="d-inline-block" action="{{ url_for('ca.verify', member_id=member['id'], display=display) }}" method="post">

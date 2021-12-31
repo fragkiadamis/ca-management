@@ -1,10 +1,11 @@
-from flask_login import UserMixin
+from flask_login import UserMixin, login_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
+from .role import Role
 
 
-class Member(UserMixin, db.Model):
+class Member(db.Model, UserMixin):
     __tablename__ = 'members'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
@@ -12,7 +13,7 @@ class Member(UserMixin, db.Model):
     last_name = db.Column(db.String(60), nullable=False)
     username = db.Column(db.String(60), unique=True, nullable=False)
     email = db.Column(db.String(60), unique=True, nullable=False)
-    role = db.Column(db.String(60), nullable=False, default='basic')
+    roles = db.relationship('Role', secondary='member_roles')
     password_hash = db.Column(db.String(255), nullable=False)
     telephone = db.Column(db.String(60), unique=True, nullable=False)
     semester = db.Column(db.String(60), nullable=False)
@@ -34,6 +35,23 @@ class Member(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    @staticmethod
+    def insert_member(form):
+        member_exists = db.session.query(Member).first()
+
+        ca_number = ''
+        if not member_exists:
+            ca_number = 'ca1'
+
+        member = Member(
+            first_name=form.first_name.data, last_name=form.last_name.data, username=form.username.data,
+            email=form.email.data, password=form.password.data, telephone=form.telephone.data, semester=form.semester.data,
+            uni_reg_number=form.uni_reg_number.data, city=form.city.data, address=form.address.data, ca_reg_number=ca_number
+        )
+
+        db.session.add(member)
+        db.session.commit()
+
     def update_data(self, form):
         if form.password.data:
             self.password = form.password.data
@@ -44,10 +62,6 @@ class Member(UserMixin, db.Model):
         self.telephone = form.telephone.data
         self.city = form.city.data
         self.address = form.address.data
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
         db.session.commit()
 
     def toggle_status(self, form):
@@ -62,8 +76,20 @@ class Member(UserMixin, db.Model):
         self.is_verified = self.is_active = 1
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @staticmethod
-    def filter_members(display):
+    def verify_login(form):
+        member = Member.query.filter_by(email=form.email.data).first()
+        if (not member.verify_password(form.password.data)) or (member is None) or (not member.is_verified) or (not member.is_active):
+            return None
+        return member
+
+    @staticmethod
+    # TODO implement filters for basic users
+    def filter_members(display, user_roles):
         if display == 'pending':
             return {'Pending': Member.query.filter(Member.is_verified == 0)}
         elif display == 'active':

@@ -3,7 +3,7 @@ from wtforms import PasswordField, StringField, SubmitField, ValidationError, In
     SelectMultipleField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo
 
-from ..models import Member, Team, Activity, Announcement
+from ..models import Member, Team, Activity, Announcement, File
 
 
 class ProfileForm(FlaskForm):
@@ -18,6 +18,17 @@ class ProfileForm(FlaskForm):
     address = StringField('Address', validators=[DataRequired()])
     confirm_changes = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Update')
+
+
+class FileForm(FlaskForm):
+    name = StringField('File Name', validators=[DataRequired()])
+    path = StringField('Path', validators=[DataRequired()])
+    type = StringField('Type', validators=[DataRequired()])
+    submit = SubmitField('Upload')
+
+    def validate_name(self, field):
+        if File.query.filter_by(name=field.data).first():
+            raise ValidationError('Name is already in use')
 
 
 class TeamForm(FlaskForm):

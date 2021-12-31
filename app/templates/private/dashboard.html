@@ -1,70 +1,91 @@
 {% extends "main.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block body %}
-    <a href="{{ url_for('ca.add_file') }}">Add File</a>
-    {% if files %}
-        <h1>{{ files.title }}</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Path</th>
-                    <th>Type</th>
-                </tr>
-            </thead>
-            <tbody>
+    <h1 style="text-align: center"><b>Files</b></h1>
+    <div class="float-end py-3">
+        <form class="d-flex">
+            <button class="btn btn-outline-primary" type="button" >
+                <a href="{{ url_for('ca.add_file') }}" style="text-decoration: none;">Add File</a>
+            </button>
+        </form>
+    </div>
+    <div class="container-fluid">
+        {% if files %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Path</th>
+                        <th scope="col">Type</th>
+                    </tr>
+                </thead>
                 {% for file in files %}
-                <tr>
-                    <td>
-{#                        <a href="{{ url_for('ca.get_team', id=team.id) }}">{{ team.name }}</a>#}
-                        {{ file.name }}
-                    </td>
-                    <td>{{ file.path }}</td>
-                    <td>{{ file.type }}</td>
-{#                    <td>#}
-{#                        <a href="{{ url_for('ca.edit_file', file_id=file.id) }}">Edit</a>#}
-{#                    </td>#}
-{#                    <td>#}
-{#                        <a href="{{ url_for('ca.delete_file', file_id=file.id) }}">Delete</a>#}
-{#                    </td>#}
-                </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('ca.get_file', file_id=file.id) }}">{{ file.name }}</a>
+                            </td>
+                            <td>{{ file.path }}</td>
+                            <td>{{ file.type }}</td>
+                            <td>
+                                <form>
+                                    <label for="myfile">Select a file:</label>
+                                    <input type="file" id="myfile" name="myfile"><br><br>
+                                </form>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('ca.edit_file', file_id=file.id) }}">Edit</a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('ca.delete_file', file_id=file.id) }}">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <h3>No files have been uploaded yet</h3>
-    {% endif %}
-    <a href="{{ url_for('ca.add_announcement') }}">Add Announcement</a>
-    {% if announcements %}
-        <h1>{{ announcements.title }}</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Created on</th>
-                </tr>
-            </thead>
-            <tbody>
+            </table>
+        {% else %}
+            <h3>No files have been uploaded yet</h3>
+        {% endif %}
+    </div>
+    <hr/>
+    <h1 style="text-align: center"><b>Announcements</b></h1>
+    <div class="float-end py-3">
+        <form class="d-flex">
+            <button class="btn btn-outline-primary" type="button" >
+                <a href="{{ url_for('ca.add_announcement') }}" style="text-decoration: none;">Add Announcement</a>
+            </button>
+        </form>
+    </div>
+    <div class="container-fluid">
+        {% if announcements %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Date Created</th>
+                    </tr>
+                </thead>
                 {% for announcement in announcements %}
-                <tr>
-                    <td>
-{#                        <a href="{{ url_for('ca.get_team', id=team.id) }}">{{ team.name }}</a>#}
-                        {{ announcement.title }}
-                    </td>
-                    <td>{{ announcement.description }}</td>
-                    <td>{{ announcement.createDate }}</td>
-                    <td>
-                        <a href="{{ url_for('ca.edit_announcement', announcement_id=announcement.id) }}">Edit</a>
-                    </td>
-                    <td>
-                        <a href="{{ url_for('ca.delete_announcement', announcement_id=announcement.id) }}">Delete</a>
-                    </td>
-                </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('ca.get_announcement', announcement_id=announcement.id) }}">{{ announcement.title }}</a>
+                            </td>
+                            <td>{{ announcement.description }}</td>
+                            <td>{{ announcement.createDate }}</td>
+                            <td>
+                                <a href="{{ url_for('ca.edit_announcement', announcement_id=announcement.id) }}">Edit</a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('ca.delete_announcement', announcement_id=announcement.id) }}">Delete</a>
+                            </td>
+                        </tr>
+                </tbody>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <h3>No announcements have been uploaded yet</h3>
-    {% endif %}
+            </table>
+        {% else %}
+            <h3>No announcements have been uploaded yet</h3>
+        {% endif %}
+    </div>
 {% endblock %}

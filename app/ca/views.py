@@ -2,7 +2,7 @@ from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
 
 from . import ca
-from .forms import ProfileForm, TeamForm, ActivityForm, AnnouncementForm
+from .forms import ProfileForm, TeamForm, ActivityForm, AnnouncementForm, FileForm
 from .. import db
 from ..models import Member, Team, File, Activity, Announcement
 
@@ -26,28 +26,67 @@ def list_files():
                            title="Dashboard")
 
 
+@ca.route('/dashboard/files/<int:file_id>', methods=['GET', 'POST'])
+@login_required
+def get_file(file_id):
+    file = File.query.get_or_404(file_id)
+
+    return render_template('private/dashboard.html',
+                           member={'id': session['_user_id'], 'username': session['_username']},
+                           file=file)
+
+
 @ca.route('/dashboard/files/add', methods=['GET', 'POST'])
 @login_required
 def add_file():
     # Add a file
     add_file = True
 
-    # form = FileForm()
-    # if form.validate_on_submit():
-    #     file = File(name=form.name.data, path=form.path.data, type=form.type.data)
-    #     # Add file to database
-    #     db.session.add(file)
-    #     db.session.commit()
-    #     flash('You have successfully added a new file.')
-    #
-    #     # redirect to dashboard
-    #     return redirect(url_for('ca.dashboard'))
-    #
-    # # Load Team template
-    # return render_template('private/dashboard/add-file.html',
-    #                        action="Add", add_file=add_file, form=form,
-    #                        member={'id': session['_user_id'], 'username': session['_username']},
-    #                        title="Add File")
+    form = FileForm()
+    if form.validate_on_submit():
+        file = File(name=form.name.data, path=form.path.data, type=form.type.data)
+        # Add file to database
+        db.session.add(file)
+        db.session.commit()
+        flash('You have successfully added a new file.')
+
+        # redirect to dashboard
+        return redirect(url_for('ca.list_files'))
+
+    # Load Team template
+    return render_template('private/file-actions.html',
+                           action="Add", add_file=add_file, form=form,
+                           member={'id': session['_user_id'], 'username': session['_username']},
+                           title="Add File")
+
+
+@ca.route('/dashboard/files/edit/<int:file_id>', methods=['GET', 'POST'])
+@login_required
+def edit_file(file_id):
+
+    add_file = False
+
+    file = File.query.get_or_404(file_id)
+    form = FileForm(obj=file)
+    if form.validate_on_submit():
+        file.name = form.name.data
+        file.path = form.path.data
+        file.type = form.type.data
+        db.session.commit()
+        flash('You have successfully edited the file.')
+
+        # Redirect to announcements page
+        return redirect(url_for('ca.list_files'))
+
+    form.name.data = file.name
+    form.path.data = file.path
+    form.type.data = file.type
+
+    return render_template('private/file-actions.html', action="Edit",
+                           add_file=add_file, form=form, file=file,
+                           member={'id': session['_user_id'], 'username': session['_username']},
+                           title="Edit File")
+
 
 
 @ca.route('/dashboard/files/delete/<int:file_id>', methods=['GET', 'POST'])

@@ -19,7 +19,7 @@ def create_app(config_name):
     login_manager.login_view = "public.homepage"
     migrate = Migrate(app, db)
 
-    from app.models import member
+    from app import models
 
     # from .ca import ca as admin_blueprint
     from .ca import ca as ca_blueprint

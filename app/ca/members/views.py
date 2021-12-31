@@ -3,7 +3,7 @@ from flask_login import login_required
 
 from .. import ca
 from .forms import ProfileForm, BooleanForm
-from app.models.member import Member
+from app.models import Member
 from ...decorators import permissions_required
 
 

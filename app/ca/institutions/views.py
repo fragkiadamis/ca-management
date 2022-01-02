@@ -2,7 +2,7 @@ from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
 
 from .. import ca
-from .forms import UniEntityForm
+from .forms import UniversityEntityForm
 from app.models import Department, Institution, School
 from ... import db
 from ...decorators import permissions_required
@@ -11,8 +11,8 @@ from ...decorators import permissions_required
 @ca.route('/institutions', methods=['GET', 'POST'])
 @login_required
 # @permissions_required('Admin')
-def institutions():
-    form = UniEntityForm()
+def all_institutions():
+    form = UniversityEntityForm()
     if form.validate_on_submit():
         institution = Institution(name=form.name.data, abbreviation=form.abbreviation.data)
         db.session.add(institution)
@@ -23,11 +23,11 @@ def institutions():
     return render_template('private/institutions.html', institutions=institutions, form=form, user=sess_user, title='Institutions')
 
 
-@ca.route('/institutions/<int:institution_id>', methods=['GET', 'POST'])
+@ca.route('/institutions/<int:institution_id>/schools', methods=['GET', 'POST'])
 @login_required
 # @permissions_required('Admin')
-def schools(institution_id):
-    form = UniEntityForm()
+def schools_by_institution(institution_id):
+    form = UniversityEntityForm()
     if form.validate_on_submit():
         school = School(name=form.name.data, abbreviation=form.abbreviation.data, institution_id=institution_id)
         db.session.add(school)
@@ -38,11 +38,11 @@ def schools(institution_id):
     return render_template('private/schools.html', schools=schools, institution_id=institution_id, form=form, user=sess_user, title='Schools')
 
 
-@ca.route('/schools/<int:school_id>', methods=['GET', 'POST'])
+@ca.route('/schools/<int:school_id>/departments', methods=['GET', 'POST'])
 @login_required
 # @permissions_required('Admin')
-def departments(school_id):
-    form = UniEntityForm()
+def departments_by_school(school_id):
+    form = UniversityEntityForm()
     if form.validate_on_submit():
         department = Department(name=form.name.data, abbreviation=form.abbreviation.data, school_id=school_id)
         db.session.add(department)

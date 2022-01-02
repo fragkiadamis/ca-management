@@ -11,10 +11,6 @@ from app.models import Member, Role
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        ca_number = None
-        if not db.session.query(Member).first():
-            ca_number = 'ca1'
-
         member = Member(
             first_name=form.first_name.data, last_name=form.last_name.data, username=form.username.data,
             department_id=form.department.data, email=form.email.data, password=form.password.data,

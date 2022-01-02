@@ -24,7 +24,7 @@
                 {% for institution in institutions %}
                     <tr id="{{ institution['id'] }}">
                         <td>
-                            <a href="{{ url_for('ca.schools', institution_id=institution['id']) }}">{{ institution['name'] }}</a>
+                            <a href="{{ url_for('ca.schools_by_institution', institution_id=institution['id']) }}">{{ institution['name'] }}</a>
                         </td>
                         <td>{{ institution['abbreviation'] }}</td>
                         <td>{{ institution['member_count'] }}</td>
@@ -51,7 +51,7 @@
                     <h5 class="modal-title" id="editModalLabel">Add Institution</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="post" action="{{ url_for('ca.institutions') }}">
+                <form method="post" action="{{ url_for('ca.all_institutions') }}">
                     {{ form.csrf_token() }}
                     <div class="modal-body">
                         {{ render_field(form.name) }}

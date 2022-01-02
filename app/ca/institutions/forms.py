@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
 
-class UniEntityForm(FlaskForm):
+class UniversityEntityForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     abbreviation = StringField('Abbreviation')
     submit = SubmitField('Add')

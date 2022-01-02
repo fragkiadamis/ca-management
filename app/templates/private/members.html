@@ -96,9 +96,6 @@
                                             {{ boolean_form.submit(class="btn btn-link text-danger", value="Deny") }}
                                         </form>
                                     {% else %}
-                                        {#<button type="button" class="btn btn-link" data-bs-toggle="modal"#}
-                                        {#data-bs-target="#memberModal"> View#}
-                                        {#</button>#}
                                         <form action="{{ url_for('ca.toggle_status', member_id=member['id'], display=display) }}" method="post">
                                             {{ boolean_form.csrf_token() }}
                                             {{ boolean_form.status(class="d-none", checked=False if member['is_active'] else True) }}
@@ -114,5 +111,4 @@
             {% endif %}
         {% endfor %}
     </div>
-    {% include "partials/private/member_modal.html" %}
 {% endblock %}

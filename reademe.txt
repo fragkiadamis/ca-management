@@ -1,0 +1,1 @@
+CREATE DATABASE ca_db DEFAULT CHARACTER SET greek COLLATE greek_general_ci;

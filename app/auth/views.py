@@ -11,7 +11,19 @@ from app.models import Member, Role
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        Member.insert_member(form)
+        ca_number = None
+        if not db.session.query(Member).first():
+            ca_number = 'ca1'
+
+        member = Member(
+            first_name=form.first_name.data, last_name=form.last_name.data, username=form.username.data,
+            department_id=form.department.data, email=form.email.data, password=form.password.data,
+            telephone=form.telephone.data, uni_reg_number=form.uni_reg_number.data,
+            city=form.city.data, address=form.address.data, ca_reg_number=ca_number
+        )
+
+        db.session.add(member)
+        db.session.commit()
 
         flash('You have successfully registered! You may now login.')
         # redirect to the login page
@@ -26,8 +38,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
 
-        member = Member.verify_login(form)
-        if member:
+        member = Member.query.filter_by(email=form.email.data).first()
+        if member and member.verify_password(form.password.data) and member.is_verified and member.is_active:
             login_user(member, form.remember_me.data)
             session['_username'] = member.username
             session['_user_roles'] = []

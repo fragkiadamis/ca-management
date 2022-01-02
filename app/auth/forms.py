@@ -3,6 +3,7 @@ from wtforms import PasswordField, StringField, SubmitField, ValidationError, In
 from wtforms.validators import DataRequired, Email, EqualTo
 
 from app.models import Member
+from app.models import Department
 
 
 class RegistrationForm(FlaskForm):
@@ -20,11 +21,13 @@ class RegistrationForm(FlaskForm):
     uni_reg_number = StringField('University Registration Number', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     address = StringField('Address', validators=[DataRequired()])
-    department = SelectField('Department', validators=[DataRequired()],
-                             choices=[('1', 'ΕΠΠ'), ('2', 'ΗΜΜΥ'), ('3', 'Μηχανολογία')])
-    teams = SelectMultipleField('Team', validators=[DataRequired()],
-                       choices=[('1', 'Studio FM1'), ('2', 'Θεατρική'), ('3', 'Software')])
+    department = SelectField('Department', validators=[DataRequired()])
+    teams = SelectMultipleField('Team', validators=[DataRequired()], choices=[('1', 'Studio FM1'), ('2', 'Θεατρική'), ('3', 'Software')])
     submit = SubmitField('Register')
+
+    def __init__(self):
+        super(RegistrationForm, self).__init__()
+        self.department.choices = [(d.id, d.name) for d in Department.query.all()]
 
     def validate_email(self, field):
         if Member.query.filter_by(email=field.data).first():

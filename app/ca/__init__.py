@@ -4,3 +4,4 @@ ca = Blueprint('ca', __name__)
 
 from . import views
 from . import members
+from . import institutions

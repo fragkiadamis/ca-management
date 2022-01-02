@@ -13,13 +13,12 @@ from ...decorators import permissions_required
 # @permissions_required('Admin')
 def institutions():
     form = UniEntityForm()
-    institutions = Institution.query.all()
-
     if form.validate_on_submit():
         institution = Institution(name=form.name.data, abbreviation=form.abbreviation.data)
         db.session.add(institution)
         db.session.commit()
 
+    institutions = Institution.query.all()
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/institutions.html', institutions=institutions, form=form, user=sess_user, title='Institutions')
 
@@ -29,13 +28,12 @@ def institutions():
 # @permissions_required('Admin')
 def schools(institution_id):
     form = UniEntityForm()
-    schools = School.query.filter_by(institution_id=institution_id).all()
-
     if form.validate_on_submit():
         school = School(name=form.name.data, abbreviation=form.abbreviation.data, institution_id=institution_id)
         db.session.add(school)
         db.session.commit()
 
+    schools = School.query.filter_by(institution_id=institution_id).all()
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/schools.html', schools=schools, institution_id=institution_id, form=form, user=sess_user, title='Schools')
 
@@ -45,12 +43,11 @@ def schools(institution_id):
 # @permissions_required('Admin')
 def departments(school_id):
     form = UniEntityForm()
-    departments = Department.query.filter_by(school_id=school_id).all()
-
     if form.validate_on_submit():
         department = Department(name=form.name.data, abbreviation=form.abbreviation.data, school_id=school_id)
         db.session.add(department)
         db.session.commit()
 
+    departments = Department.query.filter_by(school_id=school_id).all()
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/departments.html', departments=departments, school_id=school_id, form=form, user=sess_user, title='Departments')

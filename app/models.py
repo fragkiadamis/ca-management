@@ -83,7 +83,7 @@ class School(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
     description = db.Column(db.String(60))
-    departments = db.relationship("Department")
+    departments = db.relationship("Department", cascade="all, delete-orphan")
 
     @property
     def member_count(self):
@@ -98,7 +98,7 @@ class Department(db.Model):
     __tablename__ = 'departments'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(60), nullable=False)
+    name = db.Column(db.String(60), nullable=False, unique=True)
     description = db.Column(db.String(60))
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))
     members = db.relationship("Member")

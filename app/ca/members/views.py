@@ -3,7 +3,7 @@ from flask_login import login_required
 
 from .. import ca
 from .forms import ProfileForm, EditMemberForm
-from app.models import Member, Roles, MemberRoles
+from app.models import Member, Roles, MemberRoles, Team
 from ... import db
 from ...decorators import permissions_required, is_this_user
 
@@ -102,6 +102,9 @@ def edit_member(member_id):
         member.roles = []
         for role_id in form.roles.data:
             member.roles.append(Roles.query.get_or_404(role_id))
+        member.teams = []
+        for team_id in form.teams.data:
+            member.teams.append(Team.query.get_or_404(team_id))
 
         db.session.commit()
         flash('You have successfully updated the member\'s profile.')

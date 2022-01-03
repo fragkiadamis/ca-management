@@ -52,6 +52,12 @@
                         {% endif %}
                     </fieldset>
                     <fieldset>
+                        <legend>Teams</legend>
+                        {% if form.teams %}
+                            {{ render_mul_select_field_with_values(form.teams, member['teams']) }}
+                        {% endif %}
+                    </fieldset>
+                    <fieldset>
                         <legend>Confirm Changes with Password</legend>
                         {{ render_field(form.confirm_changes) }}
                     </fieldset>

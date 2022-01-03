@@ -1,4 +1,4 @@
-from flask_login import UserMixin, login_user
+from flask_login import UserMixin
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -63,11 +63,15 @@ class Team(db.Model):
     __tablename__ = 'teams'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(60), nullable=False)
-    # teamMembers = db.Column()
+    name = db.Column(db.String(60), nullable=False, unique=True)
     description = db.Column(db.String(60), nullable=False)
-    email = db.Column(db.String(60), unique=True, nullable=False)
-    telephone = db.Column(db.String(60), unique=True, nullable=False)
+    email = db.Column(db.String(60), unique=True)
+    telephone = db.Column(db.String(60), unique=True)
+    members = db.relationship('Member', secondary='member_teams')
+
+    @property
+    def member_count(self):
+        return len(self.members)
 
 
 class MemberTeams(db.Model):
@@ -83,7 +87,7 @@ class File(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
-    path = db.Column(db.String(60), nullable=False)
+    path = db.Column(db.String(60), nullable=False, unique=True)
     type = db.Column(db.String(60), nullable=False)
 
 
@@ -104,8 +108,8 @@ class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     title = db.Column(db.String(60), nullable=False)
     description = db.Column(db.String(60), nullable=False)
-    createDate = db.Column(db.Date, nullable=True)
-    activityDate = db.Column(db.Date, nullable=True)
+    createDate = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    activityDate = db.Column(db.DateTime(timezone=True), nullable=False)
 
 
 class School(db.Model):

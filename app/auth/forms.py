@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, ValidationError, IntegerField, SelectField, SelectMultipleField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo
 
-from app.models import Member
+from app.models import Member, Team
 from app.models import Department
 
 
@@ -22,12 +22,13 @@ class RegistrationForm(FlaskForm):
     city = StringField('City', validators=[DataRequired()])
     address = StringField('Address', validators=[DataRequired()])
     department = SelectField('Department', validators=[DataRequired()])
-    teams = SelectMultipleField('Team', validators=[DataRequired()], choices=[('1', 'Studio FM1'), ('2', 'Θεατρική'), ('3', 'Software')])
+    teams = SelectMultipleField('Team', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Register')
 
     def __init__(self):
         super(RegistrationForm, self).__init__()
         self.department.choices = [(d.id, d.name) for d in Department.query.all()]
+        self.teams.choices = [(t.id, t.name) for t in Team.query.all()]
 
     def validate_email(self, field):
         if Member.query.filter_by(email=field.data).first():

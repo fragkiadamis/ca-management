@@ -19,6 +19,21 @@
     </div>
 {% endmacro %}
 
+{% macro render_mul_select_field_with_values(field, values) %}
+    <div class="mb-3">
+        <select name="{{ field.name }}" id="{{ field.id }}" class="form-control mb-3" multiple required>
+            {% for option in field.choices %}
+                <option value="{{ option[0] }}" {% for v in values %}{{ 'selected' if v.id == option[0] }}{% endfor %}>{{ option[1] }}</option>
+            {% endfor %}
+        </select>
+        {{ field.label(class='d-none') }}
+        <span>You can select multiple roles by holding the <b>Ctrl</b> key</span>
+        {% if field.errors %}
+            <div class="text-danger">{{ field.errors[0] }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
 {% macro render_field_with_value(field, value) %}
     <div class="form-floating mb-3">
         {% if field.choices %}

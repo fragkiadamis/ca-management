@@ -2,10 +2,10 @@ from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
 
 from .. import ca
-from .forms import ProfileForm, BooleanForm
-from app.models import Member
+from .forms import ProfileForm, EditMemberForm
+from app.models import Member, Roles, MemberRoles
 from ... import db
-from ...decorators import permissions_required
+from ...decorators import permissions_required, is_this_user
 
 
 @ca.route('/members', methods=['GET', 'POST'])
@@ -43,11 +43,12 @@ def list_members():
         members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1)}
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/members.html', boolean_form=BooleanForm(), user=sess_user, members=members, title='Members', display=display)
+    return render_template('private/members.html', user=sess_user, members=members, title='Members', display=display)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])
 @login_required
+@is_this_user
 def profile(member_id):
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
 
@@ -60,7 +61,6 @@ def profile(member_id):
             return render_template('private/profile.html', form=form, user=sess_user, title='Profile')
 
         # Update member properties
-
         if form.password.data:
             member.password = form.password.data
         member.first_name = form.first_name.data
@@ -74,6 +74,41 @@ def profile(member_id):
         flash('You have successfully updated your profile.')
 
     return render_template('private/profile.html', form=form, member=member, user=sess_user, title='Profile')
+
+
+@ca.route('/members/edit/<int:member_id>', methods=['GET', 'POST'])
+@login_required
+def edit_member(member_id):
+    form = EditMemberForm()
+    member = Member.query.get_or_404(member_id)
+    title = f'Profile: {member.first_name} {member.last_name}, {member.ca_reg_number}'
+
+    if form.validate_on_submit():
+        if not member.verify_password(form.confirm_changes.data):
+            flash('Invalid Password')
+            return redirect(url_for('ca.edit_member', member_id=member_id))
+
+        if form.password.data:
+            member.password = form.password.data
+        member.first_name = form.first_name.data
+        member.last_name = form.last_name.data
+        member.username = form.username.data
+        member.email = form.email.data
+        member.telephone = form.telephone.data
+        member.city = form.city.data
+        member.address = form.address.data
+        member.ca_reg_number = form.ca_reg_number.data
+        member.department_id = form.department.data
+        member.roles = []
+        for role_id in form.roles.data:
+            member.roles.append(Roles.query.get_or_404(role_id))
+
+        db.session.commit()
+        flash('You have successfully updated the member\'s profile.')
+        return redirect(url_for('ca.list_members'))
+
+    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
+    return render_template('private/profile.html', form=form, member=member, user=sess_user, title=title)
 
 
 @ca.route('/status/<int:member_id>')

@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired
 from app.models import School
 
 
-class uniEntityForm(FlaskForm):
+class UniEntityForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     description = StringField('Description')
     submit = SubmitField('Add School')
@@ -14,9 +14,9 @@ class uniEntityForm(FlaskForm):
 class EditDepartmentForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     description = StringField('Description')
-    schools = SelectField('Department', validators=[DataRequired()])
+    schools = SelectField('School', validators=[DataRequired()])
     submit = SubmitField('Add Department')
 
     def __init__(self):
         super(EditDepartmentForm, self).__init__()
-        self.schools.choices = [(d.id, d.name) for d in School.query.all()]
+        self.schools.choices = [(s.id, s.name) for s in School.query.all()]

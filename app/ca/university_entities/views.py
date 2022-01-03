@@ -2,7 +2,7 @@ from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
 
 from .. import ca
-from .forms import uniEntityForm, EditDepartmentForm
+from .forms import UniEntityForm, EditDepartmentForm
 from app.models import Department, School
 from ... import db
 from ...decorators import permissions_required
@@ -21,7 +21,7 @@ def list_schools():
 @login_required
 # @permissions_required('Admin')
 def add_school():
-    form = uniEntityForm()
+    form = UniEntityForm()
     if form.validate_on_submit():
         school = School(name=form.name.data, description=form.description.data)
         db.session.add(school)
@@ -37,7 +37,7 @@ def add_school():
 @login_required
 # @permissions_required('Admin')
 def edit_school(school_id):
-    form = uniEntityForm()
+    form = UniEntityForm()
     school = School.query.get_or_404(school_id)
     if form.validate_on_submit():
         school.name = form.name.data
@@ -77,7 +77,7 @@ def list_departments(school_id):
 @login_required
 # @permissions_required('Admin')
 def add_department(school_id):
-    form = uniEntityForm()
+    form = UniEntityForm()
     if form.validate_on_submit():
         department = Department(name=form.name.data, description=form.description.data, school_id=school_id)
         db.session.add(department)

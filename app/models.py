@@ -77,37 +77,20 @@ class MemberTeams(db.Model):
     team_id = db.Column(db.Integer(), db.ForeignKey('teams.id', ondelete='CASCADE'))
 
 
-class Institution(db.Model):
-    __tablename__ = 'institutions'
-
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(60), nullable=False)
-    abbreviation = db.Column(db.String(60), nullable=False)
-    schools = db.relationship("School")
-
-    @property
-    def member_count(self):
-        count = 0
-        for school in self.schools:
-            for department in school.departments:
-                count += len(department.members)
-        return count
-
-
 class School(db.Model):
     __tablename__ = 'schools'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
-    abbreviation = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60), nullable=False)
     departments = db.relationship("Department")
-    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'))
 
     @property
     def member_count(self):
         count = 0
         for department in self.departments:
-            count += len(department.members)
+            verified_members = filter(lambda member: member.is_verified, department.members)
+            count += len(list(verified_members))
         return count
 
 
@@ -116,7 +99,6 @@ class Department(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
-    abbreviation = db.Column(db.String(60), nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))
     members = db.relationship("Member")
 

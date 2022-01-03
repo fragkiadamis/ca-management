@@ -4,36 +4,38 @@
 {% block body %}
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <h1 class="">{{ title }}</h1>
+            <h1 class="">{{ school['name'] if school }} {{ title }}</h1>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
-                Add
+                Add {{ title }}
             </button>
         </div>
-        {% if schools %}
+        {% if uni_entities %}
             <hr class="intro-divider">
             <table class="table table-hover">
                 <thead>
                 <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Abbreviation</th>
+                    <th scope="col">Description</th>
                     <th scope="col">Member Count</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for school in schools %}
-                    <tr id="{{ school['id'] }}">
+                {% for entry in uni_entities %}
+                    <tr id="{{ entry['id'] }}">
                         <td>
-                            <a href="{{ url_for('ca.departments_by_school', school_id=school['id']) }}">{{ school['name'] }}</a>
+                            {% if department_list %}
+                                <a href="{{ url_for(department_list, school_id=entry['id']) }}">{{ entry['name'] }}</a>
+                            {% else %}
+                                {{ entry['name'] }}
+                            {% endif %}
                         </td>
-                        <td>{{ school['abbreviation'] }}</td>
-                        <td>{{ school['member_count'] }}</td>
+                        <td>{{ entry['description'] }}</td>
+                        <td>{{ entry['member_count'] }}</td>
                         <td>
-                            <a href="">Members</a>
-                            |
-                            <a href="">Edit</a>
-                            |
-                            <a href="">Delete</a>
+                            <a href="" class="px-1">Members</a>
+                            <a href="" class="px-1">Edit</a>
+                            <a href="" class="px-1">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -51,11 +53,10 @@
                     <h5 class="modal-title" id="editModalLabel">Add School</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="post" action="{{ url_for('ca.schools_by_institution', institution_id=institution_id) }}">
+                <form method="post" action="{{ url_for(add_entity, school_id=school['id']) if school else url_for(add_entity) }}">
                     {{ form.csrf_token() }}
                     <div class="modal-body">
                         {{ render_field(form.name) }}
-                        {{ render_field(form.abbreviation) }}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

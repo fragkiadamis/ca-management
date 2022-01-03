@@ -24,9 +24,9 @@
                         <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='current') }}">Current
                             Members</a></li>
 {#                        {% if user.role == 'admin' %}#}
-{#                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='pending') }}">Pending#}
-{#                                Members</a></li>#}
-{#                            <li>#}
+                            <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='pending') }}">Pending
+                                Members</a></li>
+                            <li>
 {#                        {% endif %}#}
                         <hr class="dropdown-divider">
                         </li>
@@ -64,9 +64,9 @@
                         <th scope="col">Last Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Status</th>
-                        {% if 'Admin' in user.roles or 'CA Admin' in user.roles %}
+{#                        {% if 'Admin' in user.roles or 'CA Admin' in user.roles %}#}
                             <th scope="col">Actions</th>
-                        {% endif %}
+{#                        {% endif %}#}
                     </tr>
                     </thead>
                     <tbody>
@@ -81,7 +81,7 @@
                                     {{ 'Active' if member['is_active'] else 'Inactive' }}
                                 </span>
                             </td>
-                            {% if 'Admin' in user.roles or 'CA Admin' in user.roles %}
+{#                            {% if 'Admin' in user.roles or 'CA Admin' in user.roles %}#}
                                 <td>
                                     {% if not member['is_verified'] %}
                                         <form class="d-inline-block" action="{{ url_for('ca.verify', member_id=member['id'], display=display) }}" method="post">
@@ -103,7 +103,7 @@
                                         </form>
                                     {% endif %}
                                 </td>
-                            {% endif %}
+{#                            {% endif %}#}
                         </tr>
                     {% endfor %}
                     </tbody>

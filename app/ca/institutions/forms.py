@@ -5,5 +5,5 @@ from wtforms.validators import DataRequired
 
 class UniversityEntityForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    abbreviation = StringField('Abbreviation')
+    description = StringField('Description')
     submit = SubmitField('Add')

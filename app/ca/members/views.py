@@ -78,7 +78,7 @@ def profile(member_id):
 
 @ca.route('/status/<int:member_id>', methods=['GET', 'POST'])
 @login_required
-@permissions_required(['Admin', 'CA Admin'])
+# @permissions_required(['Admin', 'CA Admin'])
 def toggle_status(member_id):
     form = BooleanForm()
     display = request.args.get('display')
@@ -93,7 +93,7 @@ def toggle_status(member_id):
 
 @ca.route('/verify/<int:member_id>', methods=['POST'])
 @login_required
-@permissions_required(['Admin', 'CA Admin'])
+# @permissions_required(['Admin', 'CA Admin'])
 def verify(member_id):
     form = BooleanForm()
     if form.validate_on_submit():

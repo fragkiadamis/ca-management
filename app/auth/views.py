@@ -15,7 +15,7 @@ def register():
             first_name=form.first_name.data, last_name=form.last_name.data, username=form.username.data,
             department_id=form.department.data, email=form.email.data, password=form.password.data,
             telephone=form.telephone.data, uni_reg_number=form.uni_reg_number.data,
-            city=form.city.data, address=form.address.data, ca_reg_number=ca_number
+            city=form.city.data, address=form.address.data
         )
 
         db.session.add(member)

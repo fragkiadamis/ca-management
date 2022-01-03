@@ -82,7 +82,7 @@ class School(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
-    description = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60))
     departments = db.relationship("Department")
 
     @property
@@ -99,6 +99,7 @@ class Department(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60))
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))
     members = db.relationship("Member")
 

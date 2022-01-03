@@ -11,6 +11,17 @@
         </div>
         {% if uni_entities %}
             <hr class="intro-divider">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div id="message" class="alert alert-danger" role="alert">
+                        <ul class=flashes>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
             <table class="table table-hover">
                 <thead>
                 <tr>
@@ -24,8 +35,8 @@
                 {% for entry in uni_entities %}
                     <tr id="{{ entry['id'] }}">
                         <td>
-                            {% if department_list %}
-                                <a href="{{ url_for(department_list, school_id=entry['id']) }}">{{ entry['name'] }}</a>
+                            {% if current_entity == 'schools' %}
+                                <a href="{{ url_for('ca.list_departments', school_id=entry['id']) }}">{{ entry['name'] }}</a>
                             {% else %}
                                 {{ entry['name'] }}
                             {% endif %}
@@ -35,7 +46,11 @@
                         <td>
                             <a href="" class="px-1">Members</a>
                             <a href="" class="px-1">Edit</a>
-                            <a href="" class="px-1">Delete</a>
+                            {% if current_entity == 'schools' %}
+                                <a href="{{ url_for('ca.delete_school', school_id=entry['id']) }}" class="px-1">Delete</a>
+                            {% elif current_entity == 'departments' %}
+                                <a href="{{ url_for('ca.delete_department', school_id=school['id'], department_id=entry['id']) }}" class="px-1">Delete</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -57,6 +72,7 @@
                     {{ form.csrf_token() }}
                     <div class="modal-body">
                         {{ render_field(form.name) }}
+                        {{ render_field(form.description) }}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -76,37 +76,33 @@ def profile(member_id):
     return render_template('private/profile.html', form=form, member=member, user=sess_user, title='Profile')
 
 
-@ca.route('/status/<int:member_id>', methods=['GET', 'POST'])
+@ca.route('/status/<int:member_id>')
 @login_required
 # @permissions_required(['Admin', 'CA Admin'])
 def toggle_status(member_id):
-    form = BooleanForm()
     display = request.args.get('display')
-
-    if form.validate_on_submit():
-        member = Member.query.get_or_404(member_id)
-        member.is_active = form.status.data
-        db.session.commit()
+    member = Member.query.get_or_404(member_id)
+    member.is_active = not member.is_active
+    db.session.commit()
 
     return redirect(url_for('ca.list_members', display=display))
 
 
-@ca.route('/verify/<int:member_id>', methods=['POST'])
+@ca.route('/verify/<int:member_id>')
 @login_required
 # @permissions_required(['Admin', 'CA Admin'])
 def verify(member_id):
-    form = BooleanForm()
-    if form.validate_on_submit():
-        member = Member.query.get_or_404(member_id)
-        if form.status.data:
-            # Get last verified member's ca reg number and increase it to one and assign to new verified member
-            last_member = Member.query.filter(Member.is_verified == 1).order_by(Member.id.desc()).first()
-            incremental = int(''.join(x for x in last_member.ca_reg_number if x.isdigit())) + 1
-            member.ca_reg_number = f'ca{incremental}'
-            member.is_verified = member.is_active = 1
-            db.session.commit()
-        else:
-            db.session.delete(member)
-            db.session.commit()
+    verify_member = request.args.get('verify')
+    member = Member.query.get_or_404(member_id)
+    if verify_member == 'Accept':
+        # Get last verified member's ca reg number and increase it to one and assign to new verified member
+        last_member = Member.query.filter(Member.is_verified == 1).order_by(Member.id.desc()).first()
+        incremental = int(''.join(x for x in last_member.ca_reg_number if x.isdigit())) + 1
+        member.ca_reg_number = f'ca{incremental}'
+        member.is_verified = member.is_active = 1
+        db.session.commit()
+    else:
+        db.session.delete(member)
+        db.session.commit()
 
     return redirect(url_for('ca.list_members', display='pending'))

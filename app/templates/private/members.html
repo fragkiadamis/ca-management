@@ -84,23 +84,12 @@
 {#                            {% if 'Admin' in user.roles or 'CA Admin' in user.roles %}#}
                                 <td>
                                     {% if not member['is_verified'] %}
-                                        <form class="d-inline-block" action="{{ url_for('ca.verify', member_id=member['id'], display=display) }}" method="post">
-                                            {{ boolean_form.csrf_token() }}
-                                            {{ boolean_form.status(class="d-none", checked=True) }}
-                                            {{ boolean_form.submit(class="btn btn-link text-success", value="Accept") }}
-                                        </form>
-                                        |
-                                        <form class="d-inline-block" action="{{ url_for('ca.verify', member_id=member['id'], display=display) }}" method="post">
-                                            {{ boolean_form.csrf_token() }}
-                                            {{ boolean_form.status(class="d-none", checked=False) }}
-                                            {{ boolean_form.submit(class="btn btn-link text-danger", value="Deny") }}
-                                        </form>
+                                        <a href="{{ url_for('ca.verify', member_id=member['id'], verify='Accept') }}" class="px-1">Accept</a>
+                                        <a href="{{ url_for('ca.verify', member_id=member['id'], verify='Deny') }}" class="px-1">Deny</a>
                                     {% else %}
-                                        <form action="{{ url_for('ca.toggle_status', member_id=member['id'], display=display) }}" method="post">
-                                            {{ boolean_form.csrf_token() }}
-                                            {{ boolean_form.status(class="d-none", checked=False if member['is_active'] else True) }}
-                                            {{ boolean_form.submit(class="btn btn-link", value="Deactivate" if member['is_active'] else "Activate") }}
-                                        </form>
+                                        <a href="{{ url_for('ca.toggle_status', member_id=member['id'], display=display) }}" class="px-1">
+                                            {{ "Deactivate" if member['is_active'] else "Activate" }}
+                                        </a>
                                     {% endif %}
                                 </td>
 {#                            {% endif %}#}

@@ -1,0 +1,12 @@
+{% extends "./main.html" %}
+{% block title %} {{ team.name }} {% endblock %}
+{% block body %}
+    <div class="py-5 text-center">
+        <h2>{{ team.name }}</h2>
+    </div>
+    <div>
+        <h3>
+            {{ team.description }}
+        </h3>
+    </div>
+{% endblock %}

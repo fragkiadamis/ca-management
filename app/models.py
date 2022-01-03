@@ -64,9 +64,10 @@ class Team(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
+    # teamMembers = db.Column()
     description = db.Column(db.String(60), nullable=False)
-    email = db.Column(db.String(60), unique=True, nullable=True)
-    telephone = db.Column(db.String(60), unique=True, nullable=True)
+    email = db.Column(db.String(60), unique=True, nullable=False)
+    telephone = db.Column(db.String(60), unique=True, nullable=False)
 
 
 class MemberTeams(db.Model):
@@ -75,6 +76,36 @@ class MemberTeams(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     member_id = db.Column(db.Integer(), db.ForeignKey('members.id', ondelete='CASCADE'))
     team_id = db.Column(db.Integer(), db.ForeignKey('teams.id', ondelete='CASCADE'))
+
+
+class File(db.Model):
+    __tablename__ = 'files'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    name = db.Column(db.String(60), nullable=False)
+    path = db.Column(db.String(60), nullable=False)
+    type = db.Column(db.String(60), nullable=False)
+
+
+class Announcement(db.Model):
+    __tablename__ = 'announcements'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    title = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60), nullable=False)
+    createDate = db.Column(db.Date, nullable=True)
+    # addedBy = db.Column()
+
+
+# Activities
+class Activity(db.Model):
+    __tablename__ = 'activities'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    title = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60), nullable=False)
+    createDate = db.Column(db.Date, nullable=True)
+    activityDate = db.Column(db.Date, nullable=True)
 
 
 class School(db.Model):

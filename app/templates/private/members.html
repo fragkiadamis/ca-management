@@ -1,4 +1,5 @@
 {% extends "./main.html" %}
+{% from "_macros.html" import render_field, render_field_with_value, render_messages %}
 {% block title %}Profile{% endblock %}
 {% block body %}
     <div class="bg-light clearfix p-3">
@@ -36,6 +37,7 @@
             </form>
         </div>
     </div>
+    {{ render_messages() }}
     {% for key in members %}
         {% if members[key] %}
             <h2>{{ key }} <b>Members</b></h2>

@@ -1,5 +1,5 @@
 {% extends "main.html" %}
-{% from "_macros.html" import render_field, render_field_with_value %}
+{% from "_macros.html" import render_field, render_field_with_value, render_mul_select_field, render_mul_select_field_with_values, render_messages %}
 {% block title %}Activity{% endblock %}
 {% block body %}
     <h2 class="h1">{{ title }}</h2>
@@ -10,6 +10,7 @@
             {{ render_field(form.title) }}
             {{ render_field(form.description) }}
             {{ render_field(form.activityDate) }}
+            {{ render_mul_select_field(form.teams) }}
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>
@@ -19,6 +20,7 @@
             {{ render_field_with_value(form.title, activity['title']) }}
             {{ render_field_with_value(form.description, activity['description']) }}
             {{ render_field_with_value(form.activityDate, activity['activityDate']) }}
+            {{ render_mul_select_field_with_values(form.teams, activity['teams']) }}
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>

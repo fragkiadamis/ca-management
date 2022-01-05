@@ -17,6 +17,7 @@
                 <th scope="col">Email</th>
                 <th scope="col">Telephone</th>
                 <th scope="col">Member Count</th>
+                <th scope="col">Activity Count</th>
                 <th scope="col">Actions</th>
             </tr>
             </thead>
@@ -28,6 +29,7 @@
                     <td>{{ team.email }}</td>
                     <td>{{ team.telephone }}</td>
                     <td>{{ team.member_count }}</td>
+                    <td>{{ team.activity_count }}</td>
                     <td>
                         <a href="{{ url_for('ca.edit_team', team_id=team.id) }}" class="px-1">Edit</a>
                         <a href="{{ url_for('ca.delete_team', team_id=team.id) }}" class="px-1">Delete</a>

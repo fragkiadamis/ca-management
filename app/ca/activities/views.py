@@ -5,7 +5,7 @@ from .forms import ActivityForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
-from ...models import Activity
+from ...models import Activity, Team
 
 
 @ca.route('/activities')
@@ -21,7 +21,9 @@ def list_activities():
 def add_activity():
     form = ActivityForm()
     if form.validate_on_submit():
-        activity = Activity(title=form.title.data, description=form.description.data, activityDate=form.activityDate.data)
+        activity = Activity(title=form.title.data, description=form.description.data, activityDate=form.activityDate.data, added_by=session['_user_id'])
+        for team_id in form.teams.data:
+            activity.teams.append(Team.query.get_or_404(team_id))
         db.session.add(activity)
         db.session.commit()
 

@@ -68,10 +68,15 @@ class Team(db.Model):
     email = db.Column(db.String(60), unique=True)
     telephone = db.Column(db.String(60), unique=True)
     members = db.relationship('Member', secondary='member_teams')
+    activities = db.relationship('Activity', secondary='team_activities')
 
     @property
     def member_count(self):
         return len(self.members)
+
+    @property
+    def activity_count(self):
+        return len(self.activities)
 
 
 class MemberTeams(db.Model):
@@ -131,6 +136,16 @@ class Activity(db.Model):
     description = db.Column(db.String(60), nullable=False)
     createDate = db.Column(db.DateTime(timezone=True),  nullable=False, server_default=func.now())
     activityDate = db.Column(db.DateTime(timezone=True), nullable=False)
+    teams = db.relationship('Team', secondary='team_activities')
+    added_by = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+
+
+class TeamActivities(db.Model):
+    __tablename__ = 'team_activities'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    team_id = db.Column(db.Integer(), db.ForeignKey('teams.id', ondelete='CASCADE'))
+    activity_id = db.Column(db.Integer(), db.ForeignKey('activities.id', ondelete='CASCADE'))
 
 
 class File(db.Model):

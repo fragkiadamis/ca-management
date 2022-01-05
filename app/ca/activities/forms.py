@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, ValidationError, SelectMultipleField
+from wtforms import StringField, SubmitField, SelectMultipleField
 from wtforms.validators import DataRequired
 
 from app.models import Team
@@ -14,4 +14,4 @@ class ActivityForm(FlaskForm):
 
     def __init__(self):
         super(ActivityForm, self).__init__()
-        self.teams.choices = [(d.id, d.name) for d in Team.query.all()]
+        self.teams.choices = [(t.id, t.name) for t in Team.query.all()]

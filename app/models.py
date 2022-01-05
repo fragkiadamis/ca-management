@@ -24,7 +24,7 @@ class Member(db.Model, UserMixin):
     address = db.Column(db.String(60), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=False)
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
-    registration_date = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     update_date = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
     @property
@@ -67,8 +67,11 @@ class Team(db.Model):
     description = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(60), unique=True)
     telephone = db.Column(db.String(60), unique=True)
+    create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     members = db.relationship('Member', secondary='member_teams')
     activities = db.relationship('Activity', secondary='team_activities')
+    announcements = db.relationship('Announcement', secondary='team_announcements')
+    files = db.relationship('File', secondary='team_files')
 
     @property
     def member_count(self):
@@ -77,6 +80,14 @@ class Team(db.Model):
     @property
     def activity_count(self):
         return len(self.activities)
+
+    @property
+    def announcement_count(self):
+        return len(self.announcements)
+
+    @property
+    def file_count(self):
+        return len(self.files)
 
 
 class MemberTeams(db.Model):
@@ -92,6 +103,7 @@ class School(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
+    create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     description = db.Column(db.String(60))
     departments = db.relationship("Department", cascade="all, delete-orphan")
 
@@ -110,6 +122,7 @@ class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False, unique=True)
     description = db.Column(db.String(60))
+    create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))
     members = db.relationship("Member")
 
@@ -124,8 +137,18 @@ class Announcement(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     title = db.Column(db.String(60), nullable=False)
     body = db.Column(db.String(60), nullable=False)
-    createDate = db.Column(db.DateTime(timezone=True), nullable=True, server_default=func.now())
-    # addedBy = db.Column()
+    create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
+    update_date = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    teams = db.relationship('Team', secondary='team_announcements')
+    added_by = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+
+
+class TeamAnnouncements(db.Model):
+    __tablename__ = 'team_announcements'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    team_id = db.Column(db.Integer(), db.ForeignKey('teams.id', ondelete='CASCADE'))
+    announcement_id = db.Column(db.Integer(), db.ForeignKey('announcements.id', ondelete='CASCADE'))
 
 
 class Activity(db.Model):
@@ -134,7 +157,8 @@ class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     title = db.Column(db.String(60), nullable=False)
     description = db.Column(db.String(60), nullable=False)
-    createDate = db.Column(db.DateTime(timezone=True),  nullable=False, server_default=func.now())
+    create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
+    update_date = db.Column(db.DateTime(timezone=True), onupdate=func.now())
     activityDate = db.Column(db.DateTime(timezone=True), nullable=False)
     teams = db.relationship('Team', secondary='team_activities')
     added_by = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
@@ -155,4 +179,14 @@ class File(db.Model):
     name = db.Column(db.String(60), nullable=False)
     path = db.Column(db.String(60), nullable=False, unique=True)
     type = db.Column(db.String(60), nullable=False)
-    upload_date = db.Column(db.DateTime(timezone=True),  nullable=False, server_default=func.now())
+    create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
+    teams = db.relationship('Team', secondary='team_files')
+    added_by = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+
+
+class TeamFiles(db.Model):
+    __tablename__ = 'team_files'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    team_id = db.Column(db.Integer(), db.ForeignKey('teams.id', ondelete='CASCADE'))
+    file_id = db.Column(db.Integer(), db.ForeignKey('files.id', ondelete='CASCADE'))

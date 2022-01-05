@@ -43,6 +43,9 @@ def edit_activity(activity_id):
         activity.title = form.title.data
         activity.description = form.description.data
         activity.activityDate = form.activityDate.data
+        activity.teams = []
+        for team_id in form.teams.data:
+            activity.teams.append(Team.query.get_or_404(team_id))
         db.session.commit()
 
         flash('You have successfully edited the activity.')

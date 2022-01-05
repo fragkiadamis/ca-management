@@ -5,7 +5,7 @@ from .forms import AnnouncementForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
-from ...models import Announcement
+from ...models import Announcement, Team
 
 
 @ca.route('/announcements')
@@ -21,7 +21,9 @@ def list_announcements():
 def add_announcement():
     form = AnnouncementForm()
     if form.validate_on_submit():
-        announcement = Announcement(title=form.title.data, body=form.body.data)
+        announcement = Announcement(title=form.title.data, body=form.body.data, added_by=session['_user_id'])
+        for team_id in form.teams.data:
+            announcement.teams.append(Team.query.get_or_404(team_id))
         db.session.add(announcement)
         db.session.commit()
 
@@ -40,6 +42,9 @@ def edit_announcement(announcement_id):
     if form.validate_on_submit():
         announcement.title = form.title.data
         announcement.body = form.body.data
+        announcement.teams = []
+        for team_id in form.teams.data:
+            announcement.teams.append(Team.query.get_or_404(team_id))
         db.session.commit()
 
         flash('You have successfully edited the announcement.')

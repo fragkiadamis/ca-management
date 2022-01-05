@@ -3,7 +3,7 @@ from flask_login import login_required
 
 from .forms import FileForm
 from .. import ca
-from app.models import File
+from app.models import File, Team
 from ... import db
 from ...decorators import permissions_required
 
@@ -21,7 +21,9 @@ def list_files():
 def add_file():
     form = FileForm()
     if form.validate_on_submit():
-        file = File(name=form.name.data, path=form.path.data, type=form.type.data)
+        file = File(name=form.name.data, path=form.path.data, type=form.type.data, added_by=session['_user_id'])
+        for team_id in form.teams.data:
+            file.teams.append(Team.query.get_or_404(team_id))
         db.session.add(file)
         db.session.commit()
 

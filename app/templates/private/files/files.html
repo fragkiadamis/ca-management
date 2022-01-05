@@ -14,6 +14,7 @@
             <tr>
                 <th scope="col">File</th>
                 <th scope="col">Upload Date</th>
+                <th scope="col">Teams</th>
                 <th scope="col">Actions</th>
             </tr>
             </thead>
@@ -22,6 +23,11 @@
                 <tr>
                     <td>{{ file.title }}</td>
                     <td>{{ file.upload_date }}</td>
+                    <td>
+                        {% for team in announcement.teams %}
+                            {{ team.name }}
+                        {% endfor %}
+                    </td>
                     <td>
                         <a href="{{ url_for('ca.delete_announcement', file_id=file.id) }}" class="px-1">Delete</a>
                     </td>

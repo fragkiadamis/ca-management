@@ -15,6 +15,7 @@
                 <th scope="col">Name</th>
                 <th scope="col">Description</th>
                 <th scope="col">Activity Date</th>
+                <th scope="col">Teams</th>
                 <th scope="col">Actions</th>
             </tr>
             </thead>
@@ -24,6 +25,11 @@
                     <td>{{ activity.title }}</td>
                     <td>{{ activity.description }}</td>
                     <td>{{ activity.activityDate }}</td>
+                    <td>
+                        {% for team in activity.teams %}
+                            {{ team.name }}
+                        {% endfor %}
+                    </td>
                     <td>
                         <a href="{{ url_for('ca.edit_activity', activity_id=activity.id) }}" class="px-1">Edit</a>
                         <a href="{{ url_for('ca.delete_activity', activity_id=activity.id) }}" class="px-1">Delete</a>

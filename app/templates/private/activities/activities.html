@@ -2,39 +2,37 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}Activities{% endblock %}
 {% block body %}
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h1">{{ title }}</h2>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('ca.add_activity') }}">Add Activity</a>
-        </div>
-        <hr class="intro-divider">
-        {{ render_messages() }}
-        {% if activities %}
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Activity Date</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                {% for activity in activities %}
-                    <tbody>
-                    <tr>
-                        <td>{{ activity.title }}</td>
-                        <td>{{ activity.description }}</td>
-                        <td>{{ activity.activityDate }}</td>
-                        <td>
-                            <a href="{{ url_for('ca.edit_activity', activity_id=activity.id) }}" class="px-1">Edit</a>
-                            <a href="{{ url_for('ca.delete_activity', activity_id=activity.id) }}" class="px-1">Delete</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                {% endfor %}
-            </table>
-        {% else %}
-            <h3>No teams have been added</h3>
-        {% endif %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h1">{{ title }}</h2>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('ca.add_activity') }}">Add Activity</a>
     </div>
+    <hr class="intro-divider">
+    {{ render_messages() }}
+    {% if activities %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Activity Date</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            {% for activity in activities %}
+                <tbody>
+                <tr>
+                    <td>{{ activity.title }}</td>
+                    <td>{{ activity.description }}</td>
+                    <td>{{ activity.activityDate }}</td>
+                    <td>
+                        <a href="{{ url_for('ca.edit_activity', activity_id=activity.id) }}" class="px-1">Edit</a>
+                        <a href="{{ url_for('ca.delete_activity', activity_id=activity.id) }}" class="px-1">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h3>No teams have been added</h3>
+    {% endif %}
 {% endblock %}

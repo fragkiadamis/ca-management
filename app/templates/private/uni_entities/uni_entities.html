@@ -2,55 +2,53 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="">{{ school['name'] + ' - ' if school }}{{ title + ' list' }}</h2>
-            <a href="{{ url_for('ca.add_school') if current_list == 'schools' else url_for('ca.add_department', school_id=school['id']) }}" class="btn btn-primary btn-lg">
-                <i class="fa fa-plus"></i>
-                Add {{ title }}
-            </a>
-        </div>
-        <hr class="intro-divider">
-        {{ render_messages() }}
-        {% if uni_entities %}
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Member Count</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for entry in uni_entities %}
-                    <tr id="{{ entry['id'] }}">
-                        <td>
-                            {% if current_list == 'schools' %}
-                                {# Every School is a link to its departments list #}
-                                <a href="{{ url_for('ca.list_departments', school_id=entry['id']) }}">{{ entry['name'] }}</a>
-                            {% elif current_list == 'departments' %}
-                                {{ entry['name'] }}
-                            {% endif %}
-                        </td>
-                        <td>{{ entry['description'] }}</td>
-                        <td>{{ entry['member_count'] }}</td>
-                        <td>
-                            <a href="" class="px-1">Members</a>
-                            <a href="{{ url_for('ca.edit_school', school_id=entry['id']) if current_list == 'schools' else url_for('ca.edit_department', school_id=school['id'], department_id=entry['id']) }}" class="px-1">Edit</a>
-                            {% if current_list == 'schools' %}
-                                <a href="{{ url_for('ca.delete_school', school_id=entry['id']) }}" class="px-1">Delete</a>
-                            {% elif current_list == 'departments' %}
-                                <a href="{{ url_for('ca.delete_department', school_id=school['id'], department_id=entry['id']) }}" class="px-1">Delete</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <h3> No schools have been added. </h3>
-            <hr class="intro-divider">
-        {% endif %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="">{{ school['name'] + ' - ' if school }}{{ title + ' list' }}</h2>
+        <a href="{{ url_for('ca.add_school') if current_list == 'schools' else url_for('ca.add_department', school_id=school['id']) }}" class="btn btn-primary btn-lg">
+            <i class="fa fa-plus"></i>
+            Add {{ title }}
+        </a>
     </div>
+    <hr class="intro-divider">
+    {{ render_messages() }}
+    {% if uni_entities %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Member Count</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for entry in uni_entities %}
+                <tr id="{{ entry['id'] }}">
+                    <td>
+                        {% if current_list == 'schools' %}
+                            {# Every School is a link to its departments list #}
+                            <a href="{{ url_for('ca.list_departments', school_id=entry['id']) }}">{{ entry['name'] }}</a>
+                        {% elif current_list == 'departments' %}
+                            {{ entry['name'] }}
+                        {% endif %}
+                    </td>
+                    <td>{{ entry['description'] }}</td>
+                    <td>{{ entry['member_count'] }}</td>
+                    <td>
+                        <a href="" class="px-1">Members</a>
+                        <a href="{{ url_for('ca.edit_school', school_id=entry['id']) if current_list == 'schools' else url_for('ca.edit_department', school_id=school['id'], department_id=entry['id']) }}" class="px-1">Edit</a>
+                        {% if current_list == 'schools' %}
+                            <a href="{{ url_for('ca.delete_school', school_id=entry['id']) }}" class="px-1">Delete</a>
+                        {% elif current_list == 'departments' %}
+                            <a href="{{ url_for('ca.delete_department', school_id=school['id'], department_id=entry['id']) }}" class="px-1">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h3> No schools have been added. </h3>
+        <hr class="intro-divider">
+    {% endif %}
 {% endblock %}

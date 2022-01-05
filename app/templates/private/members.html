@@ -1,80 +1,82 @@
 {% extends "./main.html" %}
 {% block title %}Profile{% endblock %}
 {% block body %}
-    <div class="container">
-        <div class="bg-light clearfix p-3">
-            <div class="float-start d-flex align-items-center">
-                <div class="dropdown me-2">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='role') }}">Role</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='status') }}">Status</a></li>
-                    </ul>
-                </div>
-                <div class="dropdown me-2">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='current') }}">Current Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='pending') }}">Pending Members</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='active') }}">Active Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='inactive') }}">Inactive Members</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='admin') }}">Admin Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='ca_admin') }}">CA Admin Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='basic') }}">Basic Members</a></li>
-                    </ul>
-                </div>
+    <div class="bg-light clearfix p-3">
+        <div class="float-start d-flex align-items-center">
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='role') }}">Role</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='status') }}">Status</a></li>
+                </ul>
             </div>
-            <div class="float-end">
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
-                </form>
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='current') }}">Current Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='pending') }}">Pending Members</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='active') }}">Active Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='inactive') }}">Inactive Members</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='admin') }}">Admin Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='ca_admin') }}">CA Admin Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='basic') }}">Basic Members</a></li>
+                </ul>
             </div>
         </div>
-        {% for key in members %}
-            {% if members[key] %}
-                <h2>{{ key }} <b>Members</b></h2>
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for member in members[key] %}
-                        <tr id="{{ member['id'] }}">
-                            <td>{{ member['ca_reg_number'] if member['ca_reg_number'] }}</td>
-                            <td>{{ member['first_name'] }}</td>
-                            <td>{{ member['last_name'] }}</td>
-                            <td>{{ member['email'] }}</td>
-                            <td>
+        <div class="float-end">
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    {% for key in members %}
+        {% if members[key] %}
+            <h2>{{ key }} <b>Members</b></h2>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for member in members[key] %}
+                    <tr id="{{ member['id'] }}">
+                        <td>{{ member['ca_reg_number'] if member['ca_reg_number'] }}</td>
+                        <td>{{ member['first_name'] }}</td>
+                        <td>{{ member['last_name'] }}</td>
+                        <td>{{ member['email'] }}</td>
+                        <td>
                                 <span class="text-{{ 'success' if member['is_active'] else 'danger' }}">
                                     {{ 'Active' if member['is_active'] else 'Inactive' }}
                                 </span>
-                            </td>
-                            <td>
-                                {% if not member['is_verified'] %}
-                                    <a href="{{ url_for('ca.verify', member_id=member['id'], verify='Accept') }}" class="px-1">Accept</a>
-                                    <a href="{{ url_for('ca.verify', member_id=member['id'], verify='Deny') }}" class="px-1">Delete</a>
-                                {% else %}
-                                    <a href="{{ url_for('ca.edit_member', member_id=member['id']) }}" class="px-1">Edit</a>
-                                    <a href="{{ url_for('ca.toggle_status', member_id=member['id'], display=display) }}" class="px-1">
-                                        {{ "Deactivate" if member['is_active'] else "Activate" }}
-                                    </a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
-        {% endfor %}
-    </div>
+                        </td>
+                        <td>
+                            {% if not member['is_verified'] %}
+                                <a href="{{ url_for('ca.verify', member_id=member['id'], verify='Accept') }}" class="px-1">Accept</a>
+                                <a href="{{ url_for('ca.verify', member_id=member['id'], verify='Deny') }}" class="px-1">Delete</a>
+                            {% else %}
+                                <a href="{{ url_for('ca.edit_member', member_id=member['id']) }}" class="px-1">Edit</a>
+                                <a href="{{ url_for('ca.toggle_status', member_id=member['id'], display=display) }}" class="px-1">
+                                    {{ "Deactivate" if member['is_active'] else "Activate" }}
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

@@ -2,36 +2,34 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}Files{% endblock %}
 {% block body %}
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="h1">{{ title }}</h2>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('ca.add_file') }}">Add File</a>
-        </div>
-        <hr class="intro-divider">
-        {{ render_messages() }}
-        {% if files %}
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th scope="col">File</th>
-                    <th scope="col">Upload Date</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                {% for file in files %}
-                    <tbody>
-                    <tr>
-                        <td>{{ file.title }}</td>
-                        <td>{{ file.upload_date }}</td>
-                        <td>
-                            <a href="{{ url_for('ca.delete_announcement', file_id=file.id) }}" class="px-1">Delete</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                {% endfor %}
-            </table>
-        {% else %}
-            <h3>No Files have been added</h3>
-        {% endif %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h1">{{ title }}</h2>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('ca.add_file') }}">Add File</a>
     </div>
+    <hr class="intro-divider">
+    {{ render_messages() }}
+    {% if files %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">File</th>
+                <th scope="col">Upload Date</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            {% for file in files %}
+                <tbody>
+                <tr>
+                    <td>{{ file.title }}</td>
+                    <td>{{ file.upload_date }}</td>
+                    <td>
+                        <a href="{{ url_for('ca.delete_announcement', file_id=file.id) }}" class="px-1">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h3>No Files have been added</h3>
+    {% endif %}
 {% endblock %}

@@ -2,13 +2,11 @@
 {% from "_macros.html" import render_field, render_field_with_value %}
 {% block title %}Files{% endblock %}
 {% block body %}
-    <div class="container mb-5">
-        <h2 class="h1">{{ title }}</h2>
-        {{ render_messages() }}
-        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.add_announcement') }}">
-            {{ form.csrf_token() }}
-            <hr class="my-4">
-            {{ form.submit(class='btn btn-primary btn-lg') }}
-        </form>
-    </div>
+    <h2 class="h1">{{ title }}</h2>
+    {{ render_messages() }}
+    <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.add_announcement') }}">
+        {{ form.csrf_token() }}
+        <hr class="my-4">
+        {{ form.submit(class='btn btn-primary btn-lg') }}
+    </form>
 {% endblock %}

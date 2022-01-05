@@ -2,25 +2,23 @@
 {% from "_macros.html" import render_field, render_field_with_value %}
 {% block title %}Announcement{% endblock %}
 {% block body %}
-    <div class="container mb-5">
-        <h2 class="h1">{{ title }}</h2>
-        {{ render_messages() }}
-        {% if action == 'add' %}
-            <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.add_announcement') }}">
-                {{ form.csrf_token() }}
-                {{ render_field(form.title) }}
-                {{ render_field(form.body) }}
-                <hr class="my-4">
-                {{ form.submit(class='btn btn-primary btn-lg') }}
-            </form>
-        {% elif action == 'edit' %}
-            <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.edit_announcement', announcement_id=announcement['id']) }}">
-                {{ form.csrf_token() }}
-                {{ render_field_with_value(form.title, announcement['title']) }}
-                {{ render_field_with_value(form.body, announcement['body']) }}
-                <hr class="my-4">
-                {{ form.submit(class='btn btn-primary btn-lg') }}
-            </form>
-        {% endif %}
-    </div>
+    <h2 class="h1">{{ title }}</h2>
+    {{ render_messages() }}
+    {% if action == 'add' %}
+        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.add_announcement') }}">
+            {{ form.csrf_token() }}
+            {{ render_field(form.title) }}
+            {{ render_field(form.body) }}
+            <hr class="my-4">
+            {{ form.submit(class='btn btn-primary btn-lg') }}
+        </form>
+    {% elif action == 'edit' %}
+        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.edit_announcement', announcement_id=announcement['id']) }}">
+            {{ form.csrf_token() }}
+            {{ render_field_with_value(form.title, announcement['title']) }}
+            {{ render_field_with_value(form.body, announcement['body']) }}
+            <hr class="my-4">
+            {{ form.submit(class='btn btn-primary btn-lg') }}
+        </form>
+    {% endif %}
 {% endblock %}

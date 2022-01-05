@@ -2,11 +2,9 @@
 {% extends "main.html" %}
 {% block title %}Home{% endblock %}
 {% block body %}
-    <div class="py-5 text-center">
+    <div class="container mb-5 mx-auto">
         <h2>Φόρμα Αίτησης Εγγραφής</h2>
         <p class="lead">Καταχωρίστε σωστά τα στοιχεία σας για να κάνετε αίτηση εγγραφής.</p>
-    </div>
-    <div class="container mb-5 mx-auto">
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('auth.register') }}">
             {{ form.csrf_token() }}
             <div class="row">

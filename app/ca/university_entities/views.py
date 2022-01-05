@@ -14,7 +14,7 @@ from ...decorators import permissions_required
 def list_schools():
     schools = School.query.all()
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/uni_entities.html', current_list='schools', route='ca.add_school', uni_entities=schools, user=sess_user, title='Schools')
+    return render_template('private/uni_entities/uni_entities.html', current_list='schools', route='ca.add_school', uni_entities=schools, user=sess_user, title='Schools')
 
 
 @ca.route('/schools/add', methods=['GET', 'POST'])
@@ -30,7 +30,7 @@ def add_school():
         return redirect(url_for('ca.list_schools'))
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/uni_entity_form.html', user=sess_user, action='add', entity='school', form=form, title='Add School')
+    return render_template('private/uni_entities/uni_entity_form.html', user=sess_user, action='add', entity='school', form=form, title='Add School')
 
 
 @ca.route('/schools/edit/<int:school_id>', methods=['GET', 'POST'])
@@ -47,7 +47,7 @@ def edit_school(school_id):
         return redirect(url_for('ca.list_schools'))
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/uni_entity_form.html', user=sess_user, action='edit', entity='school', school=school, form=form, title='Edit School')
+    return render_template('private/uni_entities/uni_entity_form.html', user=sess_user, action='edit', entity='school', school=school, form=form, title='Edit School')
 
 
 @ca.route('/schools/delete/<int:school_id>')
@@ -70,7 +70,7 @@ def list_departments(school_id):
     departments = Department.query.filter_by(school_id=school_id).all()
     school = School.query.get_or_404(school_id)
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/uni_entities.html', uni_entities=departments, current_list="departments", route='ca.add_department', school=school, user=sess_user, title='Departments')
+    return render_template('private/uni_entities/uni_entities.html', uni_entities=departments, current_list="departments", route='ca.add_department', school=school, user=sess_user, title='Departments')
 
 
 @ca.route('/schools/<int:school_id>/departments/add', methods=['GET', 'POST'])
@@ -87,7 +87,7 @@ def add_department(school_id):
 
     school = School.query.get_or_404(school_id)
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/uni_entity_form.html', user=sess_user, action='add', entity='Department', school=school, form=form, title='Add Department')
+    return render_template('private/uni_entities/uni_entity_form.html', user=sess_user, action='add', entity='Department', school=school, form=form, title='Add Department')
 
 
 @ca.route('/schools/<int:school_id>/departments/edit/<int:department_id>', methods=['GET', 'POST'])
@@ -106,7 +106,7 @@ def edit_department(school_id, department_id):
         return redirect(url_for('ca.list_departments', school_id=school.id, department_id=department.id))
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/uni_entity_form.html', user=sess_user, action='edit', entity='department', department=department, school=school, form=form, title='Edit Department')
+    return render_template('private/uni_entities/uni_entity_form.html', user=sess_user, action='edit', entity='department', department=department, school=school, form=form, title='Edit Department')
 
 
 @ca.route('/schools/<int:school_id>/departments/delete/<int:department_id>')

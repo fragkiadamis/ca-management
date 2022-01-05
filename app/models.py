@@ -82,36 +82,6 @@ class MemberTeams(db.Model):
     team_id = db.Column(db.Integer(), db.ForeignKey('teams.id', ondelete='CASCADE'))
 
 
-class File(db.Model):
-    __tablename__ = 'files'
-
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(60), nullable=False)
-    path = db.Column(db.String(60), nullable=False, unique=True)
-    type = db.Column(db.String(60), nullable=False)
-
-
-class Announcement(db.Model):
-    __tablename__ = 'announcements'
-
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    title = db.Column(db.String(60), nullable=False)
-    description = db.Column(db.String(60), nullable=False)
-    createDate = db.Column(db.Date, nullable=True)
-    # addedBy = db.Column()
-
-
-# Activities
-class Activity(db.Model):
-    __tablename__ = 'activities'
-
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    title = db.Column(db.String(60), nullable=False)
-    description = db.Column(db.String(60), nullable=False)
-    createDate = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    activityDate = db.Column(db.DateTime(timezone=True), nullable=False)
-
-
 class School(db.Model):
     __tablename__ = 'schools'
 
@@ -141,3 +111,32 @@ class Department(db.Model):
     @property
     def member_count(self):
         return len(self.members)
+
+
+class Announcement(db.Model):
+    __tablename__ = 'announcements'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    title = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60), nullable=False)
+    createDate = db.Column(db.Date, nullable=True)
+    # addedBy = db.Column()
+
+
+class Activity(db.Model):
+    __tablename__ = 'activities'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    title = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.String(60), nullable=False)
+    createDate = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    activityDate = db.Column(db.DateTime(timezone=True), nullable=False)
+
+
+class File(db.Model):
+    __tablename__ = 'files'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    name = db.Column(db.String(60), nullable=False)
+    path = db.Column(db.String(60), nullable=False, unique=True)
+    type = db.Column(db.String(60), nullable=False)

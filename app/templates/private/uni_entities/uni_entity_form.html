@@ -1,11 +1,11 @@
 {% from "./macros/_formhelpers.html" import render_field, render_field_with_value %}
-{% extends "./main.html" %}
+{% extends "main.html" %}
 {% block title %}Profile{% endblock %}
 {% block body %}
-    <div class="container">
+    <div class="container mb-5">
         <h2 class="h1">{{ title }}</h2>
         {% if action == 'add' %}
-            <form method="post" action="{{ url_for('ca.add_school') if entity == 'school' else url_for('ca.add_department', school_id=school['id']) }}">
+            <form method="post" class="p-4 p-md-5 border rounded-3 bg-light" action="{{ url_for('ca.add_school') if entity == 'school' else url_for('ca.add_department', school_id=school['id']) }}">
                 {{ form.csrf_token() }}
                 {{ render_field(form.name) }}
                 {{ render_field(form.description) }}

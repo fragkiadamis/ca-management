@@ -177,8 +177,7 @@ class File(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(60), nullable=False)
-    path = db.Column(db.String(60), nullable=False, unique=True)
-    type = db.Column(db.String(60), nullable=False)
+    relative_path = db.Column(db.String(255), nullable=False)
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     teams = db.relationship('Team', secondary='team_files')
     added_by = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)

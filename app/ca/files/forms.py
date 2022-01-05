@@ -6,7 +6,8 @@ from app.models import Team
 
 
 class FileForm(FlaskForm):
-    file_field = FileField('ASD', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
+    name = StringField('Name', render_kw={'class': 'form-control', 'placeholder': ''})
+    file_field = FileField(render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     teams = SelectMultipleField('Team', render_kw={'class': 'form-control', 'placeholder': ''}, coerce=int)
     submit = SubmitField('Submit')
 

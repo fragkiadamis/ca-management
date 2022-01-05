@@ -1,12 +1,13 @@
 {% extends "main.html" %}
-{% from "_macros.html" import render_mul_select_field, render_messages %}
+{% from "_macros.html" import render_field, render_mul_select_field, render_messages %}
 {% block title %}Files{% endblock %}
 {% block body %}
     <h2 class="h1">{{ title }}</h2>
     {{ render_messages() }}
-    <form enctype="multipart/form-data" class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.add_file') }}">
+    <form enctype="multipart/form-data" class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.upload_file') }}">
         {{ form.csrf_token() }}
         <div class="mb-3">
+            {{ render_field(form.name) }}
             {{ form.file_field(placeholder="file") }}
         </div>
         {{ render_mul_select_field(form.teams) }}

@@ -4,7 +4,7 @@
 {% block body %}
     <div class="d-flex justify-content-between align-items-center">
         <h2 class="h1">{{ title }}</h2>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('ca.add_file') }}">Add File</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('ca.upload_file') }}">Add File</a>
     </div>
     <hr class="intro-divider">
     {{ render_messages() }}
@@ -21,15 +21,15 @@
             {% for file in files %}
                 <tbody>
                 <tr>
-                    <td>{{ file.title }}</td>
-                    <td>{{ file.upload_date }}</td>
+                    <td>{{ file.name }}</td>
+                    <td>{{ file.create_date }}</td>
                     <td>
-                        {% for team in announcement.teams %}
+                        {% for team in file.teams %}
                             {{ team.name }}
                         {% endfor %}
                     </td>
                     <td>
-                        <a href="{{ url_for('ca.delete_announcement', file_id=file.id) }}" class="px-1">Delete</a>
+                        <a href="{{ url_for('ca.delete_file', file_id=file.id) }}" class="px-1">Delete</a>
                     </td>
                 </tr>
                 </tbody>

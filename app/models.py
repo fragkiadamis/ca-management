@@ -136,7 +136,7 @@ class Announcement(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     title = db.Column(db.String(60), nullable=False)
-    body = db.Column(db.String(60), nullable=False)
+    body = db.Column(db.String(255), nullable=False)
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     update_date = db.Column(db.DateTime(timezone=True), onupdate=func.now())
     teams = db.relationship('Team', secondary='team_announcements')

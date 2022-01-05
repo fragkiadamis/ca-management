@@ -6,15 +6,15 @@ from app.models import School
 
 
 class UniEntityForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    description = StringField('Description')
+    name = StringField('Name', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
+    description = StringField('Description', render_kw={'class': 'form-control', 'placeholder': ''})
     submit = SubmitField('Add School')
 
 
 class EditDepartmentForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    description = StringField('Description')
-    schools = SelectField('School', validators=[DataRequired()])
+    name = StringField('Name', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
+    description = StringField('Description', render_kw={'class': 'form-control', 'placeholder': ''})
+    schools = SelectField('School', vrender_kw={'class': 'form-control', 'placeholder': ''}, alidators=[DataRequired()])
     submit = SubmitField('Add Department')
 
     def __init__(self):

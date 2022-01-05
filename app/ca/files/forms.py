@@ -1,14 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectMultipleField
+from wtforms import StringField, SubmitField, SelectMultipleField, FileField
 from wtforms.validators import DataRequired
 
 from app.models import Team
 
 
 class FileForm(FlaskForm):
-    name = StringField('File Name', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
-    path = StringField('Path', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
-    type = StringField('Type', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
+    file_field = FileField('ASD', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     teams = SelectMultipleField('Team', render_kw={'class': 'form-control', 'placeholder': ''}, coerce=int)
     submit = SubmitField('Submit')
 

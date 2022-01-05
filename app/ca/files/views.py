@@ -1,5 +1,8 @@
-from flask import render_template, session, flash, request, redirect, url_for
+import os
+
+from flask import render_template, session, flash, redirect, url_for
 from flask_login import login_required
+from werkzeug.utils import secure_filename
 
 from .forms import FileForm
 from .. import ca
@@ -21,11 +24,9 @@ def list_files():
 def add_file():
     form = FileForm()
     if form.validate_on_submit():
-        file = File(name=form.name.data, path=form.path.data, type=form.type.data, added_by=session['_user_id'])
-        for team_id in form.teams.data:
-            file.teams.append(Team.query.get_or_404(team_id))
-        db.session.add(file)
-        db.session.commit()
+        file = form.file_field.data
+        name = secure_filename(file.filename)
+        file.save(os.path.join('./app/static/files', name))
 
         flash('You have successfully added a new file.')
         return redirect(url_for('ca.list_files'))
@@ -38,9 +39,7 @@ def add_file():
 @ca.route('/dashboard/files/delete/<int:file_id>')
 @login_required
 def delete_file(file_id):
-    file = File.query.get_or_404(file_id)
-    db.session.delete(file)
-    db.session.commit()
+    # os.remove(os.path.join('./app/static/files', item.filename))
 
     flash('You have successfully deleted the file.')
     return redirect(url_for('ca.list_files'))

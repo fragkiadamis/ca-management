@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% from "_macros.html" import render_messages %}
 {% block title %}Teams{% endblock %}
 {% block body %}
     <div class="container">
@@ -7,18 +8,8 @@
             <a class="btn btn-primary btn-lg" href="{{ url_for('ca.add_team') }}">Add Team</a>
         </div>
         <hr class="intro-divider">
+        {{ render_messages() }}
         {% if teams %}
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div id="message" class="alert alert-danger" role="alert">
-                        <ul class=flashes>
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-            {% endwith %}
             <table class="table table-hover">
                 <thead>
                 <tr>

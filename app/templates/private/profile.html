@@ -1,20 +1,10 @@
-{% from "./macros/_formhelpers.html" import render_field, render_field_with_value, render_mul_select_field_with_values %}
 {% extends "./main.html" %}
+{% from "_macros.html" import render_field, render_field_with_value, render_mul_select_field_with_values, render_messages %}
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
     <div class="container mb-5 mx-auto">
         <h2>{{ title }}</h2>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div id="message" class="alert alert-danger" role="alert">
-                    <ul class=flashes>
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-        {% endwith %}
+        {{ render_messages() }}
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post"
               action="{{ url_for(request.endpoint, member_id=member['id']) }}">
             {{ form.csrf_token() }}

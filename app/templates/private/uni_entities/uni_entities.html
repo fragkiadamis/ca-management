@@ -1,5 +1,5 @@
-{% from "./macros/_formhelpers.html" import render_field, render_field_with_value %}
 {% extends "main.html" %}
+{% from "_macros.html" import render_messages %}
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
     <div class="container">
@@ -11,18 +11,8 @@
             </a>
         </div>
         <hr class="intro-divider">
+        {{ render_messages() }}
         {% if uni_entities %}
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div id="message" class="alert alert-danger" role="alert">
-                        <ul class=flashes>
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-            {% endwith %}
             <table class="table table-hover">
                 <thead>
                 <tr>

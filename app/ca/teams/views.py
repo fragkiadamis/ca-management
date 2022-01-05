@@ -11,7 +11,6 @@ from ...models import Team
 @ca.route('/teams')
 @login_required
 def list_teams():
-    # List all teams
     teams = Team.query.all()
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/teams/teams.html', teams=teams, user=sess_user, title="Teams")
@@ -23,15 +22,12 @@ def add_team():
     form = TeamForm()
     if form.validate_on_submit():
         team = Team(name=form.name.data, description=form.description.data, email=form.email.data, telephone=form.telephone.data)
-        # Add team to database
         db.session.add(team)
         db.session.commit()
-        flash('You have successfully added a new team.')
 
-        # redirect to teams page
+        flash('You have successfully added a new team.')
         return redirect(url_for('ca.list_teams'))
 
-    # Load Team template
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/teams/team_form.html', user=sess_user, action='add', form=form, title="Add Team")
 
@@ -61,7 +57,6 @@ def delete_team(team_id):
     team = Team.query.get_or_404(team_id)
     db.session.delete(team)
     db.session.commit()
-    flash('You have successfully deleted the team.')
 
-    # Redirect to the departments page
+    flash('You have successfully deleted the team.')
     return redirect(url_for('ca.list_teams'))

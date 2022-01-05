@@ -27,6 +27,7 @@ def add_school():
         db.session.add(school)
         db.session.commit()
 
+        flash('You have successfully added a new school.')
         return redirect(url_for('ca.list_schools'))
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
@@ -44,6 +45,7 @@ def edit_school(school_id):
         school.description = form.description.data
         db.session.commit()
 
+        flash('You have successfully edited the school.')
         return redirect(url_for('ca.list_schools'))
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
@@ -60,6 +62,8 @@ def delete_school(school_id):
     else:
         db.session.delete(school)
         db.session.commit()
+        flash('You have successfully deleted the school.')
+
     return redirect(url_for('ca.list_schools'))
 
 
@@ -83,6 +87,7 @@ def add_department(school_id):
         db.session.add(department)
         db.session.commit()
 
+        flash('You have successfully added a new school.')
         return redirect(url_for('ca.list_departments', school_id=school_id))
 
     school = School.query.get_or_404(school_id)
@@ -103,6 +108,7 @@ def edit_department(school_id, department_id):
         department.school_id = form.schools.data
         db.session.commit()
 
+        flash('You have successfully edited the school.')
         return redirect(url_for('ca.list_departments', school_id=school.id, department_id=department.id))
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
@@ -119,4 +125,6 @@ def delete_department(school_id, department_id):
     else:
         db.session.delete(department)
         db.session.commit()
+        flash('You have successfully deleted the school.')
+
     return redirect(url_for('ca.list_departments', school_id=school_id))

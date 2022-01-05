@@ -22,15 +22,12 @@ def add_activity():
     form = ActivityForm()
     if form.validate_on_submit():
         activity = Activity(title=form.title.data, description=form.description.data, activityDate=form.activityDate.data)
-        # Add activity to database
         db.session.add(activity)
         db.session.commit()
-        flash('You have successfully added a new activity.')
 
-        # redirect to activities page
+        flash('You have successfully added a new activity.')
         return redirect(url_for('ca.list_activities'))
 
-    # Load Activity template
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/activities/activity_form.html', user=sess_user, action='add', form=form, title="Add Activity")
 
@@ -56,14 +53,9 @@ def edit_activity(activity_id):
 @ca.route('/activities/delete/<int:activity_id>')
 @login_required
 def delete_activity(activity_id):
-    # Delete an activity with a specific id
-
-    # check_admin()
-
     activity = Activity.query.get_or_404(activity_id)
     db.session.delete(activity)
     db.session.commit()
-    flash('You have successfully deleted the activity.')
 
-    # Redirect to the departments page
+    flash('You have successfully deleted the activity.')
     return redirect(url_for('ca.list_activities'))

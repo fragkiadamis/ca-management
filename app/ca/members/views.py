@@ -98,7 +98,7 @@ def edit_member(member_id):
         member.city = form.city.data
         member.address = form.address.data
         member.ca_reg_number = form.ca_reg_number.data
-        member.department_id = form.department.data
+        member.department = form.department.data
         member.roles = []
         for role_id in form.roles.data:
             member.roles.append(Roles.query.get_or_404(role_id))

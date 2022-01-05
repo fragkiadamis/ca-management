@@ -14,7 +14,7 @@ class Member(db.Model, UserMixin):
     username = db.Column(db.String(60), unique=True, nullable=False)
     email = db.Column(db.String(60), unique=True, nullable=False)
     roles = db.relationship('Roles', secondary='member_roles')
-    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
+    department = db.Column(db.Integer, db.ForeignKey('departments.id'))
     teams = db.relationship('Team', secondary='member_teams')
     password_hash = db.Column(db.String(255), nullable=False)
     telephone = db.Column(db.String(60), unique=True, nullable=False)

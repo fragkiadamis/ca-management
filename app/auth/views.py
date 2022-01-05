@@ -4,7 +4,7 @@ from flask_login import login_user, login_required, logout_user
 from . import auth
 from .forms import RegistrationForm, LoginForm
 from .. import db
-from app.models import Member, Roles
+from app.models import Member, Roles, Team
 
 
 @auth.route('/register', methods=['GET', 'POST'])
@@ -13,16 +13,16 @@ def register():
     if form.validate_on_submit():
         member = Member(
             first_name=form.first_name.data, last_name=form.last_name.data, username=form.username.data,
-            department_id=form.department.data, email=form.email.data, password=form.password.data,
+            department=form.department.data, email=form.email.data, password=form.password.data,
             telephone=form.telephone.data, uni_reg_number=form.uni_reg_number.data,
             city=form.city.data, address=form.address.data
         )
-
+        for team_id in form.teams.data:
+            member.teams.append(Team.query.get_or_404(team_id))
         db.session.add(member)
         db.session.commit()
 
         flash('You have successfully registered! You may now login.')
-        # redirect to the login page
         return redirect(url_for('public.homepage'))
 
     # load registration template

@@ -17,33 +17,33 @@ def list_members():
     # Filter Members according to url parameter
     # TODO implement filters for basic users
     if display == 'pending':
-        members = {'Pending': Member.query.filter(Member.is_verified == 0)}
+        members = {'Pending': Member.query.filter(Member.is_verified == 0).all()}
     elif display == 'active':
-        members = {'Active': Member.query.filter(Member.is_active == 1, Member.is_verified == 1)}
+        members = {'Active': Member.query.filter(Member.is_active == 1, Member.is_verified == 1).all()}
     elif display == 'inactive':
-        members = {'Inactive': Member.query.filter(Member.is_active == 0, Member.is_verified == 1)}
+        members = {'Inactive': Member.query.filter(Member.is_active == 0, Member.is_verified == 1).all()}
     elif display == 'admin':
-        members = {'Admin': Member.query.filter(Member.role == 'admin', Member.is_verified == 1)}
+        members = {'Admin': Member.query.filter(Member.role == 'admin', Member.is_verified == 1).all()}
     elif display == 'ca_admin':
-        members = {'CA Admin': Member.query.filter(Member.role == 'ca_admin', Member.is_verified == 1)}
+        members = {'CA Admin': Member.query.filter(Member.role == 'ca_admin', Member.is_verified == 1).all()}
     elif display == 'basic':
-        members = {'Basic': Member.query.filter(Member.role == 'basic', Member.is_verified == 1)}
+        members = {'Basic': Member.query.filter(Member.role == 'basic', Member.is_verified == 1).all()}
     elif display == 'role':
-        all_members = Member.query.filter(Member.is_verified == 1)
+        all_members = Member.query.filter(Member.is_verified == 1).all()
         admins = [d for d in all_members if d.role == 'admin']
         ca_admins = [d for d in all_members if d.role == 'ca_admin']
         basics = [d for d in all_members if d.role == 'basic']
         members = {'Admins': admins, 'CA Admins': ca_admins, 'Basic': basics}
     elif display == 'status':
-        all_members = Member.query.filter(Member.is_verified == 1)
+        all_members = Member.query.filter(Member.is_verified == 1).all()
         active = [d for d in all_members if d.is_active]
         inactive = [d for d in all_members if not d.is_active]
         members = {'Active': active, 'Inactive': inactive}
     else:
-        members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1)}
+        members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1).all()}
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/members.html', user=sess_user, members=members, title='Members', display=display)
+    return render_template('private/members/members.html', user=sess_user, members=members, title='Members', display=display)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])
@@ -58,7 +58,7 @@ def profile(member_id):
     if form.validate_on_submit():
         if not member.verify_password(form.confirm_changes.data):
             flash('Invalid Password')
-            return render_template('private/profile.html', form=form, user=sess_user, title='Profile')
+            return render_template('private/members/member_form.html', form=form, user=sess_user, title='Profile')
 
         # Update member properties
         if form.password.data:
@@ -73,7 +73,7 @@ def profile(member_id):
         db.session.commit()
         flash('You have successfully updated your profile.')
 
-    return render_template('private/profile.html', form=form, member=member, user=sess_user, title='Profile')
+    return render_template('private/members/member_form.html', form=form, member=member, user=sess_user, title='Profile')
 
 
 @ca.route('/members/edit/<int:member_id>', methods=['GET', 'POST'])
@@ -111,7 +111,7 @@ def edit_member(member_id):
         return redirect(url_for('ca.list_members'))
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/profile.html', form=form, member=member, user=sess_user, title=title)
+    return render_template('private/members/member_form.html', form=form, member=member, user=sess_user, title=title)
 
 
 @ca.route('/status/<int:member_id>')

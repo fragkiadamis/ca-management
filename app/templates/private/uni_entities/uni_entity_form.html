@@ -5,7 +5,7 @@
     <h2 class="h1">{{ title }}</h2>
     {{ render_messages() }}
     {% if action == 'add' %}
-        <form method="post" class="p-4 p-md-5 border rounded-3 bg-light" action="{{ url_for('ca.add_school') if entity == 'school' else url_for('ca.add_department', school_id=school['id']) }}">
+        <form method="post" class="p-4 p-md-5 border rounded-3 bg-light" action="{{ url_for('ca.add_school') if entity == 'school' else url_for('ca.add_department', school_id=school.id) }}">
             {{ form.csrf_token() }}
             {{ render_field(form.name) }}
             {{ render_field(form.description) }}
@@ -14,12 +14,12 @@
             </div>
         </form>
     {% elif action == 'edit' %}
-        <form method="post" action="{{ url_for('ca.edit_school', school_id=school['id']) if entity == 'school' else url_for('ca.edit_department', school_id=school['id'], department_id=department['id']) }}">
+        <form method="post" action="{{ url_for('ca.edit_school', school_id=school.id) if entity == 'school' else url_for('ca.edit_department', school_id=school.id, department_id=department.id) }}">
             {{ form.csrf_token() }}
-            {{ render_field_with_value(form.name, school['name'] if entity == 'school' else department['name']) }}
-            {{ render_field_with_value(form.description, school['description'] if entity == 'school' else department['description']) }}
+            {{ render_field_with_value(form.name, school.name if entity == 'school' else department.name) }}
+            {{ render_field_with_value(form.description, school.description if entity == 'school' else department.description) }}
             {% if form.schools %}
-                {{ render_field_with_value(form.schools, school['id']) }}
+                {{ render_field_with_value(form.schools, school.id) }}
             {% endif %}
             <div class="clearfix">
                 {{ form.submit(class='btn btn-primary float-end', value=title) }}

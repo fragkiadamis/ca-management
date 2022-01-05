@@ -14,7 +14,7 @@ class UniEntityForm(FlaskForm):
 class EditDepartmentForm(FlaskForm):
     name = StringField('Name', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     description = StringField('Description', render_kw={'class': 'form-control', 'placeholder': ''})
-    schools = SelectField('School', vrender_kw={'class': 'form-control', 'placeholder': ''}, alidators=[DataRequired()])
+    schools = SelectField('School', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     submit = SubmitField('Add Department')
 
     def __init__(self):

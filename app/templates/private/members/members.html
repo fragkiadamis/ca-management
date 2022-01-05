@@ -1,4 +1,4 @@
-{% extends "./main.html" %}
+{% extends "main.html" %}
 {% from "_macros.html" import render_field, render_field_with_value, render_messages %}
 {% block title %}Profile{% endblock %}
 {% block body %}
@@ -54,24 +54,24 @@
                 </thead>
                 <tbody>
                 {% for member in members[key] %}
-                    <tr id="{{ member['id'] }}">
-                        <td>{{ member['ca_reg_number'] if member['ca_reg_number'] }}</td>
-                        <td>{{ member['first_name'] }}</td>
-                        <td>{{ member['last_name'] }}</td>
-                        <td>{{ member['email'] }}</td>
+                    <tr id="{{ member.id }}">
+                        <td>{{ member.ca_reg_number if member.ca_reg_number }}</td>
+                        <td>{{ member.first_name }}</td>
+                        <td>{{ member.last_name }}</td>
+                        <td>{{ member.email }}</td>
                         <td>
-                                <span class="text-{{ 'success' if member['is_active'] else 'danger' }}">
-                                    {{ 'Active' if member['is_active'] else 'Inactive' }}
+                                <span class="text-{{ 'success' if member.is_active else 'danger' }}">
+                                    {{ 'Active' if member.is_active else 'Inactive' }}
                                 </span>
                         </td>
                         <td>
-                            {% if not member['is_verified'] %}
-                                <a href="{{ url_for('ca.verify', member_id=member['id'], verify='Accept') }}" class="px-1">Accept</a>
-                                <a href="{{ url_for('ca.verify', member_id=member['id'], verify='Deny') }}" class="px-1">Delete</a>
+                            {% if not member.is_verified %}
+                                <a href="{{ url_for('ca.verify', member_id=member.id, verify='Accept') }}" class="px-1">Accept</a>
+                                <a href="{{ url_for('ca.verify', member_id=member.id, verify='Deny') }}" class="px-1">Delete</a>
                             {% else %}
-                                <a href="{{ url_for('ca.edit_member', member_id=member['id']) }}" class="px-1">Edit</a>
-                                <a href="{{ url_for('ca.toggle_status', member_id=member['id'], display=display) }}" class="px-1">
-                                    {{ "Deactivate" if member['is_active'] else "Activate" }}
+                                <a href="{{ url_for('ca.edit_member', member_id=member.id) }}" class="px-1">Edit</a>
+                                <a href="{{ url_for('ca.toggle_status', member_id=member.id, display=display) }}" class="px-1">
+                                    {{ "Deactivate" if member.is_active else "Activate" }}
                                 </a>
                             {% endif %}
                         </td>
@@ -79,6 +79,9 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <div class="clearfix">
+                <span class="float-end">Total {{ key }} members: {{ members[key]|length }}</span>
+            </div>
         {% endif %}
     {% endfor %}
 {% endblock %}

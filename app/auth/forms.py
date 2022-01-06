@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, ValidationError, IntegerField, SelectField, SelectMultipleField, BooleanField
+from wtforms import PasswordField, StringField, SubmitField, ValidationError, SelectField, SelectMultipleField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo
 
 from app.models import Member, Team
@@ -17,7 +17,6 @@ class RegistrationForm(FlaskForm):
     ])
     confirm_password = PasswordField('Confirm Password', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     telephone = StringField('Telephone', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
-    semester = IntegerField('Semester', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     uni_reg_number = StringField('University Registration Number', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     city = StringField('City', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     address = StringField('Address', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])

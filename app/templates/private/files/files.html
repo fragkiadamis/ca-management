@@ -21,7 +21,7 @@
             {% for file in files %}
                 <tbody>
                 <tr>
-                    <td>{{ file.name }}</td>
+                    <td><a href="{{ url_for('ca.download_file', file_id=file.id) }}">{{ file.name }}</a></td>
                     <td>{{ file.create_date }}</td>
                     <td>
                         {% for team in file.teams %}

@@ -180,7 +180,7 @@ class File(db.Model):
     file_name = db.Column(db.String(255), nullable=False)
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     teams = db.relationship('Team', secondary='team_files')
-    added_by = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+    added_by = db.Column(db.Integer(), db.ForeignKey('members.id'), nullable=False)
 
 
 class TeamFiles(db.Model):
@@ -189,3 +189,17 @@ class TeamFiles(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     team_id = db.Column(db.Integer(), db.ForeignKey('teams.id', ondelete='CASCADE'))
     file_id = db.Column(db.Integer(), db.ForeignKey('files.id', ondelete='CASCADE'))
+
+
+class Transaction(db.Model):
+    __tablename__ = 'transactions'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    amount = db.Column(db.Float(precision=2), nullable=False)
+    create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
+    description = db.Column(db.Text(255), nullable=True)
+    type = db.Column(db.String(60), nullable=False)
+    added_by = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    team = db.Column(db.Integer(), db.ForeignKey('teams.id'))
+    member = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    assoc_transaction = db.Column(db.Integer(), db.ForeignKey('transactions.id'))

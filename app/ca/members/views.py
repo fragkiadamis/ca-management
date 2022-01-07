@@ -30,10 +30,10 @@ def list_members():
         members = {'Basic': Member.query.filter(Member.role == 'basic', Member.is_verified == 1).all()}
     elif display == 'role':
         all_members = Member.query.filter(Member.is_verified == 1).all()
-        admins = [d for d in all_members if d.role == 'admin']
-        ca_admins = [d for d in all_members if d.role == 'ca_admin']
-        basics = [d for d in all_members if d.role == 'basic']
-        members = {'Admins': admins, 'CA Admins': ca_admins, 'Basic': basics}
+        # admins = [d for d in all_members if d.roles == 'Admin']
+        # ca_admins = [d for d in all_members if d.roles == 'Admin Council']
+        # basics = [d for d in all_members if d.roles == 'Editor']
+        # members = {'Admins': admins, 'CA Admins': ca_admins, 'Treasurer': basics}
     elif display == 'status':
         all_members = Member.query.filter(Member.is_verified == 1).all()
         active = [d for d in all_members if d.is_active]

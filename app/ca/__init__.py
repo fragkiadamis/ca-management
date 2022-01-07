@@ -9,3 +9,4 @@ from . import teams
 from . import announcements
 from . import activities
 from . import files
+from . import treasuries

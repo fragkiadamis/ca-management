@@ -55,7 +55,7 @@
 {% macro render_messages() %}
     {% with messages = get_flashed_messages() %}
         {% if messages %}
-            <div id="message" class="alert alert-danger" role="alert">
+            <div id="message" class="alert alert-info" role="alert">
                 <ul class=flashes>
                     {% for message in messages %}
                         <li>{{ message }}</li>

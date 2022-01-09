@@ -45,15 +45,13 @@ def list_members():
 @login_required
 @is_this_user
 def profile(member_id):
-    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-
     form = ProfileForm()
     member = Member.query.get_or_404(member_id)
 
     if form.validate_on_submit():
         if not member.verify_password(form.confirm_changes.data):
             flash('Invalid Password')
-            return render_template('private/members/member_form.html', form=form, user=sess_user, title='Profile')
+            return redirect(url_for('ca.profile', member_id=member_id))
 
         # Update member properties
         if form.password.data:
@@ -67,9 +65,10 @@ def profile(member_id):
         member.address = form.address.data
         db.session.commit()
 
-        session['_username'] = form.username.data
+        session['_username'] = member.username
         flash('You have successfully updated your profile.')
 
+    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/members/member_form.html', form=form, member=member, user=sess_user, title='Profile')
 
 
@@ -104,10 +103,10 @@ def edit_member(member_id):
             member.teams.append(Team.query.get_or_404(team_id))
 
         db.session.commit()
+        session['_username'] = member.username
         flash('You have successfully updated the member\'s profile.')
         return redirect(url_for('ca.list_members'))
 
-    session['_username'] = form.username.data
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/members/member_form.html', form=form, member=member, user=sess_user, title=title)
 

@@ -14,11 +14,11 @@
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>
     {% elif action == 'edit' %}
-        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.edit_announcement', announcement_id=announcement['id']) }}">
+        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.edit_announcement', announcement_id=announcement.id) }}">
             {{ form.csrf_token() }}
-            {{ render_field_with_value(form.title, announcement['title']) }}
-            {{ render_field_with_value(form.body, announcement['body']) }}
-            {{ render_mul_select_field_with_values(form.teams, announcement['teams']) }}
+            {{ render_field_with_value(form.title, announcement.title) }}
+            {{ render_field_with_value(form.body, announcement.body) }}
+            {{ render_mul_select_field_with_values(form.teams, announcement.teams) }}
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>

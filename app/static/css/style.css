@@ -1,0 +1,12 @@
+body {
+    height: 100vh;
+}
+
+main {
+    min-height: 100%;
+}
+
+footer {
+    height: 50px;
+    margin-top: -50px;
+}

@@ -44,7 +44,10 @@ def login():
             # redirect to the dashboard page after login
             return redirect(url_for('ca.dashboard'))
         else:
-            flash('Invalid email or password.')
+            if not member.is_verified:
+                flash('Your verification is pending')
+            else:
+                flash('Invalid email or password.')
             return render_template('index.html', form=form, title='Login')
 
 

@@ -24,9 +24,9 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='admin') }}">Admin Members</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='ca_admin') }}">CA Admin Members</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='basic') }}">Basic Members</a></li>
+                    {% for role in roles %}
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display=role.name) }}">{{ role.name }} Members</a></li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

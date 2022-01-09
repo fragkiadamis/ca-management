@@ -10,7 +10,7 @@ class TransactionForm(FlaskForm):
     description = StringField('Description', render_kw={'class': 'form-control', 'placeholder': ''})
     type = RadioField('Team', choices=[('other', 'Other'), ('registration', 'Registration'), ('subscription', 'Subscription')], validators=[DataRequired()])
     team = SelectField('Team', render_kw={'class': 'form-control', 'placeholder': ''})
-    member = SelectField('Team', render_kw={'class': 'form-control', 'placeholder': ''})
+    member = SelectField('Member', render_kw={'class': 'form-control', 'placeholder': ''})
     submit = SubmitField('Submit')
 
     def __init__(self):

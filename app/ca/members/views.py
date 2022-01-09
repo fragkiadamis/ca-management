@@ -12,7 +12,8 @@ from ...decorators import permissions_required, is_this_user
 @login_required
 def list_members():
     display = request.args.get('display')
-    members = None
+    members = {}
+    roles = Roles.query.all()
 
     # Filter Members according to url parameter
     # TODO implement filters for basic users
@@ -22,28 +23,22 @@ def list_members():
         members = {'Active': Member.query.filter(Member.is_active == 1, Member.is_verified == 1).all()}
     elif display == 'inactive':
         members = {'Inactive': Member.query.filter(Member.is_active == 0, Member.is_verified == 1).all()}
-    elif display == 'admin':
-        members = {'Admin': Member.query.filter(Member.role == 'admin', Member.is_verified == 1).all()}
-    elif display == 'ca_admin':
-        members = {'CA Admin': Member.query.filter(Member.role == 'ca_admin', Member.is_verified == 1).all()}
-    elif display == 'basic':
-        members = {'Basic': Member.query.filter(Member.role == 'basic', Member.is_verified == 1).all()}
+    elif display in [r.name for r in roles]:
+        all_members = Member.query.filter(Member.is_verified == 1).all()
+        members[display] = [m for m in all_members if display in [r.name for r in m.roles]]
     elif display == 'role':
         all_members = Member.query.filter(Member.is_verified == 1).all()
-        # admins = [d for d in all_members if d.roles == 'Admin']
-        # ca_admins = [d for d in all_members if d.roles == 'Admin Council']
-        # basics = [d for d in all_members if d.roles == 'Editor']
-        # members = {'Admins': admins, 'CA Admins': ca_admins, 'Treasurer': basics}
+        for role in roles:
+            members[role.name] = [m for m in all_members if role in m.roles]
     elif display == 'status':
         all_members = Member.query.filter(Member.is_verified == 1).all()
-        active = [d for d in all_members if d.is_active]
-        inactive = [d for d in all_members if not d.is_active]
-        members = {'Active': active, 'Inactive': inactive}
+        members['Active'] = [m for m in all_members if m.is_active]
+        members['Inactive'] = [m for m in all_members if not m.is_active]
     else:
         members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1).all()}
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/members/members.html', user=sess_user, members=members, title='Members', display=display)
+    return render_template('private/members/members.html', user=sess_user, members=members, title='Members', roles=roles, display=display)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])
@@ -71,6 +66,8 @@ def profile(member_id):
         member.city = form.city.data
         member.address = form.address.data
         db.session.commit()
+
+        session['_username'] = form.username.data
         flash('You have successfully updated your profile.')
 
     return render_template('private/members/member_form.html', form=form, member=member, user=sess_user, title='Profile')
@@ -110,6 +107,7 @@ def edit_member(member_id):
         flash('You have successfully updated the member\'s profile.')
         return redirect(url_for('ca.list_members'))
 
+    session['_username'] = form.username.data
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/members/member_form.html', form=form, member=member, user=sess_user, title=title)
 

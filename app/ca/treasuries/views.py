@@ -49,6 +49,10 @@ def edit_transaction(transaction_id):
         amount = float(form.amount.data)
         if (form.type.data == 'registration') or (form.type.data == 'subscription'):
             ca_commission = amount * .10
+            transaction.amount = amount - ca_commission
+            transaction.commission = Commission(amount=ca_commission, description=f'10% from {form.type.data}')
+        else:
+            transaction.commission = None
 
         transaction.description = form.description.data
         transaction.update_by = session['_user_id']

@@ -12,31 +12,60 @@
         <table class="table table-hover">
             <thead>
             <tr>
-                <th scope="col">Date</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Description</th>
                 <th scope="col">Team</th>
-                <th scope="col">Type</th>
                 <th scope="col">Added By</th>
+                <th scope="col">Date</th>
+                <th scope="col">Updated By</th>
+                <th scope="col">Update Date</th>
                 <th scope="col">Actions</th>
             </tr>
             </thead>
-            {% for transaction in transactions %}
                 <tbody>
-                <tr>
-                    <td>{{ transaction.create_date }}</td>
-                    <td>{{ transaction.amount }}</td>
-                    <td>{{ transaction.description }}</td>
-                    <td>{{ transaction.team }}</td>
-                    <td>{{ transaction.type }}</td>
-                    <td>{{ transaction.added_by }}</td>
-                    <td>
-                        <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id) }}" class="px-1">Edit</a>
-                        <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id) }}" class="px-1">Delete</a>
-                    </td>
-                </tr>
+                    {% for transaction in transactions %}
+                        <tr>
+                            <td class="text-{{ 'success' if transaction.amount >= 0 else 'danger' }}">
+                                <div>{{ transaction.amount }}</div>
+                                {% for commission in transaction.commissions %}
+                                    <div>{{ commission.amount }}</div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <span>{{ transaction.description }}</span>
+                                {% for commission in transaction.commissions %}
+                                    <div>{{ commission.description }}</div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <span>{{ transaction.team }}</span>
+                                {% for commission in transaction.commissions %}
+                                    <div>Cultural Association</div>
+                                {% endfor %}
+                            </td>
+                            <td>{{ transaction.added_by }}</td>
+                            <td>{{ transaction.create_date }}</td>
+                            <td>{{ transaction.updated_by }}</td>
+                            <td>{{ transaction.update_date }}</td>
+                            <td>
+                                <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id) }}" class="px-1">Edit</a>
+                                <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id) }}" class="px-1">Delete</a>
+                            </td>
+                        </tr>
+{#                        {% for commission in transaction.commissions %}#}
+{#                            <tr>#}
+{#                                <td>{{ commission.amount }}</td>#}
+{#                                <td>{{ commission.description }}</td>#}
+{#                                <td>Culture Association</td>#}
+{#                                <td>{{ transaction.added_by }}</td>#}
+{#                                <td>{{ transaction.create_date }}</td>#}
+{#                                <td>{{ transaction.updated_by }}</td>#}
+{#                                <td>{{ transaction.update_date }}</td>#}
+{#                                <td></td>#}
+{#                            </tr>#}
+{#                        {% endfor %}#}
+                    {% endfor %}
                 </tbody>
-            {% endfor %}
         </table>
     {% else %}
         <h3>No Transactions have been added</h3>

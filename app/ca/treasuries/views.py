@@ -5,7 +5,7 @@ from .forms import TransactionForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
-from ...models import Team, Transaction
+from ...models import Team, Transaction, Commission, Member
 
 
 @ca.route('/treasuries')
@@ -21,9 +21,17 @@ def list_treasuries():
 def add_transaction():
     form = TransactionForm()
     if form.validate_on_submit():
-        transaction = Transaction(amount=form.amount.data, description=form.description.data, type=form.type.data, member=form.member.data, team=form.team.data, added_by=session['_user_id'])
-        db.session.add(transaction)
-        db.session.commit()
+        amount = float(form.amount.data)
+        if (form.type.data == 'registration') or (form.type.data == 'subscription'):
+            ca_commission = amount * .10
+            transaction = Transaction(amount=amount - ca_commission, description=form.description.data, type=form.type.data, member=form.member.data, team=form.team.data, added_by=session['_user_id'])
+            transaction.commissions.append(Commission(amount=ca_commission, description=f'10% from {form.type.data}'))
+            db.session.add(transaction)
+            db.session.commit()
+        else:
+            transaction = Transaction(amount=amount, description=form.description.data, type=form.type.data, team=form.team.data, added_by=session['_user_id'])
+            db.session.add(transaction)
+            db.session.commit()
 
         flash('You have successfully added a new transaction.')
         return redirect(url_for('ca.list_treasuries'))
@@ -38,11 +46,14 @@ def edit_transaction(transaction_id):
     form = TransactionForm()
     transaction = Transaction.query.get_or_404(transaction_id)
     if form.validate_on_submit():
-        transaction.amount = form.amount.data
+        amount = float(form.amount.data)
+        if (form.type.data == 'registration') or (form.type.data == 'subscription'):
+            ca_commission = amount * .10
+
         transaction.description = form.description.data
-        transaction.type = form.type.data
-        transaction.member = form.member.data
+        transaction.update_by = session['_user_id']
         transaction.team = form.team.data
+        transaction.type = form.type.data
         db.session.commit()
 
         flash('You have successfully edited the transaction.')

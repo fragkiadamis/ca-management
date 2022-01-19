@@ -200,9 +200,28 @@ class Transaction(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     amount = db.Column(db.Float(precision=2), nullable=False)
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
+    update_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     description = db.Column(db.Text(255), nullable=True)
     type = db.Column(db.String(60), nullable=False)
     added_by = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    updated_by = db.Column(db.Integer(), db.ForeignKey('members.id'))
     team = db.Column(db.Integer(), db.ForeignKey('teams.id'))
     member = db.Column(db.Integer(), db.ForeignKey('members.id'))
-    assoc_transaction = db.Column(db.Integer(), db.ForeignKey('transactions.id'))
+    # commission = db.relationship('Transaction', backref='assoc_transactions')
+    commissions = db.relationship('Commission', secondary='transaction_commissions', cascade="all, delete-orphan", single_parent=True)
+
+
+class Commission(db.Model):
+    __tablename__ = 'commissions'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    amount = db.Column(db.Float(precision=2), nullable=False)
+    description = db.Column(db.Text(255), nullable=True)
+
+
+class TransactionCommissions(db.Model):
+    __tablename__ = 'transaction_commissions'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    transaction_id = db.Column(db.Integer(), db.ForeignKey('transactions.id'))
+    commission_id = db.Column(db.Integer(), db.ForeignKey('commissions.id'))

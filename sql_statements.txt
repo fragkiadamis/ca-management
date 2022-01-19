@@ -47,3 +47,5 @@ INSERT INTO teams (name, description, email, telephone) values ('Studio FM1 105.
 
 
 INSERT INTO roles (name) values ('Admin'), ('Admin Council'), ('Treasurer'), ('Editor');
+
+UPDATE members SET is_active=1, is_verified=1;

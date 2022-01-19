@@ -14,7 +14,9 @@
             <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Description</th>
-                <th scope="col">Activity Date</th>
+                <th scope="col">Start Date | Time</th>
+                <th scope="col">End Date | Time</th>
+                <th scope="col">Added By</th>
                 <th scope="col">Teams</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -24,7 +26,9 @@
                 <tr>
                     <td>{{ activity.title }}</td>
                     <td>{{ activity.description }}</td>
-                    <td>{{ activity.activityDate }}</td>
+                    <td>{{ activity.start_date }} | {{ activity.start_time }}</td>
+                    <td>{{ activity.end_date }} | {{ activity.end_time }}</td>
+                    <td>{{ activity.added_by }}</td>
                     <td>
                         {% for team in activity.teams %}
                             {{ team.name }}

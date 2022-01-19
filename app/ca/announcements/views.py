@@ -39,7 +39,6 @@ def add_announcement():
 def edit_announcement(announcement_id):
     form = AnnouncementForm()
     announcement = Announcement.query.get_or_404(announcement_id)
-    form.body.data = announcement.body
     if form.validate_on_submit():
         announcement.title = form.title.data
         announcement.body = form.body.data

@@ -20,8 +20,9 @@ def list_activities():
 @login_required
 def add_activity():
     form = ActivityForm()
+    print(form.start_date.data, form.end_date.data)
     if form.validate_on_submit():
-        activity = Activity(title=form.title.data, description=form.description.data, activityDate=form.activityDate.data, added_by=session['_user_id'])
+        activity = Activity(title=form.title.data, description=form.description.data, start_date=form.start_date.data, end_date=form.end_date.data, start_time=form.start_time.data, end_time=form.end_time.data, added_by=session['_user_id'])
         for team_id in form.teams.data:
             activity.teams.append(Team.query.get_or_404(team_id))
         db.session.add(activity)
@@ -42,7 +43,10 @@ def edit_activity(activity_id):
     if form.validate_on_submit():
         activity.title = form.title.data
         activity.description = form.description.data
-        activity.activityDate = form.activityDate.data
+        activity.start_date = form.start_date.data
+        activity.start_date = form.end_date.data
+        activity.start_time = form.start_time.data
+        activity.end_time = form.end_time.data
         activity.teams = []
         for team_id in form.teams.data:
             activity.teams.append(Team.query.get_or_404(team_id))

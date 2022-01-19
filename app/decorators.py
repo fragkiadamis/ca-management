@@ -1,5 +1,6 @@
 from functools import update_wrapper
-from flask import session, redirect, url_for, flash, request
+from flask import session, redirect, url_for, flash
+
 
 def is_this_user(fn):
     def wrapped_function(member_id, *args, **kwargs):

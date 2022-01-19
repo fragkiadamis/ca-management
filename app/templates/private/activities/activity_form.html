@@ -9,7 +9,10 @@
             {{ form.csrf_token() }}
             {{ render_field(form.title) }}
             {{ render_field(form.description) }}
-            {{ render_field(form.activityDate) }}
+            {{ render_field(form.start_date) }}
+            {{ render_field(form.end_date) }}
+            {{ render_field(form.start_time) }}
+            {{ render_field(form.end_time) }}
             {{ render_mul_select_field(form.teams) }}
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
@@ -17,10 +20,13 @@
     {% elif action == 'edit' %}
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.edit_activity', activity_id=activity['id']) }}">
             {{ form.csrf_token() }}
-            {{ render_field_with_value(form.title, activity['title']) }}
-            {{ render_field_with_value(form.description, activity['description']) }}
-            {{ render_field_with_value(form.activityDate, activity['activityDate']) }}
-            {{ render_mul_select_field_with_values(form.teams, activity['teams']) }}
+            {{ render_field_with_value(form.title, activity.title) }}
+            {{ render_field_with_value(form.description, activity.description) }}
+            {{ render_field_with_value(form.start_date, activity.start_date) }}
+            {{ render_field_with_value(form.end_date, activity.end_date) }}
+            {{ render_field_with_value(form.start_time, activity.start_time) }}
+            {{ render_field_with_value(form.end_time, activity.end_time) }}
+            {{ render_mul_select_field_with_values(form.teams, activity.teams) }}
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>

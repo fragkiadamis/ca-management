@@ -33,7 +33,6 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-
         member = Member.query.filter_by(email=form.email.data).first()
         if member and member.verify_password(form.password.data) and member.is_verified and member.is_active:
             login_user(member, form.remember_me.data)
@@ -48,7 +47,8 @@ def login():
                 flash('Your verification is pending')
             else:
                 flash('Invalid email or password.')
-            return render_template('index.html', form=form, title='Login')
+    # Render index
+    return render_template('index.html', form=form, title='Login')
 
 
 @auth.route('/logout')

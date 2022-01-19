@@ -43,7 +43,13 @@ INSERT INTO departments (name, description, school_id) values
     ('Τμήμα Μουσικής Τεχνολογίας και Ακουστικής', 'ΕΛΜΕΠΑ', 10);
 
 
-INSERT INTO teams (name, description, email, telephone) values ('Studio FM1 105.4', 'Ραδιοφωνική Σταθμός Σπουδαστών ΕΛΜΕΠΑ', 'studiofm1@hmu.gr', '+302810315445');
+INSERT INTO teams (name, description, email, telephone) values
+    ('Studio FM1 105.4', 'Ραδιοφωνική Σταθμός Σπουδαστών ΕΛΜΕΠΑ', 'studiofm1@hmu.gr', '+302810315445'),
+    ('Το μεγάλο μας Τσίρκο', 'Θεατρική Ομάδα ΕΛΜΕΠΑ', 'theater@hmu.gr' '+302810111222'),
+    ('Διχρονίλα', 'Λέσχη Μοτοσυκλετιστών ΕΛΜΕΠΑ', 'motorbikes@hmu.gr', '+302810333444'),
+    ('Kasparov', 'Σκακιστική Ομάδα ΕΛΜΕΠΑ', 'chess@hmu.gr', '+302810555666'),
+    ('I/O', 'Ομάδα Ανάπτυξης Software ΕΛΜΕΠΑ', 'io@hmu.gr', '+302810777888'),
+    ('V for Vendema', 'Ομάδα Ethical Hacking ΕΛΜΕΠΑ', 'vendema@hmu.gr', '+302810999000');
 
 
 INSERT INTO roles (name) values ('Admin'), ('Admin Council'), ('Treasurer'), ('Editor');

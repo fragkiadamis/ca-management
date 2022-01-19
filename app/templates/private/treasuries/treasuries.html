@@ -34,30 +34,28 @@
                                 <div>{{ transaction.commission.description }}</div>
                             </td>
                             <td>
-                                <span>{{ transaction.team }}</span>
-                                <div>{{ transaction.commission.team }}</div>
+                                <span>{{ transaction.team.name }}</span>
+                                {% if transaction.commission %}
+                                    <div>Cultural Association</div>
+                                {% endif %}
                             </td>
-                            <td>{{ transaction.added_by }}</td>
+                            <td>{{ transaction.added_by.ca_reg_number }} - {{ transaction.added_by.first_name }} {{ transaction.added_by.last_name }}</td>
                             <td>{{ transaction.create_date }}</td>
-                            <td>{{ transaction.updated_by }}</td>
-                            <td>{{ transaction.update_date }}</td>
+                            <td>
+                                {% if transaction.updated_by %}
+                                    {{ transaction.updated_by }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if transaction.updated_by %}
+                                    {{ transaction.update_date }}
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id) }}" class="px-1">Edit</a>
                                 <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id) }}" class="px-1">Delete</a>
                             </td>
                         </tr>
-{#                        {% for commission in transaction.commissions %}#}
-{#                            <tr>#}
-{#                                <td>{{ commission.amount }}</td>#}
-{#                                <td>{{ commission.description }}</td>#}
-{#                                <td>Culture Association</td>#}
-{#                                <td>{{ transaction.added_by }}</td>#}
-{#                                <td>{{ transaction.create_date }}</td>#}
-{#                                <td>{{ transaction.updated_by }}</td>#}
-{#                                <td>{{ transaction.update_date }}</td>#}
-{#                                <td></td>#}
-{#                            </tr>#}
-{#                        {% endfor %}#}
                     {% endfor %}
                 </tbody>
         </table>

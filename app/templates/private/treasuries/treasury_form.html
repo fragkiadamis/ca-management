@@ -18,7 +18,7 @@
     {% elif action == 'edit' %}
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.edit_transaction', transaction_id=transaction.id) }}">
             {{ form.csrf_token() }}
-            {{ render_field_with_value(form.amount, transaction.amount) }}
+            {{ render_field_with_value(form.amount, transaction.amount + transaction.commission.amount) }}
             {{ render_field_with_value(form.description, transaction.description) }}
             {{ render_field_with_value(form.team, transaction.team) }}
             {{ render_field_with_value(form.member, transaction.member) }}

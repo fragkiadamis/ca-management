@@ -26,7 +26,7 @@ def add_transaction():
         amount = float(form.amount.data)
         if (form.type.data == 'registration') or (form.type.data == 'subscription'):
             ca_commission = amount * .10
-            transaction = Transaction(amount=amount - ca_commission, description=form.description.data, type=form.type.data, member=form.member.data, team_id=form.team.data, added_by_id=session['_user_id'], create_date=datetime.now())
+            transaction = Transaction(amount=amount - ca_commission, description=form.description.data, type=form.type.data, member_id=form.member.data, team_id=form.team.data, added_by_id=session['_user_id'], create_date=datetime.now())
             transaction.commission = Commission(amount=ca_commission, description=f'10% from {form.type.data}')
             db.session.add(transaction)
             db.session.commit()
@@ -53,12 +53,13 @@ def edit_transaction(transaction_id):
             ca_commission = amount * .10
             transaction.amount = amount - ca_commission
             transaction.commission = Commission(amount=ca_commission, description=f'10% from {form.type.data}')
+            transaction.member_id = form.member.data
         else:
             transaction.commission = None
 
         transaction.description = form.description.data
         transaction.update_date = datetime.now()
-        transaction.updated_by = session['_user_id']
+        transaction.updated_by_id = session['_user_id']
         transaction.team_id = form.team.data
         transaction.type = form.type.data
         db.session.commit()

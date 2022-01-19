@@ -204,11 +204,13 @@ class Transaction(db.Model):
     description = db.Column(db.Text(255), nullable=True)
     type = db.Column(db.String(60), nullable=False)
     added_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
-    added_by = db.relationship('Member', backref='members', foreign_keys=[added_by_id])
-    updated_by = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    updated_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    member_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     team_id = db.Column(db.Integer(), db.ForeignKey('teams.id'))
-    team = db.relationship('Team', backref='teams', foreign_keys=[team_id])
-    member = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    added_by = db.relationship("Member", foreign_keys=[added_by_id])
+    updated_by = db.relationship("Member", foreign_keys=[updated_by_id])
+    member = db.relationship('Member', foreign_keys=[member_id])
+    team = db.relationship('Team', foreign_keys=[team_id])
     commission = db.relationship("Commission", back_populates="transaction", uselist=False, cascade="all, delete-orphan")
 
 

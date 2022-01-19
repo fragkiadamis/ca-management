@@ -15,10 +15,9 @@
                 <th scope="col">Amount</th>
                 <th scope="col">Description</th>
                 <th scope="col">Team</th>
-                <th scope="col">Added By</th>
-                <th scope="col">Date</th>
-                <th scope="col">Updated By</th>
-                <th scope="col">Update Date</th>
+                <th scope="col">Member</th>
+                <th scope="col">Added Date / Treasurer</th>
+                <th scope="col">Updated Date / Treasurer</th>
                 <th scope="col">Actions</th>
             </tr>
             </thead>
@@ -39,17 +38,14 @@
                                     <div>Cultural Association</div>
                                 {% endif %}
                             </td>
-                            <td>{{ transaction.added_by.ca_reg_number }} - {{ transaction.added_by.first_name }} {{ transaction.added_by.last_name }}</td>
-                            <td>{{ transaction.create_date }}</td>
+                            <td>{{ transaction.member.ca_reg_number }} - {{ transaction.member.first_name }} {{ transaction.member.last_name }}</td>
                             <td>
-                                {% if transaction.updated_by %}
-                                    {{ transaction.updated_by }}
-                                {% endif %}
+                                <div>{{ transaction.create_date }}</div>
+                                <div>{{ transaction.added_by.ca_reg_number }} - {{ transaction.added_by.first_name }} {{ transaction.added_by.last_name }}</div>
                             </td>
                             <td>
-                                {% if transaction.updated_by %}
-                                    {{ transaction.update_date }}
-                                {% endif %}
+                                <div>{{ transaction.update_date }}</div>
+                                <div>{{ transaction.updated_by.ca_reg_number }} - {{ transaction.updated_by.first_name }} {{ transaction.updated_by.last_name }}</div>
                             </td>
                             <td>
                                 <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id) }}" class="px-1">Edit</a>

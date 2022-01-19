@@ -207,8 +207,7 @@ class Transaction(db.Model):
     updated_by = db.Column(db.Integer(), db.ForeignKey('members.id'))
     team = db.Column(db.Integer(), db.ForeignKey('teams.id'))
     member = db.Column(db.Integer(), db.ForeignKey('members.id'))
-    # commission = db.relationship('Transaction', backref='assoc_transactions')
-    commissions = db.relationship('Commission', secondary='transaction_commissions', cascade="all, delete-orphan", single_parent=True)
+    commission = db.relationship("Commission", back_populates="transaction", uselist=False, cascade="all, delete-orphan")
 
 
 class Commission(db.Model):
@@ -217,11 +216,5 @@ class Commission(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     amount = db.Column(db.Float(precision=2), nullable=False)
     description = db.Column(db.Text(255), nullable=True)
-
-
-class TransactionCommissions(db.Model):
-    __tablename__ = 'transaction_commissions'
-
-    id = db.Column(db.Integer(), primary_key=True)
     transaction_id = db.Column(db.Integer(), db.ForeignKey('transactions.id'))
-    commission_id = db.Column(db.Integer(), db.ForeignKey('commissions.id'))
+    transaction = db.relationship("Transaction", back_populates="commission")

@@ -25,7 +25,7 @@ def add_transaction():
         if (form.type.data == 'registration') or (form.type.data == 'subscription'):
             ca_commission = amount * .10
             transaction = Transaction(amount=amount - ca_commission, description=form.description.data, type=form.type.data, member=form.member.data, team=form.team.data, added_by=session['_user_id'])
-            transaction.commissions.append(Commission(amount=ca_commission, description=f'10% from {form.type.data}'))
+            transaction.commission = Commission(amount=ca_commission, description=f'10% from {form.type.data}')
             db.session.add(transaction)
             db.session.commit()
         else:

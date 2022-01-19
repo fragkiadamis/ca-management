@@ -27,21 +27,15 @@
                         <tr>
                             <td class="text-{{ 'success' if transaction.amount >= 0 else 'danger' }}">
                                 <div>{{ transaction.amount }}</div>
-                                {% for commission in transaction.commissions %}
-                                    <div>{{ commission.amount }}</div>
-                                {% endfor %}
+                                <div>{{ transaction.commission.amount }}</div>
                             </td>
                             <td>
                                 <span>{{ transaction.description }}</span>
-                                {% for commission in transaction.commissions %}
-                                    <div>{{ commission.description }}</div>
-                                {% endfor %}
+                                <div>{{ transaction.commission.description }}</div>
                             </td>
                             <td>
                                 <span>{{ transaction.team }}</span>
-                                {% for commission in transaction.commissions %}
-                                    <div>Cultural Association</div>
-                                {% endfor %}
+                                <div>{{ transaction.commission.team }}</div>
                             </td>
                             <td>{{ transaction.added_by }}</td>
                             <td>{{ transaction.create_date }}</td>

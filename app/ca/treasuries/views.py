@@ -13,9 +13,23 @@ from ...models import Team, Transaction, Commission, Member
 @ca.route('/treasuries')
 @login_required
 def list_treasuries():
-    transactions = Transaction.query.all()
+    # transactions = {'All': Transaction.query.all()}
+    all_transactions = Transaction.query.all()
+    treasuries = {'Cultural Association': 0}
+    for transaction in all_transactions:
+        if transaction.team:
+            if transaction.team.name not in treasuries:
+                treasuries[transaction.team.name] = 0
+            treasuries[transaction.team.name] += transaction.amount
+            if transaction.commission:
+                treasuries['Cultural Association'] += transaction.commission.amount
+        else:
+            treasuries['Cultural Association'] += transaction.amount
+
+    transactions = {'All': all_transactions}
+    teams = Team.query.all()
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/treasuries/treasuries.html', user=sess_user, transactions=transactions, title="Treasuries")
+    return render_template('private/treasuries/treasuries.html', user=sess_user, transactions=transactions, treasuries=treasuries, teams=teams, title="Treasuries")
 
 
 @ca.route('/transaction/add', methods=['GET', 'POST'])
@@ -31,7 +45,9 @@ def add_transaction():
             db.session.add(transaction)
             db.session.commit()
         else:
-            transaction = Transaction(amount=amount, description=form.description.data, type=form.type.data, team=form.team.data, added_by=session['_user_id'])
+            transaction = Transaction(amount=amount, description=form.description.data, type=form.type.data, added_by_id=session['_user_id'], create_date=datetime.now())
+            if form.team.data:
+                transaction.team_id = form.team.data
             db.session.add(transaction)
             db.session.commit()
 

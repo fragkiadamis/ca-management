@@ -2,27 +2,52 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}Announcements{% endblock %}
 {% block body %}
-    <div class="d-flex justify-content-between align-items-center">
-        <h2 class="h1">{{ title }}</h2>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('ca.add_transaction') }}">Add Transaction</a>
+    <div class="bg-light clearfix p-3">
+{#        <div class="float-start d-flex align-items-center">#}
+{#            <div class="dropdown me-2">#}
+{#                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>#}
+{#                <ul class="dropdown-menu">#}
+{#                    <li><a class="dropdown-item" href="{{ url_for('ca.add_transaction') }}">Team</a></li>#}
+{#                    <li><a class="dropdown-item" href="{{ url_for('ca.add_transaction') }}">Type</a></li>#}
+{#                </ul>#}
+{#            </div>#}
+{#            <div class="dropdown me-2">#}
+{#                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>#}
+{#                <ul class="dropdown-menu">#}
+{#                    {% for team in teams %}#}
+{#                        <li><a class="dropdown-item" href="{{ url_for('ca.add_transaction') }}">{{ team.name }} Members</a></li>#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+        <div class="float-end">
+            <a class="btn btn-primary me-2" href="{{ url_for('ca.add_transaction') }}">Add Transaction</a>
+{#            <a class="btn btn-primary" href="{{ url_for('ca.add_transaction') }}">Transfer Money</a>#}
+        </div>
     </div>
-    <hr class="intro-divider">
     {{ render_messages() }}
     {% if transactions %}
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Amount</th>
-                <th scope="col">Description</th>
-                <th scope="col">Team</th>
-                <th scope="col">Member</th>
-                <th scope="col">Added Date / Treasurer</th>
-                <th scope="col">Updated Date / Treasurer</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-                <tbody>
-                    {% for transaction in transactions %}
+        {% for team in treasuries %}
+            <h2>{{ team }} Treasury: {{ treasuries[team] }} euro</h2>
+        {% endfor %}
+        <hr class="intro-divider">
+        {% for team in transactions %}
+            {% if transactions[team] %}
+                <h2>{{ team }} <b>Transactions</b></h2>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Team</th>
+                        <th scope="col">Member</th>
+                        <th scope="col">Added Date / Treasurer</th>
+                        <th scope="col">Updated Date / Treasurer</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for transaction in transactions[team] %}
                         <tr>
                             <td class="text-{{ 'success' if transaction.amount >= 0 else 'danger' }}">
                                 <div>{{ transaction.amount }}</div>
@@ -33,7 +58,7 @@
                                 <div>{{ transaction.commission.description }}</div>
                             </td>
                             <td>
-                                <span>{{ transaction.team.name }}</span>
+                                <span>{{ transaction.team.name if transaction.team else 'Cultural Association' }}</span>
                                 {% if transaction.commission %}
                                     <div>Cultural Association</div>
                                 {% endif %}
@@ -44,8 +69,10 @@
                                 <div>{{ transaction.added_by.ca_reg_number }} - {{ transaction.added_by.first_name }} {{ transaction.added_by.last_name }}</div>
                             </td>
                             <td>
-                                <div>{{ transaction.update_date }}</div>
-                                <div>{{ transaction.updated_by.ca_reg_number }} - {{ transaction.updated_by.first_name }} {{ transaction.updated_by.last_name }}</div>
+                                {% if transaction.update_date %}
+                                    <div>{{ transaction.update_date }}</div>
+                                    <div>{{ transaction.updated_by.ca_reg_number }} - {{ transaction.updated_by.first_name }} {{ transaction.updated_by.last_name }}</div>
+                                {% endif %}
                             </td>
                             <td>
                                 <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id) }}" class="px-1">Edit</a>
@@ -53,8 +80,10 @@
                             </td>
                         </tr>
                     {% endfor %}
-                </tbody>
-        </table>
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endfor %}
     {% else %}
         <h3>No Transactions have been added</h3>
     {% endif %}

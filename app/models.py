@@ -72,6 +72,7 @@ class Team(db.Model):
     activities = db.relationship('Activity', secondary='team_activities', back_populates="teams")
     announcements = db.relationship('Announcement', secondary='team_announcements', back_populates="teams")
     files = db.relationship('File', secondary='team_files', back_populates="teams")
+    transactions = db.relationship("Transaction", back_populates="team")
 
     @property
     def member_count(self):
@@ -210,7 +211,7 @@ class Transaction(db.Model):
     added_by = db.relationship("Member", foreign_keys=[added_by_id])
     updated_by = db.relationship("Member", foreign_keys=[updated_by_id])
     member = db.relationship('Member', foreign_keys=[member_id])
-    team = db.relationship('Team', foreign_keys=[team_id])
+    team = db.relationship('Team', foreign_keys=[team_id], back_populates="transactions")
     commission = db.relationship("Commission", back_populates="transaction", uselist=False, cascade="all, delete-orphan")
 
 

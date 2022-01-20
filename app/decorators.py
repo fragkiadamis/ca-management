@@ -1,5 +1,5 @@
 from functools import update_wrapper
-from flask import session, redirect, url_for, flash
+from flask import session, redirect, url_for, flash, request
 
 
 def is_this_user(fn):
@@ -20,3 +20,13 @@ def permissions_required(required_roles):
             return fn(*args, **kwargs)
         return update_wrapper(wrapped_function, fn)
     return decorator
+
+
+def is_not_transfer(fn):
+    def wrapped_function(transaction_id, *args, **kwargs):
+        transaction_type = request.args.get('transaction_type')
+        if transaction_type == 'Transfer':
+            flash('Action not possible')
+            return redirect(url_for('ca.list_treasuries'))
+        return fn(transaction_id, *args, **kwargs)
+    return update_wrapper(wrapped_function, fn)

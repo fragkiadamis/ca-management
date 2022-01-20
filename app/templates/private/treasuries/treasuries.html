@@ -48,23 +48,25 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for transaction in transactions[team] %}
+                    {# display only the original transactions and their associated if they exists in the same row #}
+                    {% for transaction in transactions[team] if not transaction.transaction_id %}
                         <tr>
-                            <td class="text-{{ 'success' if transaction.amount >= 0 else 'danger' }}">
-                                <div>{{ transaction.amount }}</div>
-                                <div>{{ transaction.commission.amount }}</div>
+                            <td>
+                                <div class="text-{{ 'success' if transaction.amount >= 0 else 'danger' }}">{{ transaction.amount }}</div>
+                                <div class="text-{{ 'success' if transaction.assoc_transaction and transaction.assoc_transaction.amount >= 0 else 'danger' }}">{{ transaction.assoc_transaction.amount }}</div>
                             </td>
                             <td>
-                                <span>{{ transaction.description }}</span>
-                                <div>{{ transaction.commission.description }}</div>
+                                <div>{{ transaction.description }}</div>
+                                <div>{{ transaction.assoc_transaction.description }}</div>
                             </td>
                             <td>
-                                <span>{{ transaction.team.name if transaction.team else 'Cultural Association' }}</span>
-                                {% if transaction.commission %}
-                                    <div>Cultural Association</div>
-                                {% endif %}
+                                <div>{{ transaction.team.name }}</div>
+                                <div>{{ transaction.assoc_transaction.team.name if transaction.assoc_transaction }}</div>
                             </td>
-                            <td>{{ transaction.type }}</td>
+                            <td>
+                                <div>{{ transaction.type }}</div>
+                                <div>{{ transaction.assoc_transaction.type }}</div>
+                            </td>
                             <td>{{ transaction.member.ca_reg_number }} - {{ transaction.member.first_name }} {{ transaction.member.last_name }}</td>
                             <td>
                                 <div>{{ transaction.create_date }}</div>
@@ -77,8 +79,10 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id) }}" class="px-1">Edit</a>
-                                <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id) }}" class="px-1">Delete</a>
+                                {% if transaction.type != 'Transfer' %}
+                                    <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Edit</a>
+                                {% endif %}
+                                <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}

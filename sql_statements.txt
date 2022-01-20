@@ -44,8 +44,9 @@ INSERT INTO departments (name, description, school_id) values
 
 
 INSERT INTO teams (name, description, email, telephone) values
+    ('Πολιτιστικός Σύλλογος', 'Πολιτιστικός Σύλλογος ΕΛΜΕΠΑ', 'culture@hmu.gr', '+302810123456'),
     ('Studio FM1 105.4', 'Ραδιοφωνική Σταθμός Σπουδαστών ΕΛΜΕΠΑ', 'studiofm1@hmu.gr', '+302810315445'),
-    ('Το μεγάλο μας Τσίρκο', 'Θεατρική Ομάδα ΕΛΜΕΠΑ', 'theater@hmu.gr' '+302810111222'),
+    ('Το μεγάλο μας Τσίρκο', 'Θεατρική Ομάδα ΕΛΜΕΠΑ', 'theater@hmu.gr', '+302810111222'),
     ('Διχρονίλα', 'Λέσχη Μοτοσυκλετιστών ΕΛΜΕΠΑ', 'motorbikes@hmu.gr', '+302810333444'),
     ('Kasparov', 'Σκακιστική Ομάδα ΕΛΜΕΠΑ', 'chess@hmu.gr', '+302810555666'),
     ('I/O', 'Ομάδα Ανάπτυξης Software ΕΛΜΕΠΑ', 'io@hmu.gr', '+302810777888'),
@@ -54,4 +55,6 @@ INSERT INTO teams (name, description, email, telephone) values
 
 INSERT INTO roles (name) values ('Admin'), ('Admin Council'), ('Treasurer'), ('Editor');
 
-UPDATE members SET is_active=1, is_verified=1;
+UPDATE members SET is_active=1, is_verified=1, ca_reg_number='ca1';
+
+INSERT INTO member_roles (member_id, role_id) values (1, 1);

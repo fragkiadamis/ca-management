@@ -90,6 +90,13 @@ class Team(db.Model):
     def file_count(self):
         return len(self.files)
 
+    @property
+    def treasury(self):
+        treasury = 0
+        for transaction in self.transactions:
+            treasury += transaction.amount
+        return treasury
+
 
 class MemberTeams(db.Model):
     __tablename__ = 'member_teams'
@@ -200,7 +207,7 @@ class Transaction(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True)
     amount = db.Column(db.Float(precision=2), nullable=False)
-    create_date = db.Column(db.DateTime(timezone=True), nullable=False)
+    create_date = db.Column(db.DateTime(timezone=True))
     update_date = db.Column(db.DateTime(timezone=True))
     description = db.Column(db.Text(255), nullable=True)
     type = db.Column(db.String(60), default='Other', nullable=False)
@@ -208,18 +215,9 @@ class Transaction(db.Model):
     updated_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     member_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     team_id = db.Column(db.Integer(), db.ForeignKey('teams.id'))
+    transaction_id = db.Column(db.Integer(), db.ForeignKey('transactions.id'))
     added_by = db.relationship("Member", foreign_keys=[added_by_id])
     updated_by = db.relationship("Member", foreign_keys=[updated_by_id])
     member = db.relationship('Member', foreign_keys=[member_id])
     team = db.relationship('Team', foreign_keys=[team_id], back_populates="transactions")
-    commission = db.relationship("Commission", back_populates="transaction", uselist=False, cascade="all, delete-orphan")
-
-
-class Commission(db.Model):
-    __tablename__ = 'commissions'
-
-    id = db.Column(db.Integer(), primary_key=True)
-    amount = db.Column(db.Float(precision=2), nullable=False)
-    description = db.Column(db.Text(255), nullable=True)
-    transaction_id = db.Column(db.Integer(), db.ForeignKey('transactions.id'))
-    transaction = db.relationship("Transaction", back_populates="commission")
+    assoc_transaction = db.relationship("Transaction", foreign_keys=[transaction_id], uselist=False, cascade="all, delete-orphan")

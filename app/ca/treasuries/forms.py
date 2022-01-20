@@ -16,10 +16,7 @@ class TransactionForm(FlaskForm):
     def __init__(self):
         super(TransactionForm, self).__init__()
         self.member.choices = [(m.id, f'{m.first_name} {m.last_name}, ({m.ca_reg_number})') for m in Member.query.all()]
-        self.team.choices = [('0', 'Cultural Association')]
-        teams = Team.query.all()
-        for team in teams:
-            self.team.choices.append((team.id, team.name))
+        self.team.choices = [(t.id, t.name) for t in Team.query.all()]
 
 
 class TransferForm(FlaskForm):
@@ -30,9 +27,6 @@ class TransferForm(FlaskForm):
 
     def __init__(self):
         super(TransferForm, self).__init__()
-        self.from_team.choices = [('0', 'Cultural Association')]
-        self.to_team.choices = [('0', 'Cultural Association')]
         teams = Team.query.all()
-        for team in teams:
-            self.from_team.choices.append((team.id, team.name))
-            self.to_team.choices.append((team.id, team.name))
+        self.from_team.choices = [(t.id, f'{t.name} - {t.treasury} euros') for t in teams]
+        self.to_team.choices = [(t.id, f'{t.name} - {t.treasury} euros') for t in teams]

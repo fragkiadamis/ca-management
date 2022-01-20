@@ -6,29 +6,19 @@ from flask_login import login_required
 from .forms import TransactionForm, TransferForm
 from .. import ca
 from ... import db
-from ...decorators import permissions_required
-from ...models import Team, Transaction, Commission, Member
+from ...decorators import permissions_required, is_not_transfer
+from ...models import Team, Transaction
 
 
 @ca.route('/treasuries')
 @login_required
 def list_treasuries():
-    all_transactions = Transaction.query.all()
-    treasuries = {'Total': 0, 'Cultural Association': 0}
-    for transaction in all_transactions:
-        treasuries['Total'] += transaction.amount
-        if transaction.team:
-            if transaction.team.name not in treasuries:
-                treasuries[transaction.team.name] = 0
-            treasuries[transaction.team.name] += transaction.amount
-            if transaction.commission:
-                treasuries['Total'] += transaction.commission.amount
-                treasuries['Cultural Association'] += transaction.commission.amount
-        else:
-            treasuries['Cultural Association'] += transaction.amount
-
-    transactions = {'All': all_transactions}
     teams = Team.query.all()
+    treasuries = {'Total': 0}
+    for team in teams:
+        treasuries['Total'] += team.treasury
+        treasuries[team.name] = team.treasury
+    transactions = {'All': Transaction.query.all()}
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/treasuries/treasuries.html', user=sess_user, transactions=transactions, treasuries=treasuries, teams=teams, title="Treasuries")
 
@@ -41,13 +31,11 @@ def add_transaction():
         amount = float(form.amount.data)
         if form.type.data:
             ca_commission = amount * .10
-            transaction = Transaction(amount=amount - ca_commission, description=form.description.data, type='CA Fee', member_id=form.member.data, added_by_id=session['_user_id'], create_date=datetime.now())
-            print(form.team.data, type(form.team.data))
-            transaction.commission = Commission(amount=ca_commission, description='10% commission')
+            transaction = Transaction(amount=amount - ca_commission, description=form.description.data, type='CA Fee', member_id=form.member.data, added_by_id=session['_user_id'], team_id=form.team.data, create_date=datetime.now())
+            transaction.assoc_transaction = Transaction(amount=ca_commission, description=f'{form.description.data} (commission)', team_id=1, type='CA Commission')
         else:
-            transaction = Transaction(amount=amount, description=form.description.data, added_by_id=session['_user_id'], create_date=datetime.now())
+            transaction = Transaction(amount=amount, description=form.description.data, team_id=form.team.data, added_by_id=session['_user_id'], create_date=datetime.now())
 
-        transaction.team_id = form.team.data if int(form.team.data) else None
         db.session.add(transaction)
         db.session.commit()
 
@@ -60,6 +48,7 @@ def add_transaction():
 
 @ca.route('/transactions/edit/<int:transaction_id>', methods=['GET', 'POST'])
 @login_required
+@is_not_transfer
 def edit_transaction(transaction_id):
     form = TransactionForm()
     transaction = Transaction.query.get_or_404(transaction_id)
@@ -69,14 +58,14 @@ def edit_transaction(transaction_id):
             ca_commission = amount * .10
             transaction.amount = amount - ca_commission
             transaction.type = 'CA Fee'
-            transaction.commission = Commission(amount=ca_commission, description='10% commission')
+            transaction.assoc_transaction = Transaction(amount=ca_commission, team_id=1, description=f'{form.description.data} (commission)', type='CA Commission')
             transaction.member_id = form.member.data
         else:
             transaction.amount = amount
-            transaction.commission = None
+            transaction.assoc_transaction = None
             transaction.type = 'Other'
 
-        transaction.team_id = form.team.data if int(form.team.data) else None
+        transaction.team_id = form.team.data
         transaction.description = form.description.data
         transaction.update_date = datetime.now()
         transaction.updated_by_id = session['_user_id']
@@ -105,33 +94,17 @@ def delete_transaction(transaction_id):
 def transfer_money():
     form = TransferForm()
     if form.validate_on_submit():
-        # Find entity's total treasury
-        from_total = 0
         amount = float(form.amount.data)
-        if int(form.from_team.data):
-            team_transactions = Team.query.get_or_404(form.from_team.data).transactions
-            for transaction in team_transactions:
-                from_total += transaction.amount
-        else:
-            all_transactions = Transaction.query.all()
-            for transaction in all_transactions:
-                if transaction.team_id and transaction.commission:
-                    from_total += transaction.commission.amount
-                else:
-                    from_total += transaction.amount
+        from_team = Team.query.get_or_404(form.from_team.data)
+        to_team = Team.query.get_or_404(form.to_team.data)
 
-        if amount > from_total:
+        if amount > from_team.treasury:
             flash('There are not sufficient funds')
             return redirect(url_for('ca.transfer_money'))
 
-        from_name = Team.query.get_or_404(form.from_team.data).name if int(form.from_team.data) else 'Cultural Association'
-        to_name = Team.query.get_or_404(form.to_team.data).name if int(form.to_team.data) else 'Cultural Association'
-        from_treasury_transaction = Transaction(amount=-amount, description=f'Transfer to {to_name}', type='Transfer', added_by_id=session['_user_id'], create_date=datetime.now())
-        from_treasury_transaction.team_id = form.from_team.data if int(form.from_team.data) else None
-        db.session.add(from_treasury_transaction)
-        to_treasury_transaction = Transaction(amount=amount, description=f'Transfer from {from_name}', type='Transfer', added_by_id=session['_user_id'], create_date=datetime.now())
-        to_treasury_transaction.team_id = form.to_team.data if int(form.to_team.data) else None
-        db.session.add(to_treasury_transaction)
+        transfer = Transaction(amount=-amount, description=f'Transfer to {to_team.name}', type='Transfer', added_by_id=session['_user_id'], team_id=form.from_team.data, create_date=datetime.now())
+        transfer.assoc_transaction = Transaction(amount=amount, description=f'Transfer from {from_team.name}', team_id=form.to_team.data, type='Transfer')
+        db.session.add(transfer)
         db.session.commit()
 
         flash('You have successfully transferred money.')

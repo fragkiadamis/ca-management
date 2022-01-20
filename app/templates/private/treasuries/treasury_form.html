@@ -10,8 +10,15 @@
             {{ render_field(form.amount) }}
             {{ render_field(form.description) }}
             {{ render_field(form.team) }}
-            {{ render_field(form.member) }}
-            {{ form.type }}
+            <div class="checkbox mb-3">
+                {{ form.type(class='form-check-input') }}
+                {{ form.type.label(class='form-check-label') }}
+            </div>
+            <div class="collapse" id="memberCollapse">
+                <div class="card card-body">
+                    {{ render_field(form.member) }}
+                </div>
+            </div>
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>
@@ -20,11 +27,34 @@
             {{ form.csrf_token() }}
             {{ render_field_with_value(form.amount, transaction.amount + transaction.commission.amount) if transaction.commission else render_field_with_value(form.amount, transaction.amount) }}
             {{ render_field_with_value(form.description, transaction.description) }}
-            {{ render_field_with_value(form.team, transaction.team) }}
-            {{ render_field_with_value(form.member, transaction.member) }}
-            {{ form.type }}
+            {{ render_field_with_value(form.team, transaction.team_id) }}
+            <div class="checkbox mb-3">
+                {{ form.type(class='form-check-input', checked='') if transaction.type == 'CA Fee' else form.type(class='form-check-input') }}
+                {{ form.type.label(class='form-check-label') }}
+            </div>
+            <div class="collapse" id="memberCollapse">
+                <div class="card card-body">
+                    {{ render_field(form.member) }}
+                </div>
+            </div>
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>
     {% endif %}
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const checkbox = document.getElementById("type");
+            const collapsible = document.getElementById("memberCollapse");
+
+            if (checkbox.checked)
+                new bootstrap.Collapse(collapsible, {show: true});
+
+            checkbox.addEventListener('change', (e) => {
+                if (checkbox.checked)
+                    new bootstrap.Collapse(collapsible, {show: true});
+                else
+                    new bootstrap.Collapse(collapsible, {hide: true});
+            });
+        });
+    </script>
 {% endblock %}

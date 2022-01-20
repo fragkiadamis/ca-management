@@ -203,7 +203,7 @@ class Transaction(db.Model):
     create_date = db.Column(db.DateTime(timezone=True), nullable=False)
     update_date = db.Column(db.DateTime(timezone=True))
     description = db.Column(db.Text(255), nullable=True)
-    type = db.Column(db.String(60), nullable=False)
+    type = db.Column(db.String(60), default='Other', nullable=False)
     added_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     updated_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     member_id = db.Column(db.Integer(), db.ForeignKey('members.id'))

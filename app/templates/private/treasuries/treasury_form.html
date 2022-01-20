@@ -40,6 +40,15 @@
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>
+    {% elif action == 'transfer' %}
+        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.transfer_money') }}">
+            {{ form.csrf_token() }}
+            {{ render_field(form.amount) }}
+            {{ render_field(form.from_team) }}
+            {{ render_field(form.to_team) }}
+            <hr class="my-4">
+            {{ form.submit(class='btn btn-primary btn-lg') }}
+        </form>
     {% endif %}
     <script>
         window.addEventListener('DOMContentLoaded', () => {

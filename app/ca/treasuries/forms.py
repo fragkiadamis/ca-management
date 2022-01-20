@@ -20,3 +20,19 @@ class TransactionForm(FlaskForm):
         teams = Team.query.all()
         for team in teams:
             self.team.choices.append((team.id, team.name))
+
+
+class TransferForm(FlaskForm):
+    amount = StringField('Amount', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
+    from_team = SelectField('From', render_kw={'class': 'form-control', 'placeholder': ''})
+    to_team = SelectField('To', render_kw={'class': 'form-control', 'placeholder': ''})
+    submit = SubmitField('Submit')
+
+    def __init__(self):
+        super(TransferForm, self).__init__()
+        self.from_team.choices = [('0', 'Cultural Association')]
+        self.to_team.choices = [('0', 'Cultural Association')]
+        teams = Team.query.all()
+        for team in teams:
+            self.from_team.choices.append((team.id, team.name))
+            self.to_team.choices.append((team.id, team.name))

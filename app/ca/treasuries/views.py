@@ -13,15 +13,16 @@ from ...models import Team, Transaction, Commission, Member
 @ca.route('/treasuries')
 @login_required
 def list_treasuries():
-    # transactions = {'All': Transaction.query.all()}
     all_transactions = Transaction.query.all()
-    treasuries = {'Cultural Association': 0}
+    treasuries = {'Total': 0, 'Cultural Association': 0}
     for transaction in all_transactions:
+        treasuries['Total'] += transaction.amount
         if transaction.team:
             if transaction.team.name not in treasuries:
                 treasuries[transaction.team.name] = 0
             treasuries[transaction.team.name] += transaction.amount
             if transaction.commission:
+                treasuries['Total'] += transaction.commission.amount
                 treasuries['Cultural Association'] += transaction.commission.amount
         else:
             treasuries['Cultural Association'] += transaction.amount

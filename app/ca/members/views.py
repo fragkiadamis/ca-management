@@ -1,9 +1,10 @@
 from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
 
+from .helpers import filter_members
 from .. import ca
 from .forms import ProfileForm, EditMemberForm
-from app.models import Member, Roles, MemberRoles, Team
+from app.models import Member, Roles, Team
 from ... import db
 from ...decorators import permissions_required, is_this_user
 
@@ -11,34 +12,12 @@ from ...decorators import permissions_required, is_this_user
 @ca.route('/members', methods=['GET', 'POST'])
 @login_required
 def list_members():
-    display = request.args.get('display')
-    members = {}
-    roles = Roles.query.all()
-
-    # Filter Members according to url parameter
-    # TODO implement filters for basic users
-    if display == 'pending':
-        members = {'Pending': Member.query.filter(Member.is_verified == 0).all()}
-    elif display == 'active':
-        members = {'Active': Member.query.filter(Member.is_active == 1, Member.is_verified == 1).all()}
-    elif display == 'inactive':
-        members = {'Inactive': Member.query.filter(Member.is_active == 0, Member.is_verified == 1).all()}
-    elif display in [r.name for r in roles]:
-        all_members = Member.query.filter(Member.is_verified == 1).all()
-        members[display] = [m for m in all_members if display in [r.name for r in m.roles]]
-    elif display == 'role':
-        all_members = Member.query.filter(Member.is_verified == 1).all()
-        for role in roles:
-            members[role.name] = [m for m in all_members if role in m.roles]
-    elif display == 'status':
-        all_members = Member.query.filter(Member.is_verified == 1).all()
-        members['Active'] = [m for m in all_members if m.is_active]
-        members['Inactive'] = [m for m in all_members if not m.is_active]
-    else:
-        members = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1).all()}
+    group_by = request.args.get('group_by')
+    filter_by = request.args.get('filter_by')
+    members, roles, teams, schools, departments = filter_members(filter_by)
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/members/members.html', user=sess_user, members=members, title='Members', roles=roles, display=display)
+    return render_template('private/members/members.html', user=sess_user, title='Members', members=members, teams=teams, schools=schools, departments=departments, roles=roles, filter_by=group_by)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])
@@ -94,7 +73,7 @@ def edit_member(member_id):
         member.city = form.city.data
         member.address = form.address.data
         member.ca_reg_number = form.ca_reg_number.data
-        member.department = form.department.data
+        member.department_id = form.department.data
         member.roles = []
         for role_id in form.roles.data:
             member.roles.append(Roles.query.get_or_404(role_id))

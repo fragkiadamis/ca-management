@@ -13,7 +13,7 @@ def register():
     if form.validate_on_submit():
         member = Member(
             first_name=form.first_name.data, last_name=form.last_name.data, username=form.username.data,
-            department=form.department.data, email=form.email.data, password=form.password.data,
+            department_id=form.department.data, email=form.email.data, password=form.password.data,
             telephone=form.telephone.data, uni_reg_number=form.uni_reg_number.data,
             city=form.city.data, address=form.address.data
         )

@@ -14,7 +14,8 @@ class Member(db.Model, UserMixin):
     username = db.Column(db.String(60), unique=True, nullable=False)
     email = db.Column(db.String(60), unique=True, nullable=False)
     roles = db.relationship('Roles', secondary='member_roles')
-    department = db.Column(db.Integer, db.ForeignKey('departments.id'))
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
+    department = db.relationship('Department', foreign_keys=[department_id])
     teams = db.relationship('Team', secondary='member_teams', back_populates="members")
     password_hash = db.Column(db.String(255), nullable=False)
     telephone = db.Column(db.String(60), unique=True, nullable=False)
@@ -132,6 +133,7 @@ class Department(db.Model):
     description = db.Column(db.String(60))
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))
+    school = db.relationship('School', foreign_keys=[school_id])
     members = db.relationship("Member")
 
     @property

@@ -7,35 +7,61 @@
             <div class="dropdown me-2">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='role') }}">Role</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='status') }}">Status</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='role') }}">Role</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='status') }}">Status</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='team') }}">Team</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='school') }}">School</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='department') }}">Department</a></li>
                 </ul>
             </div>
             <div class="dropdown me-2">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='current') }}">Current Members</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='pending') }}">Pending Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='current') }}">Current Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='pending') }}">Pending Members</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='active') }}">Active Members</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display='inactive') }}">Inactive Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='active') }}">Active Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='inactive') }}">Inactive Members</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    {% for role in roles %}
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', display=role.name) }}">{{ role.name }} Members</a></li>
-                    {% endfor %}
+                    <li class="dropdown-list">
+                        <a class="dropdown-item" href="#">Roles</a>
+                        <ul class="dropdown-list-menu list-unstyled">
+                            {% for role in roles %}
+                                <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='role_' + role.id|string) }}">{{ role.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="dropdown-list">
+                        <a class="dropdown-item" href="#">Teams</a>
+                        <ul class="dropdown-list-menu list-unstyled">
+                            {% for team in teams %}
+                                <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='team_' + team.id|string) }}">{{ team.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="dropdown-list">
+                        <a class="dropdown-item" href="#">Schools</a>
+                        <ul class="dropdown-list-menu list-unstyled">
+                            {% for school in schools %}
+                                <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='school_' + school.id|string) }}">{{ school.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="dropdown-list">
+                        <a class="dropdown-item" href="#">Departments</a>
+                        <ul class="dropdown-list-menu list-unstyled">
+                            {% for department in departments %}
+                                <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='department_' + department.id|string) }}">{{ department.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
-{#        <div class="float-end">#}
-{#            <form class="d-flex">#}
-{#                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">#}
-{#                <button class="btn btn-outline-primary" type="submit">Search</button>#}
-{#            </form>#}
-{#        </div>#}
     </div>
     {{ render_messages() }}
     {% for key in members %}
@@ -74,17 +100,17 @@
                                 <a href="{{ url_for('ca.verify', member_id=member.id, verify='Deny') }}" class="px-1">Delete</a>
                             {% else %}
                                 <a href="{{ url_for('ca.edit_member', member_id=member.id) }}" class="px-1">View</a>
-                                <a href="{{ url_for('ca.toggle_status', member_id=member.id, display=display) }}" class="px-1">
+                                <a href="{{ url_for('ca.toggle_status', member_id=member.id, filter_by=filter_by) }}" class="px-1">
                                     {{ "Deactivate" if member.is_active else "Activate" }}
                                 </a>
                             {% endif %}
-                    </td>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
             <div class="clearfix">
-                <span class="float-end">Total {{ key }} members: {{ members[key]|length }}</span>
+                <span class="float-end">Total members: {{ members[key]|length }}</span>
             </div>
         {% endif %}
     {% endfor %}

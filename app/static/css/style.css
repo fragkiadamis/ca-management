@@ -13,3 +13,19 @@ footer {
 textarea {
     height: 200px;
 }
+
+.dropdown-list-menu {
+    background-color: #fff;
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    border: 1px solid rgba(0,0,0,.15);
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    padding: 0.5rem 0;
+}
+
+.dropdown-list:hover .dropdown-list-menu {
+    display: block;
+}

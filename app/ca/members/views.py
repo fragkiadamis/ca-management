@@ -12,12 +12,11 @@ from ...decorators import permissions_required, is_this_user
 @ca.route('/members', methods=['GET', 'POST'])
 @login_required
 def list_members():
-    group_by = request.args.get('group_by')
     filter_by = request.args.get('filter_by')
     members, roles, teams, schools, departments = filter_members(filter_by)
 
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/members/members.html', user=sess_user, title='Members', members=members, teams=teams, schools=schools, departments=departments, roles=roles, filter_by=group_by)
+    return render_template('private/members/members.html', user=sess_user, title='Members', members=members, teams=teams, schools=schools, departments=departments, roles=roles, filter_by=filter_by)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])
@@ -94,18 +93,19 @@ def edit_member(member_id):
 @login_required
 # @permissions_required(['Admin', 'CA Admin'])
 def toggle_status(member_id):
-    display = request.args.get('display')
+    filter_by = request.args.get('filter_by')
     member = Member.query.get_or_404(member_id)
     member.is_active = not member.is_active
     db.session.commit()
 
-    return redirect(url_for('ca.list_members', display=display))
+    return redirect(url_for('ca.list_members', filter_by=filter_by))
 
 
 @ca.route('/verify/<int:member_id>')
 @login_required
 # @permissions_required(['Admin', 'CA Admin'])
 def verify(member_id):
+    # TODO fix bug
     verify_member = request.args.get('verify')
     member = Member.query.get_or_404(member_id)
     if verify_member == 'Accept':
@@ -119,4 +119,4 @@ def verify(member_id):
         db.session.delete(member)
         db.session.commit()
 
-    return redirect(url_for('ca.list_members', display='pending'))
+    return redirect(url_for('ca.list_members', filter_by='pending'))

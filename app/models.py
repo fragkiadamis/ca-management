@@ -133,8 +133,8 @@ class Department(db.Model):
     description = db.Column(db.String(60))
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))
-    school = db.relationship('School', foreign_keys=[school_id])
-    members = db.relationship("Member")
+    school = db.relationship('School', foreign_keys=[school_id], back_populates="departments")
+    members = db.relationship("Member", back_populates="department")
 
     @property
     def member_count(self):

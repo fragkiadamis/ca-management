@@ -18,7 +18,7 @@ textarea {
     background-color: #fff;
     display: none;
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 100%;
     border: 1px solid rgba(0,0,0,.15);
     border-bottom-left-radius: 0.25rem;

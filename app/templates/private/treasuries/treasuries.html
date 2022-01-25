@@ -3,23 +3,23 @@
 {% block title %}Announcements{% endblock %}
 {% block body %}
     <div class="bg-light clearfix p-3">
-{#        <div class="float-start d-flex align-items-center">#}
-{#            <div class="dropdown me-2">#}
-{#                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>#}
-{#                <ul class="dropdown-menu">#}
-{#                    <li><a class="dropdown-item" href="{{ url_for('ca.add_transaction') }}">Team</a></li>#}
-{#                    <li><a class="dropdown-item" href="{{ url_for('ca.add_transaction') }}">Type</a></li>#}
-{#                </ul>#}
-{#            </div>#}
-{#            <div class="dropdown me-2">#}
-{#                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>#}
-{#                <ul class="dropdown-menu">#}
-{#                    {% for team in teams %}#}
-{#                        <li><a class="dropdown-item" href="{{ url_for('ca.add_transaction') }}">{{ team.name }} Members</a></li>#}
-{#                    {% endfor %}#}
-{#                </ul>#}
-{#            </div>#}
-{#        </div>#}
+        <div class="float-start d-flex align-items-center">
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='team') }}">Team</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='type') }}">Type</a></li>
+                </ul>
+            </div>
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
+                <ul class="dropdown-menu">
+                    {% for team in teams %}
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='team_' + team.id|string) }}">{{ team.name }} Members</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
         <div class="float-end">
             <a class="btn btn-primary me-2" href="{{ url_for('ca.add_transaction') }}">Add Transaction</a>
             <a class="btn btn-primary" href="{{ url_for('ca.transfer_money') }}">Transfer Money</a>
@@ -31,9 +31,9 @@
             <h2>{{ team }} Treasury: {{ treasuries[team] }} euro</h2>
         {% endfor %}
         <hr class="intro-divider">
-        {% for team in transactions %}
-            {% if transactions[team] %}
-                <h2>{{ team }} <b>Transactions</b></h2>
+        {% for key in transactions %}
+            {% if transactions[key]|length %}
+                <h2>{{ key }} <b>Transactions</b></h2>
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -49,7 +49,7 @@
                     </thead>
                     <tbody>
                     {# display only the original transactions and their associated if they exists in the same row #}
-                    {% for transaction in transactions[team] if not transaction.transaction_id %}
+                    {% for transaction in transactions[key] if not transaction.transaction_id %}
                         <tr>
                             <td>
                                 <div class="text-{{ 'success' if transaction.amount >= 0 else 'danger' }}">{{ transaction.amount }}</div>
@@ -81,8 +81,8 @@
                             <td>
                                 {% if transaction.type != 'Transfer' %}
                                     <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Edit</a>
+                                    <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Delete</a>
                                 {% endif %}
-                                <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}

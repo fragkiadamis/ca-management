@@ -15,7 +15,8 @@ class TransactionForm(FlaskForm):
 
     def __init__(self):
         super(TransactionForm, self).__init__()
-        self.member.choices = [(m.id, f'{m.first_name} {m.last_name}, ({m.ca_reg_number})') for m in Member.query.all()]
+        active_members = Member.query.filter(Member.is_active).all()
+        self.member.choices = [(m.id, f'{m.first_name} {m.last_name}, ({m.ca_reg_number})') for m in active_members]
         self.team.choices = [(t.id, t.name) for t in Team.query.all()]
 
 

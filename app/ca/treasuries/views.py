@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from flask import render_template, session, flash, redirect, url_for
+from flask import render_template, session, flash, redirect, url_for, request
 from flask_login import login_required
 
 from .forms import TransactionForm, TransferForm
+from .helpers import filter_treasuries
 from .. import ca
 from ... import db
 from ...decorators import permissions_required, is_not_transfer
@@ -13,12 +14,10 @@ from ...models import Team, Transaction
 @ca.route('/treasuries')
 @login_required
 def list_treasuries():
+    filter_by = request.args.get('filter_by')
     teams = Team.query.all()
-    treasuries = {'Total': 0}
-    for team in teams:
-        treasuries['Total'] += team.treasury
-        treasuries[team.name] = team.treasury
-    transactions = {'All': Transaction.query.all()}
+    treasuries, transactions = filter_treasuries(filter_by, teams)
+
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/treasuries/treasuries.html', user=sess_user, transactions=transactions, treasuries=treasuries, teams=teams, title="Treasuries")
 
@@ -80,6 +79,7 @@ def edit_transaction(transaction_id):
 
 @ca.route('/transactions/delete/<int:transaction_id>')
 @login_required
+@is_not_transfer
 def delete_transaction(transaction_id):
     transaction = Transaction.query.get_or_404(transaction_id)
     db.session.delete(transaction)

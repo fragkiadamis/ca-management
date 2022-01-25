@@ -20,7 +20,7 @@ class Member(db.Model, UserMixin):
     password_hash = db.Column(db.String(255), nullable=False)
     telephone = db.Column(db.String(60), unique=True, nullable=False)
     uni_reg_number = db.Column(db.String(60), unique=True, nullable=False)
-    ca_reg_number = db.Column(db.String(60), unique=True)
+    ca_reg_number = db.Column(db.Integer, unique=True)
     city = db.Column(db.String(60), nullable=False)
     address = db.Column(db.String(60), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=False)

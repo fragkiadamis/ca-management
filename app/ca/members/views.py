@@ -1,5 +1,6 @@
 from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
+from sqlalchemy import func
 
 from .helpers import filter_members
 from .. import ca
@@ -71,7 +72,7 @@ def edit_member(member_id):
         member.telephone = form.telephone.data
         member.city = form.city.data
         member.address = form.address.data
-        member.ca_reg_number = form.ca_reg_number.data
+        member.ca_reg_number = int(form.ca_reg_number.data)
         member.department_id = form.department.data
         member.roles = []
         for role_id in form.roles.data:
@@ -105,18 +106,16 @@ def toggle_status(member_id):
 @login_required
 # @permissions_required(['Admin', 'CA Admin'])
 def verify(member_id):
-    # TODO fix bug
     verify_member = request.args.get('verify')
     member = Member.query.get_or_404(member_id)
     if verify_member == 'Accept':
         # Get last verified member's ca reg number and increase it to one and assign to new verified member
-        last_member = Member.query.filter(Member.is_verified == 1).order_by(Member.id.desc()).first()
-        incremental = int(''.join(x for x in last_member.ca_reg_number if x.isdigit())) + 1
-        member.ca_reg_number = f'ca{incremental}'
+        last_reg_number = db.session.query(func.max(Member.ca_reg_number)).first()[0]
+        member.ca_reg_number = int(last_reg_number) + 1
         member.is_verified = member.is_active = 1
-        db.session.commit()
     else:
         db.session.delete(member)
-        db.session.commit()
+
+    db.session.commit()
 
     return redirect(url_for('ca.list_members', filter_by='pending'))

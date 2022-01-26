@@ -8,7 +8,7 @@
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.add_activity') }}">
             {{ form.csrf_token() }}
             {{ render_field(form.title) }}
-            {{ render_field(form.description) }}
+            {{ render_field(form.body) }}
             {{ render_field(form.start_date) }}
             {{ render_field(form.end_date) }}
             {{ render_field(form.start_time) }}
@@ -21,7 +21,7 @@
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.edit_activity', activity_id=activity['id']) }}">
             {{ form.csrf_token() }}
             {{ render_field_with_value(form.title, activity.title) }}
-            {{ render_field_with_value(form.description, activity.description) }}
+            <textarea name="{{ form.body.name }}" id="{{ form.body.id }}" class="form-control mb-3" placeholder="" required>{{ activity.body }}</textarea>
             {{ render_field_with_value(form.start_date, activity.start_date) }}
             {{ render_field_with_value(form.end_date, activity.end_date) }}
             {{ render_field_with_value(form.start_time, activity.start_time) }}

@@ -82,7 +82,14 @@ def edit_member(member_id):
             member.teams.append(Team.query.get_or_404(team_id))
 
         db.session.commit()
-        session['_username'] = member.username
+
+        # In case that a user is editing his own profile, update session
+        if member.id == session['_user_id']:
+            session['_username'] = member.username
+            session['_user_roles'] = []
+            for role in member.roles:
+                session['_user_roles'].append(role.name)
+
         flash('You have successfully updated the member\'s profile.')
         return redirect(url_for('ca.list_members'))
 
@@ -114,6 +121,12 @@ def verify(member_id):
         member.ca_reg_number = int(last_reg_number) + 1
         member.is_verified = member.is_active = 1
     else:
+        # Remove Member from team and department
+        department = member.department
+        department.members.remove(member)
+        teams = member.teams
+        for team in teams:
+            team.members.remove(member)
         db.session.delete(member)
 
     db.session.commit()

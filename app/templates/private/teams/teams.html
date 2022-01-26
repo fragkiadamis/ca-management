@@ -29,6 +29,7 @@
                     <td>{{ team.member_count }}</td>
                     <td>
                         <a href="{{ url_for('ca.list_members', filter_by='team_' + team.id|string) }}" class="px-1">Members</a>
+                        <a href="{{ url_for('ca.list_treasuries', filter_by='team_' + team.id|string) }}" class="px-1">Treasury</a>
                         <a href="{{ url_for('ca.edit_team', team_id=team.id) }}" class="px-1">Edit</a>
                         <a href="{{ url_for('ca.delete_team', team_id=team.id) }}" class="px-1">Delete</a>
                     </td>

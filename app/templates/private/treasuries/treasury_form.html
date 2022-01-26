@@ -9,10 +9,10 @@
             {{ form.csrf_token() }}
             {{ render_field(form.amount) }}
             {{ render_field(form.description) }}
-            {{ render_field(form.team) }}
+            {{ render_field(form.treasury) }}
             <div class="checkbox mb-3">
-                {{ form.type(class='form-check-input') }}
-                {{ form.type.label(class='form-check-label') }}
+                {{ form.ca_fee(class='form-check-input') }}
+                {{ form.ca_fee.label(class='form-check-label') }}
             </div>
             <div class="collapse" id="memberCollapse">
                 <div class="card card-body">
@@ -25,12 +25,12 @@
     {% elif action == 'edit' %}
         <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.edit_transaction', transaction_id=transaction.id) }}">
             {{ form.csrf_token() }}
-            {{ render_field_with_value(form.amount, transaction.amount + transaction.commission.amount) if transaction.commission else render_field_with_value(form.amount, transaction.amount) }}
+            {{ render_field_with_value(form.amount, transaction.amount + transaction.assoc_transaction.amount) if transaction.assoc_transaction else render_field_with_value(form.amount, transaction.amount) }}
             {{ render_field_with_value(form.description, transaction.description) }}
-            {{ render_field_with_value(form.team, transaction.team_id) }}
+            {{ render_field_with_value(form.treasury, transaction.treasury.id) }}
             <div class="checkbox mb-3">
-                {{ form.type(class='form-check-input', checked='') if transaction.type == 'CA Fee' else form.type(class='form-check-input') }}
-                {{ form.type.label(class='form-check-label') }}
+                {{ form.ca_fee(class='form-check-input', checked='') if transaction.member else form.ca_fee(class='form-check-input') }}
+                {{ form.ca_fee.label(class='form-check-label') }}
             </div>
             <div class="collapse" id="memberCollapse">
                 <div class="card card-body">
@@ -40,19 +40,19 @@
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
         </form>
-    {% elif action == 'transfer' %}
-        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.transfer_money') }}">
-            {{ form.csrf_token() }}
-            {{ render_field(form.amount) }}
-            {{ render_field(form.from_team) }}
-            {{ render_field(form.to_team) }}
-            <hr class="my-4">
-            {{ form.submit(class='btn btn-primary btn-lg') }}
-        </form>
+{#    {% elif action == 'transfer' %}#}
+{#        <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.transfer_money') }}">#}
+{#            {{ form.csrf_token() }}#}
+{#            {{ render_field(form.amount) }}#}
+{#            {{ render_field(form.from_treasury) }}#}
+{#            {{ render_field(form.to_treasury) }}#}
+{#            <hr class="my-4">#}
+{#            {{ form.submit(class='btn btn-primary btn-lg') }}#}
+{#        </form>#}
     {% endif %}
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const checkbox = document.getElementById("type");
+            const checkbox = document.getElementById("ca_fee");
             const collapsible = document.getElementById("memberCollapse");
 
             if (checkbox.checked)

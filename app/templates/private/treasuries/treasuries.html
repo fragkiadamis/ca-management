@@ -7,90 +7,85 @@
             <div class="dropdown me-2">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='team') }}">Team</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury') }}">Team</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='type') }}">Type</a></li>
                 </ul>
             </div>
             <div class="dropdown me-2">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
                 <ul class="dropdown-menu">
-                    {% for team in teams %}
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='team_' + team.id|string) }}">{{ team.name }} Members</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries') }}">All</a></li>
+                    {% for treasury in treasuries %}
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury_' + treasury.id|string) }}">{{ treasury.name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
         <div class="float-end">
             <a class="btn btn-primary me-2" href="{{ url_for('ca.add_transaction') }}">Add Transaction</a>
-            <a class="btn btn-primary" href="{{ url_for('ca.transfer_money') }}">Transfer Money</a>
+            {#            <a class="btn btn-primary" href="{{ url_for('ca.transfer_money') }}">Transfer Money</a>#}
         </div>
     </div>
     {{ render_messages() }}
-    {% if transactions %}
-        {% for team in treasuries %}
-            <h2>{{ team }} Treasury: {{ treasuries[team] }} euro</h2>
-        {% endfor %}
-        <hr class="intro-divider">
-        {% for key in transactions %}
-            {% if transactions[key]|length %}
-                <h2>{{ key }} <b>Transactions</b></h2>
-                <table class="table table-hover">
-                    <thead>
+    {% for entity in entities %}
+        {% if entity[2]|length %}
+            <h2>{{ entity[0] }}: {{ '{:.2f}'.format(entity[1], 2) }} &euro;</h2>
+            <hr class="intro-divider">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Treasury</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Member</th>
+                    <th scope="col">Added Date / Treasurer</th>
+                    <th scope="col">Updated Date / Treasurer</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for transaction in entity[2] %}
                     <tr>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Team</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Member</th>
-                        <th scope="col">Added Date / Treasurer</th>
-                        <th scope="col">Updated Date / Treasurer</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {# display only the original transactions and their associated if they exists in the same row #}
-                    {% for transaction in transactions[key] if not transaction.transaction_id %}
-                        <tr>
-                            <td>
-                                <div class="text-{{ 'success' if transaction.amount >= 0 else 'danger' }}">{{ transaction.amount }}</div>
-                                <div class="text-{{ 'success' if transaction.assoc_transaction and transaction.assoc_transaction.amount >= 0 else 'danger' }}">{{ transaction.assoc_transaction.amount }}</div>
-                            </td>
-                            <td>
-                                <div>{{ transaction.description }}</div>
-                                <div>{{ transaction.assoc_transaction.description }}</div>
-                            </td>
-                            <td>
-                                <div>{{ transaction.team.name }}</div>
-                                <div>{{ transaction.assoc_transaction.team.name if transaction.assoc_transaction }}</div>
-                            </td>
-                            <td>
-                                <div>{{ transaction.type }}</div>
-                                <div>{{ transaction.assoc_transaction.type }}</div>
-                            </td>
-                            <td>{{ transaction.member.ca_reg_number }} - {{ transaction.member.first_name }} {{ transaction.member.last_name }}</td>
-                            <td>
+                        <td>
+                            <div class="text-{{ 'success' if transaction.amount >= 0 else 'danger' }}">{{ '{:.2f}'.format(transaction.amount, 2) }} &euro;</div>
+                        </td>
+                        <td>
+                            <div>{{ transaction.description }}</div>
+                        </td>
+                        <td>
+                            <div>{{ transaction.treasury.name }}</div>
+                        </td>
+                        <td>
+                            <div>{{ transaction.type }}</div>
+                        </td>
+                        <td>
+                            {% if transaction.member %}
+                                {{ transaction.member.first_name }} {{ transaction.member.last_name }} ({{ transaction.member.ca_reg_number }})
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if transaction.create_date %}
                                 <div>{{ transaction.create_date }}</div>
-                                <div>{{ transaction.added_by.ca_reg_number }} - {{ transaction.added_by.first_name }} {{ transaction.added_by.last_name }}</div>
-                            </td>
-                            <td>
-                                {% if transaction.update_date %}
-                                    <div>{{ transaction.update_date }}</div>
-                                    <div>{{ transaction.updated_by.ca_reg_number }} - {{ transaction.updated_by.first_name }} {{ transaction.updated_by.last_name }}</div>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if transaction.type != 'Transfer' %}
-                                    <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Edit</a>
-                                    <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Delete</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <h3>No Transactions have been added</h3>
-    {% endif %}
+                                <div>{{ transaction.added_by.first_name }} {{ transaction.added_by.last_name }} ({{ transaction.added_by.ca_reg_number }})</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if transaction.update_date %}
+                                <div>{{ transaction.update_date }}</div>
+                                <div>{{ transaction.updated_by.first_name }} {{ transaction.updated_by.last_name }} ({{ transaction.updated_by.ca_reg_number }})</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if transaction.type != 'CA Commission' %}
+                                <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Edit</a>
+                                <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

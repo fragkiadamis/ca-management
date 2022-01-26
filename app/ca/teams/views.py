@@ -5,7 +5,7 @@ from .forms import TeamForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
-from ...models import Team
+from ...models import Team, Treasury
 
 
 @ca.route('/teams')
@@ -23,6 +23,9 @@ def add_team():
     if form.validate_on_submit():
         team = Team(name=form.name.data, description=form.description.data, email=form.email.data, telephone=form.telephone.data)
         db.session.add(team)
+        db.session.commit()
+        treasury = Treasury(name=form.name.data, amount=0, team_id=team.id)
+        db.session.add(treasury)
         db.session.commit()
 
         flash('You have successfully added a new team.')

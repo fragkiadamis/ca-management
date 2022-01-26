@@ -22,10 +22,10 @@ def permissions_required(required_roles):
     return decorator
 
 
-def is_not_transfer(fn):
+def is_not_commission(fn):
     def wrapped_function(transaction_id, *args, **kwargs):
         transaction_type = request.args.get('transaction_type')
-        if transaction_type == 'Transfer':
+        if transaction_type == 'CA Commission':
             flash('Action not possible')
             return redirect(url_for('ca.list_treasuries'))
         return fn(transaction_id, *args, **kwargs)

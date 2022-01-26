@@ -12,7 +12,7 @@
             <thead>
             <tr>
                 <th scope="col">Title</th>
-                <th scope="col">Teams</th>
+                <th scope="col">Body</th>
                 <th scope="col">Added By</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -20,15 +20,10 @@
             {% for announcement in announcements %}
                 <tbody>
                 <tr>
-                    <td>{{ announcement.title }}</td>
-                    <td>
-                        {% for team in announcement.teams %}
-                            {{ team.name }}
-                        {% endfor %}
-                    </td>
+                    <td><a href="{{ url_for("ca.get_announcement", announcement_id=announcement.id) }}" class="card-link">{{ announcement.title }}</a></td>
+                    <td class="text-truncate" style="max-width: 150px;">{{ announcement.body }}</td>
                     <td>{{ announcement.added_by.first_name }} {{ announcement.added_by.last_name }} ({{ announcement.added_by.ca_reg_number }})</td>
                     <td>
-                        <a href="{{ url_for("ca.get_announcement", announcement_id=announcement.id) }}" class="card-link">View</a>
                         <a href="{{ url_for('ca.edit_announcement', announcement_id=announcement.id) }}" class="px-1">Edit</a>
                         <a href="{{ url_for('ca.delete_announcement', announcement_id=announcement.id) }}" class="px-1">Delete</a>
                     </td>

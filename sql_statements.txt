@@ -54,7 +54,7 @@ INSERT INTO treasuries (name, amount) values ('Πολιτιστικός Σύλλ
 
 INSERT INTO treasuries (name, amount, team_id) values
     ('Studio FM1 105.4', 0, 1),
-    ('Το μεγάλο μας Τσίρκο', 0, 2),
+    ('Το Μεγάλο μας Τσίρκο', 0, 2),
     ('Διχρονίλα', 0, 3),
     ('Kasparov', 0, 4),
     ('I/O', 0, 5),

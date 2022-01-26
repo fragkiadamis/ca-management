@@ -2,6 +2,57 @@
 {% from "_macros.html" import render_field, render_field_with_value, render_messages %}
 {% block title %}Dashboard{% endblock %}
 {% block body %}
-    <h2 class="h1">Dashboard</h2>
     {{ render_messages() }}
+    <div class="text-center my-4">
+        {% if announcements %}
+            <div class="row mb-5">
+                <h2 class="h1 mb-5">Announcements</h2>
+                {% for announcement in announcements %}
+                    <div class="col-12 col-sm-4 col-md-3 align-self-center">
+                        <div class="card mb-3" style="">
+                            <div class="card-body">
+                                <h5 class="card-title"> {{ announcement.title }} </h5>
+                                <h6 class="card-subtitle mb-2 text-muted"> {{ announcement.create_date.strftime('%d-%m-%Y') }} </h6>
+                                <p class="card-text text-limiter"> {{ announcement.body }} </p>
+                                <a href="{{ url_for("ca.get_announcement", announcement_id=announcement.id) }}"
+                                   class="card-link">View Announcement</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="col-12 col-sm-4 col-md-3 align-self-center">
+                    <a href="{{ url_for("ca.list_announcements") }}">View All Announcements</a>
+                </div>
+            </div>
+        {% else %}
+            <h2>No announcements have been added.</h2>
+        {% endif %}
+        <hr class="intro-divider">
+        <div class="text-center my-4">
+            {% if activities %}
+                <div class="row mb-5">
+                    <h2 class="h1 mb-5">Activities</h2>
+                    {% for activity in activities %}
+                        <div class="col-12 col-sm-4 col-md-3 align-self-center">
+                            <div class="card mb-3" style="">
+                                <div class="card-body">
+                                    <h5 class="card-title"> {{ activity.title }} </h5>
+                                    <h6 class="card-subtitle mb-2 text-muted"> {{ activity.start_date.strftime('%d-%m-%Y') }} </h6>
+                                    <h6 class="card-subtitle mb-2 text-muted"> {{ activity.start_time }} </h6>
+                                    <p class="card-text text-limiter"> {{ activity.body }} </p>
+                                    <a href="{{ url_for("ca.get_activity", activity_id=activity.id) }}"
+                                       class="card-link">View Activity</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="col-12 col-sm-4 col-md-3 align-self-center">
+                        <a href="{{ url_for("ca.list_activities") }}">View All Activities</a>
+                    </div>
+                </div>
+            {% else %}
+                <h1>No activities have been added.</h1>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

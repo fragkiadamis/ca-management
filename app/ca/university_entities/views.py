@@ -14,7 +14,9 @@ from ...decorators import permissions_required
 def list_schools():
     schools = School.query.all()
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/uni_entities/uni_entities.html', current_list='schools', route='ca.add_school', uni_entities=schools, user=sess_user, title='Schools')
+
+    return render_template('private/uni_entities/uni_entities.html', current_list='schools', route='ca.add_school',
+                           uni_entities=schools, user=sess_user, title='Schools')
 
 
 @ca.route('/schools/add', methods=['GET', 'POST'])

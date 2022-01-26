@@ -150,7 +150,8 @@ class Announcement(db.Model):
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     update_date = db.Column(db.DateTime(timezone=True), onupdate=func.now())
     teams = db.relationship('Team', secondary='team_announcements', back_populates="announcements")
-    added_by = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+    added_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    added_by = db.relationship("Member", foreign_keys=[added_by_id])
 
 
 class TeamAnnouncements(db.Model):
@@ -166,7 +167,7 @@ class Activity(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     title = db.Column(db.String(60), nullable=False)
-    description = db.Column(db.String(60), nullable=False)
+    body = db.Column(db.Text, nullable=False)
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     update_date = db.Column(db.DateTime(timezone=True), onupdate=func.now())
     start_date = db.Column(db.Date(), nullable=False)
@@ -174,7 +175,8 @@ class Activity(db.Model):
     start_time = db.Column(db.Time(), nullable=False)
     end_time = db.Column(db.Time(), nullable=False)
     teams = db.relationship('Team', secondary='team_activities', back_populates="activities")
-    added_by = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+    added_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    added_by = db.relationship("Member", foreign_keys=[added_by_id])
 
 
 class TeamActivities(db.Model):

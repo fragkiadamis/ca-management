@@ -16,12 +16,24 @@ def list_announcements():
     return render_template('private/announcements/announcements.html', user=sess_user, announcements=announcements, title="Announcements")
 
 
+@ca.route('/announcement/<int:announcement_id>')
+@login_required
+def get_announcement(announcement_id):
+    announcement = Announcement.query.get_or_404(announcement_id)
+    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
+
+    return render_template('private/announcements/single_announcement.html',
+                           user=sess_user,
+                           announcement=announcement,
+                           title="Dashboard")
+
+
 @ca.route('/announcements/add', methods=['GET', 'POST'])
 @login_required
 def add_announcement():
     form = AnnouncementForm()
     if form.validate_on_submit():
-        announcement = Announcement(title=form.title.data, body=form.body.data, added_by=session['_user_id'])
+        announcement = Announcement(title=form.title.data, body=form.body.data, added_by_id=session['_user_id'])
         for team_id in form.teams.data:
             announcement.teams.append(Team.query.get_or_404(team_id))
         db.session.add(announcement)

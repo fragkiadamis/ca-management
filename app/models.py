@@ -77,19 +77,10 @@ class Team(db.Model):
 
     @property
     def member_count(self):
-        return len(self.members)
-
-    @property
-    def activity_count(self):
-        return len(self.activities)
-
-    @property
-    def announcement_count(self):
-        return len(self.announcements)
-
-    @property
-    def file_count(self):
-        return len(self.files)
+        count = 0
+        active_members = filter(lambda member: member.is_active, self.members)
+        count += len(list(active_members))
+        return count
 
 
 class MemberTeams(db.Model):
@@ -113,8 +104,8 @@ class School(db.Model):
     def member_count(self):
         count = 0
         for department in self.departments:
-            verified_members = filter(lambda member: member.is_verified, department.members)
-            count += len(list(verified_members))
+            active_members = department.member_count
+            count += active_members
         return count
 
 
@@ -131,7 +122,10 @@ class Department(db.Model):
 
     @property
     def member_count(self):
-        return len(self.members)
+        count = 0
+        active_members = filter(lambda member: member.is_active, self.members)
+        count += len(list(active_members))
+        return count
 
 
 class Announcement(db.Model):

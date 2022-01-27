@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+{% from "_macros.html" import render_field, render_field_with_value, render_messages %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+    <div class="text-center">
+        <h2>{{ activity.title }}</h2>
+        <h3 class="text-muted">{{ activity.start_date.strftime('%d-%m-%Y') }}</h3>
+        <h3 class="text-muted">{{ activity.start_time }}</h3>
+        <hr class="intro-divider">
+        <p>
+            {{ activity.body  }}
+        </p>
+    </div>
+{% endblock %}

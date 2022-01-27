@@ -1,0 +1,13 @@
+{% extends "main.html" %}
+{% from "_macros.html" import render_field, render_field_with_value, render_messages %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+    <div class="text-center">
+        <h2>{{ announcement.title }}</h2>
+        <h3 class="text-muted">{{ announcement.create_date.strftime('%d-%m-%Y') }}</h3>
+        <hr class="intro-divider">
+        <p>
+            {{ announcement.body }}
+        </p>
+    </div>
+{% endblock %}

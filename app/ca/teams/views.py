@@ -5,7 +5,7 @@ from .forms import TeamForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
-from ...models import Team
+from ...models import Team, Treasury
 
 
 @ca.route('/teams')
@@ -23,6 +23,9 @@ def add_team():
     if form.validate_on_submit():
         team = Team(name=form.name.data, description=form.description.data, email=form.email.data, telephone=form.telephone.data)
         db.session.add(team)
+        db.session.commit()
+        treasury = Treasury(name=form.name.data, amount=0, team_id=team.id)
+        db.session.add(treasury)
         db.session.commit()
 
         flash('You have successfully added a new team.')
@@ -55,8 +58,12 @@ def edit_team(team_id):
 @login_required
 def delete_team(team_id):
     team = Team.query.get_or_404(team_id)
-    db.session.delete(team)
-    db.session.commit()
+    if len(team.members) or len(team.treasury.transactions) or len(team.activities) or len(team.announcements) or len(team.files):
+        flash('Cannot delete as there are entities associated with this team, like members, activities, announcements, files or transactions')
+    else:
+        db.session.delete(team)
+        db.session.delete(team.treasury)
+        db.session.commit()
+        flash('You have successfully deleted the team.')
 
-    flash('You have successfully deleted the team.')
     return redirect(url_for('ca.list_teams'))

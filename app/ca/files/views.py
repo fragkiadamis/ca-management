@@ -4,7 +4,7 @@ from flask import render_template, session, flash, redirect, url_for, send_from_
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 
-from .forms import FileForm
+from .forms import FileForm, EditFileForm
 from .. import ca
 from app.models import File, Team
 from ... import db
@@ -39,7 +39,27 @@ def upload_file():
 
     # Load Team template
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/files/file_form.html', user=sess_user, form=form, title="Add File")
+    return render_template('private/files/file_form.html', user=sess_user, action='upload', form=form, title="Add File")
+
+
+@ca.route('/files/edit/<int:file_id>', methods=['GET', 'POST'])
+@login_required
+def edit_file(file_id):
+    form = EditFileForm()
+    file = File.query.get_or_404(file_id)
+    if form.validate_on_submit():
+        file.name = form.name.data
+        file.teams = []
+        for team_id in form.teams.data:
+            file.teams.append(Team.query.get_or_404(team_id))
+        db.session.commit()
+
+        flash('You have successfully edited the announcement.')
+        return redirect(url_for('ca.list_files'))
+
+    # Load Team template
+    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
+    return render_template('private/files/file_form.html', user=sess_user, action='edit', file=file, form=form, title="Edit File")
 
 
 @ca.route('/files/download/<int:file_id>')

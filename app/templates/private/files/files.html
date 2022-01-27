@@ -20,7 +20,7 @@
             {% for file in files %}
                 <tbody>
                 <tr>
-                    <td><a href="{{ url_for('ca.download_file', file_id=file.id) }}">{{ file.name }}</a></td>
+                    <td><a href="{{ url_for('ca.download_file', file_id=file.id) }}" target="_blank">{{ file.name }}</a></td>
                     <td>{{ file.create_date }}</td>
                     <td>
                         {% for team in file.teams %}
@@ -28,6 +28,7 @@
                         {% endfor %}
                     </td>
                     <td>
+                        <a href="{{ url_for('ca.edit_file', file_id=file.id) }}" class="px-1">Edit</a>
                         <a href="{{ url_for('ca.delete_file', file_id=file.id) }}" class="px-1">Delete</a>
                     </td>
                 </tr>

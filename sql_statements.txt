@@ -1,4 +1,3 @@
-CREATE DATABASE ca_db DEFAULT CHARACTER SET greek COLLATE greek_general_ci;
 CREATE DATABASE ca_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO schools (name, description) values
@@ -44,7 +43,6 @@ INSERT INTO departments (name, description, school_id) values
 
 
 INSERT INTO teams (name, description, email, telephone) values
-    ('Πολιτιστικός Σύλλογος', 'Πολιτιστικός Σύλλογος ΕΛΜΕΠΑ', 'culture@hmu.gr', '+302810123456'),
     ('Studio FM1 105.4', 'Ραδιοφωνική Σταθμός Σπουδαστών ΕΛΜΕΠΑ', 'studiofm1@hmu.gr', '+302810315445'),
     ('Το μεγάλο μας Τσίρκο', 'Θεατρική Ομάδα ΕΛΜΕΠΑ', 'theater@hmu.gr', '+302810111222'),
     ('Διχρονίλα', 'Λέσχη Μοτοσυκλετιστών ΕΛΜΕΠΑ', 'motorbikes@hmu.gr', '+302810333444'),
@@ -52,9 +50,19 @@ INSERT INTO teams (name, description, email, telephone) values
     ('I/O', 'Ομάδα Ανάπτυξης Software ΕΛΜΕΠΑ', 'io@hmu.gr', '+302810777888'),
     ('V for Vendema', 'Ομάδα Ethical Hacking ΕΛΜΕΠΑ', 'vendema@hmu.gr', '+302810999000');
 
+INSERT INTO treasuries (name, amount) values ('Πολιτιστικός Σύλλογος', 0);
+
+INSERT INTO treasuries (name, amount, team_id) values
+    ('Studio FM1 105.4', 0, 1),
+    ('Το Μεγάλο μας Τσίρκο', 0, 2),
+    ('Διχρονίλα', 0, 3),
+    ('Kasparov', 0, 4),
+    ('I/O', 0, 5),
+    ('V for Vendema', 0, 6);
+
 
 INSERT INTO roles (name) values ('Admin'), ('Admin Council'), ('Treasurer'), ('Editor');
 
-UPDATE members SET is_active=1, is_verified=1, ca_reg_number='ca1';
+UPDATE members SET is_active=1, is_verified=1, ca_reg_number=1;
 
 INSERT INTO member_roles (member_id, role_id) values (1, 1);

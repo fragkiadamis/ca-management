@@ -10,7 +10,7 @@ class ActivityForm(FlaskForm):
     title = StringField('Activity Name', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     body = TextAreaField('Announcement', render_kw={'class': 'form-control', 'placeholder': '', 'style': "height: 200px"}, validators=[DataRequired()])
     start_date = DateField('Start Date', render_kw={'class': 'form-control', 'placeholder': ''}, default=date.today, validators=[DataRequired("Please enter the start date.")])
-    end_date = DateField('Start Date', render_kw={'class': 'form-control', 'placeholder': ''}, default=date.today, validators=[DataRequired("Please enter the end date.")])
+    end_date = DateField('End Date', render_kw={'class': 'form-control', 'placeholder': ''}, default=date.today, validators=[DataRequired("Please enter the end date.")])
     start_time = TimeField('Start Time', render_kw={'class': 'form-control', 'placeholder': ''}, format='%H:%M:%S', default=datetime.now(), validators=[DataRequired("Please enter the start time.")])
     end_time = TimeField('End Time', render_kw={'class': 'form-control', 'placeholder': ''}, format='%H:%M:%S', default=datetime.now(), validators=[DataRequired("Please enter the end time.")])
     teams = SelectMultipleField('Team', render_kw={'class': 'form-control', 'placeholder': ''}, coerce=int)

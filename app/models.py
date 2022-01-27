@@ -73,30 +73,14 @@ class Team(db.Model):
     activities = db.relationship('Activity', secondary='team_activities', back_populates="teams")
     announcements = db.relationship('Announcement', secondary='team_announcements', back_populates="teams")
     files = db.relationship('File', secondary='team_files', back_populates="teams")
-    transactions = db.relationship("Transaction", back_populates="team")
+    treasury = db.relationship("Treasury", back_populates="team", uselist=False)
 
     @property
     def member_count(self):
-        return len(self.members)
-
-    @property
-    def activity_count(self):
-        return len(self.activities)
-
-    @property
-    def announcement_count(self):
-        return len(self.announcements)
-
-    @property
-    def file_count(self):
-        return len(self.files)
-
-    @property
-    def treasury(self):
-        treasury = 0
-        for transaction in self.transactions:
-            treasury += transaction.amount
-        return treasury
+        count = 0
+        active_members = filter(lambda member: member.is_active, self.members)
+        count += len(list(active_members))
+        return count
 
 
 class MemberTeams(db.Model):
@@ -120,8 +104,8 @@ class School(db.Model):
     def member_count(self):
         count = 0
         for department in self.departments:
-            verified_members = filter(lambda member: member.is_verified, department.members)
-            count += len(list(verified_members))
+            active_members = department.member_count
+            count += active_members
         return count
 
 
@@ -138,7 +122,10 @@ class Department(db.Model):
 
     @property
     def member_count(self):
-        return len(self.members)
+        count = 0
+        active_members = filter(lambda member: member.is_active, self.members)
+        count += len(list(active_members))
+        return count
 
 
 class Announcement(db.Model):
@@ -206,6 +193,17 @@ class TeamFiles(db.Model):
     file_id = db.Column(db.Integer(), db.ForeignKey('files.id', ondelete='CASCADE'))
 
 
+class Treasury(db.Model):
+    __tablename__ = 'treasuries'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(60), nullable=False)
+    amount = db.Column(db.Float(precision=2), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    team = db.relationship('Team', back_populates='treasury')
+    transactions = db.relationship('Transaction', back_populates='treasury')
+
+
 class Transaction(db.Model):
     __tablename__ = 'transactions'
 
@@ -218,10 +216,10 @@ class Transaction(db.Model):
     added_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     updated_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     member_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
-    team_id = db.Column(db.Integer(), db.ForeignKey('teams.id'))
+    treasury_id = db.Column(db.Integer, db.ForeignKey('treasuries.id'))
     transaction_id = db.Column(db.Integer(), db.ForeignKey('transactions.id'))
     added_by = db.relationship("Member", foreign_keys=[added_by_id])
     updated_by = db.relationship("Member", foreign_keys=[updated_by_id])
     member = db.relationship('Member', foreign_keys=[member_id])
-    team = db.relationship('Team', foreign_keys=[team_id], back_populates="transactions")
+    treasury = db.relationship("Treasury", foreign_keys=[treasury_id], uselist=False)
     assoc_transaction = db.relationship("Transaction", foreign_keys=[transaction_id], uselist=False, cascade="all, delete-orphan")

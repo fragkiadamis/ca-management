@@ -1,4 +1,14 @@
-from app.models import Team
+from app.models import Team, Member
+
+
+def filter_simple_view(member_id):
+    entities = {}
+    member = Member.query.get_or_404(member_id)
+    for team in member.teams:
+        entities[team.name] = team.members
+
+    return entities
+
 
 
 def filter_entities(filter_args, all_entities, teams):

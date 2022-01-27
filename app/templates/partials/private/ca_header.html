@@ -11,7 +11,9 @@
                     <li><a href="{{ url_for('ca.dashboard') }}" class="nav-link px-2 text-secondary">Dashboard</a>
                     </li>
                     <li><a href="{{ url_for('ca.list_members') }}" class="nav-link px-2 text-white">Members</a></li>
-                    <li><a href="{{ url_for('ca.list_schools') }}" class="nav-link px-2 text-white">Schools</a></li>
+                    {% if 'Admin' in user.roles %}
+                        <li><a href="{{ url_for('ca.list_schools') }}" class="nav-link px-2 text-white">Schools</a></li>
+                    {% endif %}
                     <li><a href="{{ url_for('ca.list_teams') }}" class="nav-link px-2 text-white">Teams</a></li>
                     <li><a href="{{ url_for('ca.list_activities') }}" class="nav-link px-2 text-white">Activities</a></li>
                     <li><a href="{{ url_for('ca.list_announcements') }}" class="nav-link px-2 text-white">Announcements</a></li>
@@ -23,9 +25,7 @@
                         <a class="nav-link dropdown-toggle" href="#" id="producerDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">{{ user.username }}</a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="producerDropdown">
-                            <li><a class="dropdown-item"
-                                   href="{{ url_for('ca.profile', member_id=user.id) }}">Profile</a>
-                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('ca.profile', member_id=user.id) }}">Profile</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a></li>
                         </ul>
                     </li>

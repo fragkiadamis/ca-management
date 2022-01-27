@@ -3,6 +3,7 @@ from flask_login import login_required
 from sqlalchemy import func
 
 from .helpers import filter_members
+from ...filters import filter_simple_view
 from .. import ca
 from .forms import ProfileForm, EditMemberForm
 from app.models import Member, Roles, Team
@@ -13,11 +14,15 @@ from ...decorators import permissions_required, is_this_user
 @ca.route('/members', methods=['GET', 'POST'])
 @login_required
 def list_members():
-    filter_by = request.args.get('filter_by')
-    members, roles, teams, schools, departments = filter_members(filter_by)
-
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/members/members.html', user=sess_user, title='Members', members=members, teams=teams, schools=schools, departments=departments, roles=roles, filter_by=filter_by)
+
+    if 'Admin' in session['_user_roles'] or 'Admin Council' in session['_user_roles']:
+        filter_by = request.args.get('filter_by')
+        members, roles, teams, schools, departments = filter_members(filter_by)
+        return render_template('private/members/members.html', user=sess_user, title='Members', members=members, teams=teams, schools=schools, departments=departments, roles=roles, filter_by=filter_by)
+    else:
+        members = filter_simple_view(session['_user_id'])
+        return render_template('private/members/members.html', user=sess_user, title='Members', members=members)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])
@@ -53,6 +58,7 @@ def profile(member_id):
 
 @ca.route('/members/edit/<int:member_id>', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Admin Council'])
 def edit_member(member_id):
     form = EditMemberForm()
     member = Member.query.get_or_404(member_id)
@@ -84,7 +90,7 @@ def edit_member(member_id):
         db.session.commit()
 
         # In case that a user is editing his own profile, update session
-        if member.id == session['_user_id']:
+        if member.id == int(session['_user_id']):
             session['_username'] = member.username
             session['_user_roles'] = []
             for role in member.roles:
@@ -99,7 +105,7 @@ def edit_member(member_id):
 
 @ca.route('/status/<int:member_id>')
 @login_required
-# @permissions_required(['Admin', 'CA Admin'])
+@permissions_required(['Admin', 'Admin Council'])
 def toggle_status(member_id):
     filter_by = request.args.get('filter_by')
     member = Member.query.get_or_404(member_id)
@@ -111,7 +117,7 @@ def toggle_status(member_id):
 
 @ca.route('/verify/<int:member_id>')
 @login_required
-# @permissions_required(['Admin', 'CA Admin'])
+@permissions_required(['Admin', 'Admin Council'])
 def verify(member_id):
     verify_member = request.args.get('verify')
     member = Member.query.get_or_404(member_id)

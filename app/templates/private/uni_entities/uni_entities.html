@@ -3,10 +3,10 @@
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
     <div class="bg-light clearfix p-3">
-        <h2 class="float-start">{{ school['name'] + ' - ' if school }}{{ title + ' list' }}</h2>
         <a href="{{ url_for('ca.add_school') if current_list == 'schools' else url_for('ca.add_department', school_id=school.id) }}" class="btn btn-primary float-end">Add {{ title }}</a>
     </div>
     {{ render_messages() }}
+    <h2 class="float-start">{{ school['name'] + ' - ' if school }}{{ title + ' list' }}</h2>
     {% if uni_entities %}
         <table class="table table-hover">
             <thead>

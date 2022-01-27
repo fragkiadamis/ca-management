@@ -10,8 +10,9 @@ from ...decorators import permissions_required
 
 @ca.route('/schools')
 @login_required
-# @permissions_required('Admin')
+@permissions_required(['Admin'])
 def list_schools():
+    print(session['_user_roles'])
     schools = School.query.all()
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
 
@@ -21,7 +22,7 @@ def list_schools():
 
 @ca.route('/schools/add', methods=['GET', 'POST'])
 @login_required
-# @permissions_required('Admin')
+@permissions_required(['Admin'])
 def add_school():
     form = UniEntityForm()
     if form.validate_on_submit():
@@ -38,7 +39,7 @@ def add_school():
 
 @ca.route('/schools/edit/<int:school_id>', methods=['GET', 'POST'])
 @login_required
-# @permissions_required('Admin')
+@permissions_required(['Admin'])
 def edit_school(school_id):
     form = UniEntityForm()
     school = School.query.get_or_404(school_id)
@@ -56,7 +57,7 @@ def edit_school(school_id):
 
 @ca.route('/schools/delete/<int:school_id>')
 @login_required
-# @permissions_required('Admin')
+@permissions_required(['Admin'])
 def delete_school(school_id):
     school = School.query.get_or_404(school_id)
     if school.member_count:
@@ -71,7 +72,7 @@ def delete_school(school_id):
 
 @ca.route('/schools/<int:school_id>/departments')
 @login_required
-# @permissions_required('Admin')
+@permissions_required(['Admin'])
 def list_departments(school_id):
     departments = Department.query.filter_by(school_id=school_id).all()
     school = School.query.get_or_404(school_id)
@@ -81,7 +82,7 @@ def list_departments(school_id):
 
 @ca.route('/schools/<int:school_id>/departments/add', methods=['GET', 'POST'])
 @login_required
-# @permissions_required('Admin')
+@permissions_required(['Admin'])
 def add_department(school_id):
     form = UniEntityForm()
     if form.validate_on_submit():
@@ -99,7 +100,7 @@ def add_department(school_id):
 
 @ca.route('/schools/<int:school_id>/departments/edit/<int:department_id>', methods=['GET', 'POST'])
 @login_required
-# @permissions_required('Admin')
+@permissions_required(['Admin'])
 def edit_department(school_id, department_id):
     form = EditDepartmentForm()
     department = Department.query.get_or_404(department_id)
@@ -119,7 +120,7 @@ def edit_department(school_id, department_id):
 
 @ca.route('/schools/<int:school_id>/departments/delete/<int:department_id>')
 @login_required
-# @permissions_required('Admin')
+@permissions_required(['Admin'])
 def delete_department(school_id, department_id):
     department = Department.query.get_or_404(department_id)
     if department.member_count:

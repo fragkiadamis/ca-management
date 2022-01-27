@@ -18,6 +18,7 @@ def list_teams():
 
 @ca.route('/teams/add', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Admin Council'])
 def add_team():
     form = TeamForm()
     if form.validate_on_submit():
@@ -37,6 +38,7 @@ def add_team():
 
 @ca.route('/teams/edit/<int:team_id>', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Admin Council'])
 def edit_team(team_id):
     form = TeamForm()
     team = Team.query.get_or_404(team_id)
@@ -56,6 +58,7 @@ def edit_team(team_id):
 
 @ca.route('/teams/delete/<int:team_id>')
 @login_required
+@permissions_required(['Admin', 'Admin Council'])
 def delete_team(team_id):
     team = Team.query.get_or_404(team_id)
     if len(team.members) or len(team.treasury.transactions) or len(team.activities) or len(team.announcements) or len(team.files):

@@ -2,11 +2,13 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}Teams{% endblock %}
 {% block body %}
-    <div class="bg-light clearfix p-3">
-        <h2 class="float-start">{{ title }}</h2>
-        <a href="{{ url_for('ca.add_team') }}" class="btn btn-primary float-end">Add {{ title }}</a>
-    </div>
+    {% if 'Admin' in user.roles or 'Admin Council' in user.roles %}
+        <div class="bg-light clearfix p-3">
+            <a href="{{ url_for('ca.add_team') }}" class="btn btn-primary float-end">Add {{ title }}</a>
+        </div>
+    {% endif %}
     {{ render_messages() }}
+    <h2 class="float-start">{{ title }}</h2>
     {% if teams %}
         <table class="table table-hover">
             <thead>
@@ -16,7 +18,9 @@
                 <th scope="col">Email</th>
                 <th scope="col">Telephone</th>
                 <th scope="col">Member Count</th>
-                <th scope="col">Actions</th>
+                {% if 'Admin' in user.roles or 'Admin Council' in user.roles %}
+                    <th scope="col">Actions</th>
+                {% endif %}
             </tr>
             </thead>
             {% for team in teams %}
@@ -27,12 +31,13 @@
                     <td>{{ team.email }}</td>
                     <td>{{ team.telephone }}</td>
                     <td>{{ team.member_count }}</td>
-                    <td>
-                        <a href="{{ url_for('ca.list_members', filter_by='team_' + team.id|string) }}" class="px-1">Members</a>
-                        <a href="{{ url_for('ca.list_treasuries', filter_by='team_' + team.id|string) }}" class="px-1">Treasury</a>
-                        <a href="{{ url_for('ca.edit_team', team_id=team.id) }}" class="px-1">Edit</a>
-                        <a href="{{ url_for('ca.delete_team', team_id=team.id) }}" class="px-1">Delete</a>
-                    </td>
+                    {% if 'Admin' in user.roles or 'Admin Council' in user.roles %}
+                        <td>
+                            <a href="{{ url_for('ca.list_members', filter_by='team_' + team.id|string) }}" class="px-1">Members</a>
+                            <a href="{{ url_for('ca.edit_team', team_id=team.id) }}" class="px-1">Edit</a>
+                            <a href="{{ url_for('ca.delete_team', team_id=team.id) }}" class="px-1">Delete</a>
+                        </td>
+                    {% endif %}
                 </tr>
                 </tbody>
             {% endfor %}

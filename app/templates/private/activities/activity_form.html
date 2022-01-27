@@ -9,10 +9,10 @@
             {{ form.csrf_token() }}
             {{ render_field(form.title) }}
             {{ render_field(form.body) }}
-            {{ render_field(form.start_date) }}
-            {{ render_field(form.end_date) }}
-            {{ render_field(form.start_time) }}
-            {{ render_field(form.end_time) }}
+            <div class="row">
+                <div class="col-6">{{ render_field(form.start_date) }}</div>
+                <div class="col-6">{{ render_field(form.end_date) }}</div>
+            </div>
             {{ render_mul_select_field(form.teams) }}
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}
@@ -22,10 +22,10 @@
             {{ form.csrf_token() }}
             {{ render_field_with_value(form.title, activity.title) }}
             <textarea name="{{ form.body.name }}" id="{{ form.body.id }}" class="form-control mb-3" placeholder="" required>{{ activity.body }}</textarea>
-            {{ render_field_with_value(form.start_date, activity.start_date) }}
-            {{ render_field_with_value(form.end_date, activity.end_date) }}
-            {{ render_field_with_value(form.start_time, activity.start_time) }}
-            {{ render_field_with_value(form.end_time, activity.end_time) }}
+            <div class="row">
+                <div class="col-6">{{ render_field_with_value(form.start_date, activity.start_date) }}</div>
+                <div class="col-6">{{ render_field_with_value(form.end_date, activity.end_date) }}</div>
+            </div>
             {{ render_mul_select_field_with_values(form.teams, activity.teams) }}
             <hr class="my-4">
             {{ form.submit(class='btn btn-primary btn-lg') }}

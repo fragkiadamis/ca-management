@@ -1,5 +1,6 @@
 from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
+from sqlalchemy import func
 
 from .forms import ActivityForm
 from .. import ca
@@ -21,20 +22,16 @@ def list_activities():
 def get_activity(activity_id):
     activity = Activity.query.get_or_404(activity_id)
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-
-    return render_template('private/activities/single_activity.html',
-                           user=sess_user,
-                           activity=activity,
-                           title="Dashboard")
+    return render_template('private/activities/single_activity.html', user=sess_user, activity=activity, title="Dashboard")
 
 
 @ca.route('/activities/add', methods=['GET', 'POST'])
 @login_required
 def add_activity():
     form = ActivityForm()
-    print(form.start_date.data, form.end_date.data)
     if form.validate_on_submit():
-        activity = Activity(title=form.title.data, body=form.body.data, start_date=form.start_date.data, end_date=form.end_date.data, start_time=form.start_time.data, end_time=form.end_time.data, added_by_id=session['_user_id'])
+        activity = Activity(title=form.title.data, body=form.body.data, start_date=form.start_date.data, end_date=form.end_date.data, added_by_id=session['_user_id'])
+        print(activity.start_date, activity.end_date)
         for team_id in form.teams.data:
             activity.teams.append(Team.query.get_or_404(team_id))
         db.session.add(activity)
@@ -56,9 +53,7 @@ def edit_activity(activity_id):
         activity.title = form.title.data
         activity.body = form.body.data
         activity.start_date = form.start_date.data
-        activity.start_date = form.end_date.data
-        activity.start_time = form.start_time.data
-        activity.end_time = form.end_time.data
+        activity.end_date = form.end_date.data
         activity.teams = []
         for team_id in form.teams.data:
             activity.teams.append(Team.query.get_or_404(team_id))

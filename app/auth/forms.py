@@ -11,10 +11,7 @@ class RegistrationForm(FlaskForm):
     last_name = StringField('Last Name', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     username = StringField('Username', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     email = StringField('Email', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired(), Email()])
-    password = PasswordField('Password', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[
-        DataRequired(),
-        EqualTo('confirm_password')
-    ])
+    password = PasswordField('Password', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired(), EqualTo('confirm_password')])
     confirm_password = PasswordField('Confirm Password', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     telephone = StringField('Telephone', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
     uni_reg_number = StringField('University Registration Number', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])

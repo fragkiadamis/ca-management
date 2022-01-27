@@ -13,8 +13,8 @@
             <tr>
                 <th scope="col">Title</th>
                 <th scope="col">Body</th>
-                <th scope="col">Start Date | Time</th>
-                <th scope="col">End Date | Time</th>
+                <th scope="col">Start Date & Time</th>
+                <th scope="col">End Date & Time</th>
                 <th scope="col">Added By</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -24,8 +24,8 @@
                 <tr>
                     <td><a href="{{ url_for("ca.get_activity", activity_id=activity.id) }}" class="card-link">{{ activity.title }}</a></td>
                     <td class="text-truncate" style="max-width: 150px;">{{ activity.body }}</td>
-                    <td>{{ activity.start_date }} | {{ activity.start_time }}</td>
-                    <td>{{ activity.end_date }} | {{ activity.end_time }}</td>
+                    <td>{{ activity.start_date }}</td>
+                    <td>{{ activity.end_date }}</td>
                     <td>{{ activity.added_by.first_name }} {{ activity.added_by.last_name }} ({{ activity.added_by.ca_reg_number }})</td>
                     <td>
                         <a href="{{ url_for('ca.edit_activity', activity_id=activity.id) }}" class="px-1">Edit</a>

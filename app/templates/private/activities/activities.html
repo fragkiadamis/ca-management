@@ -3,39 +3,57 @@
 {% block title %}Activities{% endblock %}
 {% block body %}
     <div class="bg-light clearfix p-3">
-        <h2 class="float-start">{{ title }}</h2>
+        <div class="float-start d-flex align-items-center">
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_activities', filter_by='team') }}">Team</a></li>
+                </ul>
+            </div>
+            <div class="dropdown me-2 float-start">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_activities') }}">All</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_activities', filter_by="common") }}">Πολιτιστικός Σύλλογος</a></li>
+                    {% for team in teams %}
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_activities', filter_by='team_' + team.id|string) }}">{{ team.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
         <a href="{{ url_for('ca.add_activity') }}" class="btn btn-primary float-end">Add {{ title }}</a>
     </div>
     {{ render_messages() }}
-    {% if activities %}
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Body</th>
-                <th scope="col">Start Date & Time</th>
-                <th scope="col">End Date & Time</th>
-                <th scope="col">Added By</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            {% for activity in activities %}
-                <tbody>
+    {% for key in activities %}
+        {% if activities[key] %}
+            <h2>{{ key }} <b>Activities</b></h2>
+            <table class="table table-hover">
+                <thead>
                 <tr>
-                    <td><a href="{{ url_for("ca.get_activity", activity_id=activity.id) }}" class="card-link">{{ activity.title }}</a></td>
-                    <td class="text-truncate" style="max-width: 150px;">{{ activity.body }}</td>
-                    <td>{{ activity.start_date }}</td>
-                    <td>{{ activity.end_date }}</td>
-                    <td>{{ activity.added_by.first_name }} {{ activity.added_by.last_name }} ({{ activity.added_by.ca_reg_number }})</td>
-                    <td>
-                        <a href="{{ url_for('ca.edit_activity', activity_id=activity.id) }}" class="px-1">Edit</a>
-                        <a href="{{ url_for('ca.delete_activity', activity_id=activity.id) }}" class="px-1">Delete</a>
-                    </td>
+                    <th scope="col">Title</th>
+                    <th scope="col">Body</th>
+                    <th scope="col">Start Date & Time</th>
+                    <th scope="col">End Date & Time</th>
+                    <th scope="col">Added By</th>
+                    <th scope="col">Actions</th>
                 </tr>
+                </thead>
+                <tbody>
+                {% for activity in activities[key] %}
+                    <tr>
+                        <td><a href="{{ url_for("ca.get_activity", activity_id=activity.id) }}" class="card-link">{{ activity.title }}</a></td>
+                        <td class="text-truncate" style="max-width: 150px;">{{ activity.body }}</td>
+                        <td>{{ activity.start_date }}</td>
+                        <td>{{ activity.end_date }}</td>
+                        <td>{{ activity.added_by.first_name }} {{ activity.added_by.last_name }} ({{ activity.added_by.ca_reg_number }})</td>
+                        <td>
+                            <a href="{{ url_for('ca.edit_activity', activity_id=activity.id) }}" class="px-1">Edit</a>
+                            <a href="{{ url_for('ca.delete_activity', activity_id=activity.id) }}" class="px-1">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
-            {% endfor %}
-        </table>
-    {% else %}
-        <h3>No teams have been added</h3>
-    {% endif %}
+            </table>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

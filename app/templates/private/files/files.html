@@ -3,39 +3,53 @@
 {% block title %}Files{% endblock %}
 {% block body %}
     <div class="bg-light clearfix p-3">
-        <h2 class="float-start">{{ title }}</h2>
+        <div class="float-start d-flex align-items-center">
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_files', filter_by='team') }}">Team</a></li>
+                </ul>
+            </div>
+            <div class="dropdown me-2 float-start">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_files') }}">All</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_files', filter_by="common") }}">Πολιτιστικός Σύλλογος</a></li>
+                    {% for team in teams %}
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_files', filter_by='team_' + team.id|string) }}">{{ team.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
         <a href="{{ url_for('ca.upload_file') }}" class="btn btn-primary float-end">Add File</a>
     </div>
     {{ render_messages() }}
-    {% if files %}
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">File</th>
-                <th scope="col">Upload Date</th>
-                <th scope="col">Teams</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            {% for file in files %}
-                <tbody>
+    {% for key in files %}
+        {% if files[key] %}
+            <h2>{{ key }} <b>Files</b></h2>
+            <table class="table table-hover">
+                <thead>
                 <tr>
-                    <td><a href="{{ url_for('ca.download_file', file_id=file.id) }}" target="_blank">{{ file.name }}</a></td>
-                    <td>{{ file.create_date }}</td>
-                    <td>
-                        {% for team in file.teams %}
-                            {{ team.name }}
-                        {% endfor %}
-                    </td>
-                    <td>
-                        <a href="{{ url_for('ca.edit_file', file_id=file.id) }}" class="px-1">Edit</a>
-                        <a href="{{ url_for('ca.delete_file', file_id=file.id) }}" class="px-1">Delete</a>
-                    </td>
+                    <th scope="col">File</th>
+                    <th scope="col">Upload Date</th>
+                    <th scope="col">Added By</th>
+                    <th scope="col">Actions</th>
                 </tr>
+                </thead>
+                <tbody>
+                {% for file in files[key] %}
+                    <tr>
+                        <td><a href="{{ url_for('ca.download_file', file_id=file.id) }}" target="_blank">{{ file.name }}</a></td>
+                        <td>{{ file.create_date }}</td>
+                        <td>{{ file.added_by.first_name }} {{ file.added_by.last_name }} ({{ file.added_by.ca_reg_number }})</td>
+                        <td>
+                            <a href="{{ url_for('ca.edit_file', file_id=file.id) }}" class="px-1">Edit</a>
+                            <a href="{{ url_for('ca.delete_file', file_id=file.id) }}" class="px-1">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
                 </tbody>
-            {% endfor %}
-        </table>
-    {% else %}
-        <h3>No Files have been added</h3>
-    {% endif %}
+            </table>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

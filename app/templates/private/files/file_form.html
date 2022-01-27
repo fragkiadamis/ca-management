@@ -4,7 +4,7 @@
 {% block body %}
     <h2 class="h1">{{ title }}</h2>
     {{ render_messages() }}
-    {% if action == 'add' %}
+    {% if action == 'upload' %}
         <form enctype="multipart/form-data" class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ url_for('ca.upload_file') }}">
         {{ form.csrf_token() }}
             <div class="mb-3">

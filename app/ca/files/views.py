@@ -1,6 +1,6 @@
 import os
 
-from flask import render_template, session, flash, redirect, url_for, send_from_directory
+from flask import render_template, session, flash, redirect, url_for, send_from_directory, request
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 
@@ -9,14 +9,18 @@ from .. import ca
 from app.models import File, Team
 from ... import db
 from ...decorators import permissions_required
+from ...filters import filter_entities
 
 
 @ca.route('/files')
 @login_required
 def list_files():
+    filter_by = request.args.get('filter_by')
     files = File.query.all()
+    teams = Team.query.all()
+    entities = filter_entities(filter_by, files, teams)
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/files/files.html', user=sess_user, files=files, title="Files")
+    return render_template('private/files/files.html', user=sess_user, files=entities, teams=teams, title="Files")
 
 
 @ca.route('/files/add', methods=['GET', 'POST'])
@@ -28,7 +32,7 @@ def upload_file():
         file_name = f'{secure_filename(file.filename)}'
         file_path = os.path.join(os.path.dirname(f'{os.path.dirname(__file__)}/../../static/files/'), file_name)
         file.save(file_path)
-        file = File(name=form.name.data, file_name=file_name, added_by=session['_user_id'])
+        file = File(name=form.name.data, file_name=file_name, added_by_id=session['_user_id'])
         for team_id in form.teams.data:
             file.teams.append(Team.query.get_or_404(team_id))
         db.session.add(file)

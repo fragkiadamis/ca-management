@@ -22,7 +22,6 @@
                 <tr id="{{ entry.id }}">
                     <td>
                         {% if current_list == 'schools' %}
-                            {# Every School is a link to its departments list #}
                             <a href="{{ url_for('ca.list_departments', school_id=entry.id) }}">{{ entry.name }}</a>
                         {% elif current_list == 'departments' %}
                             {{ entry.name }}
@@ -44,7 +43,6 @@
             </tbody>
         </table>
     {% else %}
-        <h3> No schools have been added. </h3>
-        <hr class="intro-divider">
+        <h3> No {{ 'Schools' if current_list == 'schools' else 'Departments' }} have been added.</h3>
     {% endif %}
 {% endblock %}

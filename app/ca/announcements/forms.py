@@ -7,7 +7,7 @@ from app.models import Team
 
 class AnnouncementForm(FlaskForm):
     title = StringField('Title', render_kw={'class': 'form-control', 'placeholder': ''}, validators=[DataRequired()])
-    body = TextAreaField('Announcement', render_kw={'class': 'form-control', 'placeholder': '', 'style': "height: 200px"}, validators=[DataRequired()])
+    body = TextAreaField('Body', render_kw={'class': 'form-control', 'placeholder': '', 'style': "height: 200px"}, validators=[DataRequired()])
     teams = SelectMultipleField('Team', render_kw={'class': 'form-control', 'placeholder': ''}, coerce=int)
     submit = SubmitField('Submit')
 

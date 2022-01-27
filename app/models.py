@@ -39,6 +39,9 @@ class Member(db.Model, UserMixin):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def __str__(self):
+        return 'Member'
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -50,6 +53,9 @@ class Roles(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
+
+    def __str__(self):
+        return 'Role'
 
 
 class MemberRoles(db.Model):
@@ -82,6 +88,9 @@ class Team(db.Model):
         count += len(list(active_members))
         return count
 
+    def __str__(self):
+        return 'Team'
+
 
 class MemberTeams(db.Model):
     __tablename__ = 'member_teams'
@@ -108,6 +117,9 @@ class School(db.Model):
             count += active_members
         return count
 
+    def __str__(self):
+        return 'School'
+
 
 class Department(db.Model):
     __tablename__ = 'departments'
@@ -127,6 +139,9 @@ class Department(db.Model):
         count += len(list(active_members))
         return count
 
+    def __str__(self):
+        return 'Department'
+
 
 class Announcement(db.Model):
     __tablename__ = 'announcements'
@@ -139,6 +154,9 @@ class Announcement(db.Model):
     teams = db.relationship('Team', secondary='team_announcements', back_populates="announcements")
     added_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     added_by = db.relationship("Member", foreign_keys=[added_by_id])
+
+    def __str__(self):
+        return 'Announcement'
 
 
 class TeamAnnouncements(db.Model):
@@ -163,6 +181,9 @@ class Activity(db.Model):
     added_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
     added_by = db.relationship("Member", foreign_keys=[added_by_id])
 
+    def __str__(self):
+        return 'Activity'
+
 
 class TeamActivities(db.Model):
     __tablename__ = 'team_activities'
@@ -180,7 +201,11 @@ class File(db.Model):
     file_name = db.Column(db.String(255), nullable=False)
     create_date = db.Column(db.DateTime(timezone=True), nullable=False, server_default=func.now())
     teams = db.relationship('Team', secondary='team_files', back_populates="files")
-    added_by = db.Column(db.Integer(), db.ForeignKey('members.id'), nullable=False)
+    added_by_id = db.Column(db.Integer(), db.ForeignKey('members.id'))
+    added_by = db.relationship("Member", foreign_keys=[added_by_id])
+
+    def __str__(self):
+        return 'File'
 
 
 class TeamFiles(db.Model):
@@ -200,6 +225,9 @@ class Treasury(db.Model):
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
     team = db.relationship('Team', back_populates='treasury')
     transactions = db.relationship('Transaction', back_populates='treasury')
+
+    def __str__(self):
+        return 'Treasury'
 
 
 class Transaction(db.Model):
@@ -221,3 +249,6 @@ class Transaction(db.Model):
     member = db.relationship('Member', foreign_keys=[member_id])
     treasury = db.relationship("Treasury", foreign_keys=[treasury_id], uselist=False)
     assoc_transaction = db.relationship("Transaction", foreign_keys=[transaction_id], uselist=False, cascade="all, delete-orphan")
+
+    def __str__(self):
+        return 'Transaction'

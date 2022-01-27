@@ -1,19 +1,23 @@
-from flask import render_template, session, flash, redirect, url_for
+from flask import render_template, session, flash, redirect, url_for, request
 from flask_login import login_required
 
 from .forms import AnnouncementForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
+from ...filters import filter_entities
 from ...models import Announcement, Team
 
 
 @ca.route('/announcements')
 @login_required
 def list_announcements():
+    filter_by = request.args.get('filter_by')
     announcements = Announcement.query.all()
+    teams = Team.query.all()
+    entities = filter_entities(filter_by, announcements, teams)
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/announcements/announcements.html', user=sess_user, announcements=announcements, title="Announcements")
+    return render_template('private/announcements/announcements.html', user=sess_user, announcements=entities, teams=teams, title="Announcements")
 
 
 @ca.route('/announcement/<int:announcement_id>')

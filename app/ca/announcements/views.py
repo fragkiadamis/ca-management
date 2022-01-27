@@ -34,6 +34,7 @@ def get_announcement(announcement_id):
 
 @ca.route('/announcements/add', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Editor'])
 def add_announcement():
     form = AnnouncementForm()
     if form.validate_on_submit():
@@ -52,6 +53,7 @@ def add_announcement():
 
 @ca.route('/announcements/edit/<int:announcement_id>', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Editor'])
 def edit_announcement(announcement_id):
     form = AnnouncementForm()
     announcement = Announcement.query.get_or_404(announcement_id)
@@ -72,6 +74,7 @@ def edit_announcement(announcement_id):
 
 @ca.route('/announcements/delete/<int:announcement_id>')
 @login_required
+@permissions_required(['Admin', 'Editor'])
 def delete_announcement(announcement_id):
     announcement = Announcement.query.get_or_404(announcement_id)
     db.session.delete(announcement)

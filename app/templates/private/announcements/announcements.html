@@ -2,27 +2,31 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}Announcements{% endblock %}
 {% block body %}
-    <div class="bg-light clearfix p-3">
-        <div class="float-start d-flex align-items-center">
-            <div class="dropdown me-2">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by='team') }}">Team</a></li>
-                </ul>
+    {% if 'Admin' in user.roles or 'Admin Council' in user.roles or 'Editor' in user.roles %}
+        <div class="bg-light clearfix p-3">
+            <div class="float-start d-flex align-items-center">
+                <div class="dropdown me-2">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by='team') }}">Team</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown me-2 float-start">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements') }}">All</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by="common") }}">Πολιτιστικός Σύλλογος</a></li>
+                        {% for team in teams %}
+                            <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by='team_' + team.id|string) }}">{{ team.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="dropdown me-2 float-start">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements') }}">All</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by="common") }}">Πολιτιστικός Σύλλογος</a></li>
-                    {% for team in teams %}
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by='team_' + team.id|string) }}">{{ team.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
+            {% if 'Admin' in user.roles or 'Editor' in user.roles %}
+                <a href="{{ url_for('ca.add_announcement') }}" class="btn btn-primary float-end">Add {{ title }}</a>
+            {% endif %}
         </div>
-        <a href="{{ url_for('ca.add_announcement') }}" class="btn btn-primary float-end">Add {{ title }}</a>
-    </div>
+    {% endif %}
     {{ render_messages() }}
     {% for key in announcements %}
         {% if announcements[key] %}
@@ -33,7 +37,9 @@
                     <th scope="col">Title</th>
                     <th scope="col">Body</th>
                     <th scope="col">Added By</th>
-                    <th scope="col">Actions</th>
+                    {% if 'Admin' in user.roles or 'Editor' in user.roles %}
+                        <th scope="col">Actions</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -42,10 +48,12 @@
                         <td><a href="{{ url_for("ca.get_announcement", announcement_id=announcement.id) }}" class="card-link">{{ announcement.title }}</a></td>
                         <td class="text-truncate" style="max-width: 150px;">{{ announcement.body }}</td>
                         <td>{{ announcement.added_by.first_name }} {{ announcement.added_by.last_name }} ({{ announcement.added_by.ca_reg_number }})</td>
-                        <td>
-                            <a href="{{ url_for('ca.edit_announcement', announcement_id=announcement.id) }}" class="px-1">Edit</a>
-                            <a href="{{ url_for('ca.delete_announcement', announcement_id=announcement.id) }}" class="px-1">Delete</a>
-                        </td>
+                        {% if 'Admin' in user.roles or 'Editor' in user.roles %}
+                            <td>
+                                <a href="{{ url_for('ca.edit_announcement', announcement_id=announcement.id) }}" class="px-1">Edit</a>
+                                <a href="{{ url_for('ca.delete_announcement', announcement_id=announcement.id) }}" class="px-1">Delete</a>
+                            </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

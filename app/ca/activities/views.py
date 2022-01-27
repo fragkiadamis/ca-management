@@ -4,6 +4,7 @@ from flask_login import login_required
 from .forms import ActivityForm
 from .. import ca
 from ... import db
+from ...decorators import permissions_required
 from ...models import Activity, Team
 from ...filters import filter_entities
 
@@ -29,6 +30,7 @@ def get_activity(activity_id):
 
 @ca.route('/activities/add', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Editor'])
 def add_activity():
     form = ActivityForm()
     if form.validate_on_submit():
@@ -47,6 +49,7 @@ def add_activity():
 
 @ca.route('/activities/edit/<int:activity_id>', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Editor'])
 def edit_activity(activity_id):
     form = ActivityForm()
     activity = Activity.query.get_or_404(activity_id)
@@ -69,6 +72,7 @@ def edit_activity(activity_id):
 
 @ca.route('/activities/delete/<int:activity_id>')
 @login_required
+@permissions_required(['Admin', 'Editor'])
 def delete_activity(activity_id):
     activity = Activity.query.get_or_404(activity_id)
     db.session.delete(activity)

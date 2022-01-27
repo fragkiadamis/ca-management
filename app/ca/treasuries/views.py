@@ -23,6 +23,7 @@ def list_treasuries():
 
 @ca.route('/transaction/add', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Treasurer'])
 def add_transaction():
     form = TransactionForm()
     if form.validate_on_submit():
@@ -67,6 +68,7 @@ def add_transaction():
 @ca.route('/transactions/edit/<int:transaction_id>', methods=['GET', 'POST'])
 @login_required
 @is_not_commission
+@permissions_required(['Admin', 'Treasurer'])
 def edit_transaction(transaction_id):
     form = TransactionForm()
     transaction = Transaction.query.get_or_404(transaction_id)
@@ -154,6 +156,7 @@ def edit_transaction(transaction_id):
 @ca.route('/transactions/delete/<int:transaction_id>')
 @login_required
 @is_not_commission
+@permissions_required(['Admin', 'Treasurer'])
 def delete_transaction(transaction_id):
     transaction = Transaction.query.get_or_404(transaction_id)
     treasury = transaction.treasury

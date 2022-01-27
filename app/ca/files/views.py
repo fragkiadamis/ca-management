@@ -25,6 +25,7 @@ def list_files():
 
 @ca.route('/files/add', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Admin Council'])
 def upload_file():
     form = FileForm()
     if form.validate_on_submit():
@@ -48,6 +49,7 @@ def upload_file():
 
 @ca.route('/files/edit/<int:file_id>', methods=['GET', 'POST'])
 @login_required
+@permissions_required(['Admin', 'Admin Council'])
 def edit_file(file_id):
     form = EditFileForm()
     file = File.query.get_or_404(file_id)
@@ -75,6 +77,7 @@ def download_file(file_id):
 
 @ca.route('/files/delete/<int:file_id>')
 @login_required
+@permissions_required(['Admin', 'Admin Council'])
 def delete_file(file_id):
     file = File.query.get_or_404(file_id)
     os.remove(os.path.join(os.path.dirname(f'{os.path.dirname(__file__)}/../../static/files/'), file.file_name))

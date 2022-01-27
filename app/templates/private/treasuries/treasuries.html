@@ -2,30 +2,34 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}Announcements{% endblock %}
 {% block body %}
-    <div class="bg-light clearfix p-3">
-        <div class="float-start d-flex align-items-center">
-            <div class="dropdown me-2">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury') }}">Team</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='type') }}">Type</a></li>
-                </ul>
+    {% if 'Admin' in user.roles or 'Admin Council' in user.roles or 'Treasurer' in user.roles %}
+        <div class="bg-light clearfix p-3">
+            <div class="float-start d-flex align-items-center">
+                <div class="dropdown me-2">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury') }}">Team</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='type') }}">Type</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown me-2">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries') }}">All</a></li>
+                        {% for treasury in treasuries %}
+                            <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury_' + treasury.id|string) }}">{{ treasury.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="dropdown me-2">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
-                <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries') }}">All</a></li>
-                    {% for treasury in treasuries %}
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury_' + treasury.id|string) }}">{{ treasury.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
+            {% if 'Admin' in user.roles or 'Editor' in user.roles %}
+                <div class="float-end">
+                    <a class="btn btn-primary me-2" href="{{ url_for('ca.add_transaction') }}">Add Transaction</a>
+                    {#            <a class="btn btn-primary" href="{{ url_for('ca.transfer_money') }}">Transfer Money</a>#}
+                </div>
+            {% endif %}
         </div>
-        <div class="float-end">
-            <a class="btn btn-primary me-2" href="{{ url_for('ca.add_transaction') }}">Add Transaction</a>
-            {#            <a class="btn btn-primary" href="{{ url_for('ca.transfer_money') }}">Transfer Money</a>#}
-        </div>
-    </div>
+    {% endif %}
     {{ render_messages() }}
     {% for entity in entities %}
         {% if entity[2]|length %}
@@ -41,7 +45,9 @@
                     <th scope="col">Member</th>
                     <th scope="col">Added Date / Treasurer</th>
                     <th scope="col">Updated Date / Treasurer</th>
-                    <th scope="col">Actions</th>
+                    {% if 'Admin' in user.roles or 'Treasurer' in user.roles %}
+                        <th scope="col">Actions</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -76,12 +82,14 @@
                                 <div>{{ transaction.updated_by.first_name }} {{ transaction.updated_by.last_name }} ({{ transaction.updated_by.ca_reg_number }})</div>
                             {% endif %}
                         </td>
-                        <td>
-                            {% if transaction.type != 'CA Commission' %}
-                                <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Edit</a>
-                                <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Delete</a>
-                            {% endif %}
-                        </td>
+                        {% if 'Admin' in user.roles or 'Treasurer' in user.roles %}
+                            <td>
+                                {% if transaction.type != 'CA Commission' %}
+                                    <a href="{{ url_for('ca.edit_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Edit</a>
+                                    <a href="{{ url_for('ca.delete_transaction', transaction_id=transaction.id, transaction_type=transaction.type) }}" class="px-1">Delete</a>
+                                {% endif %}
+                            </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

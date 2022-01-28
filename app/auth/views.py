@@ -4,7 +4,7 @@ from flask_login import login_user, login_required, logout_user
 from . import auth
 from .forms import RegistrationForm, LoginForm
 from .. import db
-from app.models import Member, Roles, Team
+from app.models import Member, Role, Team
 
 
 @auth.route('/register', methods=['GET', 'POST'])
@@ -43,7 +43,7 @@ def login():
             # redirect to the dashboard page after login
             return redirect(url_for('ca.dashboard'))
         else:
-            if not member.is_verified:
+            if member and not member.is_verified:
                 flash('Your verification is pending')
             else:
                 flash('Invalid email or password.')

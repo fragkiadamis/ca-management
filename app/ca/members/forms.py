@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, Email, EqualTo
 
-from app.models import Department, Roles, Team
+from app.models import Department, Role, Team
 
 
 class ProfileForm(FlaskForm):
@@ -39,7 +39,7 @@ class EditMemberForm(FlaskForm):
     def __init__(self):
         super(EditMemberForm, self).__init__()
         self.department.choices = [(d.id, d.name) for d in Department.query.all()]
-        self.roles.choices = [(r.id, r.name) for r in Roles.query.all()]
+        self.roles.choices = [(r.id, r.name) for r in Role.query.all()]
         self.roles.size = len(self.roles.choices) if self.roles else 3
         self.teams.choices = [(t.id, t.name) for t in Team.query.all()]
         self.teams.size = len(self.teams.choices) if self.teams else 3

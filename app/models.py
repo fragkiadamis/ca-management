@@ -13,7 +13,7 @@ class Member(db.Model, UserMixin):
     last_name = db.Column(db.String(60), nullable=False)
     username = db.Column(db.String(60), unique=True, nullable=False)
     email = db.Column(db.String(60), unique=True, nullable=False)
-    roles = db.relationship('Roles', secondary='member_roles')
+    roles = db.relationship('Role', secondary='member_roles')
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     department = db.relationship('Department', foreign_keys=[department_id])
     teams = db.relationship('Team', secondary='member_teams', back_populates="members")
@@ -48,7 +48,7 @@ def load_user(user_id):
     return Member.query.get(int(user_id))
 
 
-class Roles(db.Model):
+class Role(db.Model):
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer(), primary_key=True)

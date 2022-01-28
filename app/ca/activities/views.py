@@ -5,19 +5,18 @@ from .forms import ActivityForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
-from ...models import Activity, Team
-from ...filters import filter_entities
+from ...models import Activity, Team, Member
+from ...filters import get_related_entities
 
 
 @ca.route('/activities')
 @login_required
 def list_activities():
     filter_by = request.args.get('filter_by')
-    activities = Activity.query.all()
-    teams = Team.query.all()
-    entities = filter_entities(filter_by, activities, teams)
+    member = Member.query.get_or_404(int(session['_user_id']))
+    activities, teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'activities')
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/activities/activities.html', user=sess_user, activities=entities, teams=teams, title="Activities")
+    return render_template('private/activities/activities.html', user=sess_user, activities=activities, teams=teams, title="Activities")
 
 
 @ca.route('/activity/<int:activity_id>')

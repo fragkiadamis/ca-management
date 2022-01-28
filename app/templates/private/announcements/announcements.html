@@ -2,31 +2,29 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}Announcements{% endblock %}
 {% block body %}
-    {% if 'Admin' in user.roles or 'Admin Council' in user.roles or 'Editor' in user.roles %}
-        <div class="bg-light clearfix p-3">
-            <div class="float-start d-flex align-items-center">
-                <div class="dropdown me-2">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by='team') }}">Team</a></li>
-                    </ul>
-                </div>
-                <div class="dropdown me-2 float-start">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements') }}">All</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by="common") }}">Πολιτιστικός Σύλλογος</a></li>
-                        {% for team in teams %}
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by='team_' + team.id|string) }}">{{ team.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
+    <div class="bg-light clearfix p-3">
+        <div class="float-start d-flex align-items-center">
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by='team') }}">Team</a></li>
+                </ul>
             </div>
-            {% if 'Admin' in user.roles or 'Editor' in user.roles %}
-                <a href="{{ url_for('ca.add_announcement') }}" class="btn btn-primary float-end">Add {{ title }}</a>
-            {% endif %}
+            <div class="dropdown me-2 float-start">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements') }}">All</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by="common") }}">Πολιτιστικός Σύλλογος</a></li>
+                    {% for team in teams %}
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_announcements', filter_by='team_' + team.id|string) }}">{{ team.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-    {% endif %}
+        {% if 'Admin' in user.roles or 'Editor' in user.roles %}
+            <a href="{{ url_for('ca.add_announcement') }}" class="btn btn-primary float-end">Add {{ title }}</a>
+        {% endif %}
+    </div>
     {{ render_messages() }}
     {% for key in announcements %}
         {% if announcements[key] %}

@@ -6,21 +6,20 @@ from werkzeug.utils import secure_filename
 
 from .forms import FileForm, EditFileForm
 from .. import ca
-from app.models import File, Team
+from app.models import File, Team, Member
 from ... import db
 from ...decorators import permissions_required
-from ...filters import filter_entities
+from ...filters import get_related_entities
 
 
 @ca.route('/files')
 @login_required
 def list_files():
     filter_by = request.args.get('filter_by')
-    files = File.query.all()
-    teams = Team.query.all()
-    entities = filter_entities(filter_by, files, teams)
+    member = Member.query.get_or_404(int(session['_user_id']))
+    files, teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'files')
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/files/files.html', user=sess_user, files=entities, teams=teams, title="Files")
+    return render_template('private/files/files.html', user=sess_user, files=files, teams=teams, title="Files")
 
 
 @ca.route('/files/add', methods=['GET', 'POST'])

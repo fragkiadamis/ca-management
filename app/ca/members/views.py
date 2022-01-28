@@ -6,7 +6,7 @@ from .helpers import filter_members
 from ...filters import filter_simple_view
 from .. import ca
 from .forms import ProfileForm, EditMemberForm
-from app.models import Member, Roles, Team
+from app.models import Member, Role, Team
 from ... import db
 from ...decorators import permissions_required, is_this_user
 
@@ -65,7 +65,8 @@ def edit_member(member_id):
     title = f'Profile: {member.first_name} {member.last_name}, {member.ca_reg_number}'
 
     if form.validate_on_submit():
-        if not member.verify_password(form.confirm_changes.data):
+        user = Member.query.get_or_404(int(session['_user_id']))
+        if not user.verify_password(form.confirm_changes.data):
             flash('Invalid Password')
             return redirect(url_for('ca.edit_member', member_id=member_id))
 
@@ -82,7 +83,7 @@ def edit_member(member_id):
         member.department_id = form.department.data
         member.roles = []
         for role_id in form.roles.data:
-            member.roles.append(Roles.query.get_or_404(role_id))
+            member.roles.append(Role.query.get_or_404(role_id))
         member.teams = []
         for team_id in form.teams.data:
             member.teams.append(Team.query.get_or_404(team_id))

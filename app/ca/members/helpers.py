@@ -1,9 +1,9 @@
-from app.models import Member, Roles, Team, School, Department
+from app.models import Member, Role, Team, School, Department
 
 
 def filter_members(filter_args):
     all_members = Member.query.all()
-    roles = Roles.query.all()
+    roles = Role.query.all()
     teams = Team.query.all()
     schools = School.query.all()
     departments = Department.query.all()

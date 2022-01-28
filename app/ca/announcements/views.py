@@ -5,19 +5,18 @@ from .forms import AnnouncementForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
-from ...filters import filter_entities
-from ...models import Announcement, Team
+from ...filters import get_related_entities
+from ...models import Announcement, Team, Member
 
 
 @ca.route('/announcements')
 @login_required
 def list_announcements():
     filter_by = request.args.get('filter_by')
-    announcements = Announcement.query.all()
-    teams = Team.query.all()
-    entities = filter_entities(filter_by, announcements, teams)
+    member = Member.query.get_or_404(int(session['_user_id']))
+    announcements, teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'announcements')
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/announcements/announcements.html', user=sess_user, announcements=entities, teams=teams, title="Announcements")
+    return render_template('private/announcements/announcements.html', user=sess_user, announcements=announcements, teams=teams, title="Announcements")
 
 
 @ca.route('/announcement/<int:announcement_id>')

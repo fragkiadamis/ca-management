@@ -1,4 +1,7 @@
-from app.models import Team, Member
+from sqlalchemy import select, exists, and_
+
+from app import db
+from app.models import Team, Member, Announcement, Activity, TeamActivities, File, TeamFiles, TeamAnnouncements
 
 
 def filter_simple_view(member_id):
@@ -10,12 +13,26 @@ def filter_simple_view(member_id):
     return entities
 
 
-
-def filter_entities(filter_args, all_entities, teams):
+def filter_by_team(filter_args, teams, entities_type):
     entities = {}
 
     if filter_args is None:
-        entities['All'] = all_entities
+        entities['All'] = []
+        # Select all entities that are not specifically related to a team and the related ones.
+        if entities_type == 'activities':
+            entities['All'].extend(db.session.query(Activity).filter(~exists().where(and_(Activity.id == TeamActivities.activity_id))).all())
+            for team in teams:
+                entities['All'].extend(team.activities)
+        elif entities_type == 'announcements':
+            entities['All'].extend(db.session.query(Announcement).filter(~exists().where(and_(Announcement.id == TeamAnnouncements.announcement_id))).all())
+            for team in teams:
+                entities['All'].extend(team.announcements)
+        elif entities_type == 'files':
+            entities['All'].extend(db.session.query(File).filter(~exists().where(and_(File.id == TeamFiles.activity_id))).all())
+            for team in teams:
+                entities['All'].extend(team.files)
+
+        entities['All'].sort(key=lambda e: e.create_date, reverse=True)
         return entities
 
     filter_args = filter_args.split('_')
@@ -25,29 +42,54 @@ def filter_entities(filter_args, all_entities, teams):
         entity_id = filter_args[1]
 
     if not entity_id:
-        if entity_filter == 'common':
-            entities['Common'] = [e for e in all_entities if not len(e.teams)]
-        elif entity_filter == 'team':
-            # Find all the common activities
-            entities['Common'] = [e for e in all_entities if not e.teams]
-            # Check type of elements in list and get respective list from teams
-            if all(str(n) == 'Activity' for n in all_entities):
+        entities['Common'] = []
+        if entities_type == 'activities':
+            # Select all entities that are not specifically related to a team and the related ones.
+            entities['Common'].extend(db.session.query(Activity).filter(~exists().where(and_(Activity.id == TeamActivities.activity_id))).all())
+            if entity_filter == 'team':
                 for team in teams:
                     entities[team.name] = team.activities
-            elif all(str(n) == 'Announcement' for n in all_entities):
+        elif entities_type == 'announcements':
+            # Select all entities that are not specifically related to a team and the related ones.
+            entities['Common'].extend(db.session.query(Announcement).filter(~exists().where(and_(Announcement.id == TeamAnnouncements.announcement_id))).all())
+            if entity_filter == 'team':
                 for team in teams:
                     entities[team.name] = team.announcements
-            elif all(str(n) == 'File' for n in all_entities):
+        if entities_type == 'files':
+            # Select all entities that are not specifically related to a team and the related ones.
+            entities['Common'].extend(db.session.query(File).filter(~exists().where(and_(File.id == TeamFiles.file_id))).all())
+            if entity_filter == 'team':
                 for team in teams:
                     entities[team.name] = team.files
-    elif entity_filter == 'team':
-        team = Team.query.get_or_404(entity_id)
-        # Check type of elements in list and get respective list from teams
-        if all(str(n) == 'Activity' for n in all_entities):
+    else:
+        team = [t for t in teams if t.id == int(entity_id)][0]
+        if entities_type == 'activities':
             entities[team.name] = team.activities
-        elif all(str(n) == 'Announcement' for n in all_entities):
+        elif entities_type == 'announcements':
             entities[team.name] = team.announcements
-        elif all(str(n) == 'File' for n in all_entities):
+        elif entities_type == 'files':
             entities[team.name] = team.files
 
+    # Sort by creation date
+    for key in entities:
+        entities[key].sort(key=lambda e: e.create_date, reverse=True)
+
     return entities
+
+
+def filter_entities():
+    """asd"""
+
+
+def get_related_entities(filter_args, member, permissions, entities_type):
+    member_roles_set = set([r.name for r in member.roles])
+    has_permission = True if len(member_roles_set.intersection(permissions)) else False
+
+    if not has_permission:
+        teams = member.teams
+        entities = filter_by_team(filter_args, teams, entities_type)
+    else:
+        teams = Team.query.all()
+        entities = filter_by_team(filter_args, teams, entities_type)
+
+    return entities, teams

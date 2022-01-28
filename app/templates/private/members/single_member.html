@@ -1,0 +1,92 @@
+{% extends "main.html" %}
+{% from "_macros.html" import render_field, render_field_with_value, render_messages %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+    <h2>{{ member.first_name }} {{ member.last_name }} Profile</h2>
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Ca Reg Number</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ member.ca_reg_number }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Full Name</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ member.first_name }} {{ member.last_name }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Email</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ member.email }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Phone</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ member.telephone }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Address</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ member.address }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">City</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ member.city }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Uni Reg Number</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ member.uni_reg_number }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Department</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                    {{ member.department.name }}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6 class="mb-0">Team(s)</h6>
+                </div>
+                {% for team in member.teams %}
+                    <div class="col-sm-9 text-secondary">
+                        {{ team.name }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

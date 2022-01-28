@@ -38,7 +38,8 @@ def get_announcement(announcement_id):
 def add_announcement():
     form = AnnouncementForm()
     if form.validate_on_submit():
-        announcement = Announcement(title=form.title.data, body=form.body.data, added_by_id=session['_user_id'])
+        announcement = Announcement(title=form.title.data, added_by_id=session['_user_id'])
+        announcement.body = form.body.data.replace('<br>', '\n')
         for team_id in form.teams.data:
             announcement.teams.append(Team.query.get_or_404(team_id))
         db.session.add(announcement)
@@ -59,7 +60,7 @@ def edit_announcement(announcement_id):
     announcement = Announcement.query.get_or_404(announcement_id)
     if form.validate_on_submit():
         announcement.title = form.title.data
-        announcement.body = form.body.data
+        announcement.body = form.body.data.replace('<br>', '\n')
         announcement.teams = []
         for team_id in form.teams.data:
             announcement.teams.append(Team.query.get_or_404(team_id))

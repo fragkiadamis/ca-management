@@ -56,6 +56,18 @@ def profile(member_id):
     return render_template('private/members/member_form.html', form=form, member=member, user=sess_user, title='Profile')
 
 
+@ca.route('/member/<int:member_id>')
+@login_required
+def get_member(member_id):
+    member = Member.query.get_or_404(member_id)
+    sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
+
+    return render_template('private/members/single_member.html',
+                           user=sess_user,
+                           member=member,
+                           title="Member")
+
+
 @ca.route('/members/edit/<int:member_id>', methods=['GET', 'POST'])
 @login_required
 @permissions_required(['Admin', 'Admin Council'])
@@ -65,7 +77,8 @@ def edit_member(member_id):
     title = f'Profile: {member.first_name} {member.last_name}, {member.ca_reg_number}'
 
     if form.validate_on_submit():
-        if not member.verify_password(form.confirm_changes.data):
+        user = Member.query.get_or_404(int(session['_user_id']))
+        if not user.verify_password(form.confirm_changes.data):
             flash('Invalid Password')
             return redirect(url_for('ca.edit_member', member_id=member_id))
 

@@ -14,11 +14,15 @@ textarea {
     height: 200px;
 }
 
+.dropdown-list {
+    position: relative;
+}
+
 .dropdown-list-menu {
     background-color: #fff;
     display: none;
     position: absolute;
-    top: 30%;
+    top: 0;
     left: 100%;
     border: 1px solid rgba(0,0,0,.15);
     border-bottom-left-radius: 0.25rem;

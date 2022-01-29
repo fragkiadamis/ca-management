@@ -2,8 +2,7 @@ from flask import render_template, session, flash, request, redirect, url_for
 from flask_login import login_required
 from sqlalchemy import func
 
-from .helpers import filter_members
-from ...filters import filter_simple_view, get_related_entities
+from ...filters import get_related_entities
 from .. import ca
 from .forms import ProfileForm, EditMemberForm
 from app.models import Member, Role, Team
@@ -16,19 +15,9 @@ from ...decorators import permissions_required, is_this_user
 def list_members():
     filter_by = request.args.get('filter_by')
     member = Member.query.get_or_404(int(session['_user_id']))
-    activities, *entities = get_related_entities(filter_by, member, ('Admin', 'Admin Council'), 'members')
+    members, *entities = get_related_entities(filter_by, member, ('Admin', 'Admin Council'), 'members')
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    # return render_template('private/members/members.html', user=sess_user, title='Members', members=members, teams=teams, schools=schools, departments=departments, roles=roles, filter_by=filter_by)
-
-    # sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-
-    # if 'Admin' in session['_user_roles'] or 'Admin Council' in session['_user_roles']:
-    #     filter_by = request.args.get('filter_by')
-    #     members, roles, teams, schools, departments = filter_members(filter_by)
-    #     return render_template('private/members/members.html', user=sess_user, title='Members', members=members, teams=teams, schools=schools, departments=departments, roles=roles, filter_by=filter_by)
-    # else:
-    #     members = filter_simple_view(session['_user_id'])
-    #     return render_template('private/members/members.html', user=sess_user, title='Members', members=members)
+    return render_template('private/members/members.html', user=sess_user, title='Members', members=members, teams=entities[0], departments=entities[1], schools=entities[2], roles=entities[3], filter_by=filter_by)
 
 
 @ca.route('/members/<int:member_id>', methods=['GET', 'POST'])

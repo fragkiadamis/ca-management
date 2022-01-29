@@ -28,7 +28,7 @@ def filter_by_team(filter_args, teams, entities_type):
             for team in teams:
                 entities['All'].extend(team.announcements)
         elif entities_type == 'files':
-            entities['All'].extend(db.session.query(File).filter(~exists().where(and_(File.id == TeamFiles.activity_id))).all())
+            entities['All'].extend(db.session.query(File).filter(~exists().where(and_(File.id == TeamFiles.file_id))).all())
             for team in teams:
                 entities['All'].extend(team.files)
 
@@ -93,3 +93,14 @@ def get_related_entities(filter_args, member, permissions, entities_type):
         entities = filter_by_team(filter_args, teams, entities_type)
 
     return entities, teams
+
+
+def has_access(entity, member_id, member_roles, required_roles):
+    # If member has not access to all the entities, check the team
+    if not [i for i in member_roles if i in required_roles]:
+        # If announcement is specific for one or more teams, check the member's teams
+        if entity.teams:
+            member = Member.query.get_or_404(int(member_id))
+            if not [i for i in member.teams if i in entity.teams]:
+                return False
+    return True

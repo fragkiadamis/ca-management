@@ -6,7 +6,7 @@ from .. import ca
 from ... import db
 from ...decorators import permissions_required
 from ...models import Activity, Team, Member
-from ...filters import get_related_entities
+from ...filters import get_related_entities, has_access
 
 
 @ca.route('/activities')
@@ -23,6 +23,9 @@ def list_activities():
 @login_required
 def get_activity(activity_id):
     activity = Activity.query.get_or_404(activity_id)
+    if not has_access(activity, session['_user_id'], session['_user_roles'], ['Admin', 'Editor']):
+        flash("You have not access here")
+        return redirect(url_for('ca.dashboard'))
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/activities/single_activity.html', user=sess_user, activity=activity, title="Dashboard")
 

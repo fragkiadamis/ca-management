@@ -58,14 +58,11 @@ def profile(member_id):
 
 @ca.route('/member/<int:member_id>')
 @login_required
+@permissions_required(['Admin', 'Admin Council'])
 def get_member(member_id):
     member = Member.query.get_or_404(member_id)
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-
-    return render_template('private/members/single_member.html',
-                           user=sess_user,
-                           member=member,
-                           title="Member")
+    return render_template('private/members/single_member.html', user=sess_user, member=member, title="Member")
 
 
 @ca.route('/members/edit/<int:member_id>', methods=['GET', 'POST'])

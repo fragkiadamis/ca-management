@@ -5,7 +5,7 @@ from .forms import AnnouncementForm
 from .. import ca
 from ... import db
 from ...decorators import permissions_required
-from ...filters import get_related_entities
+from ...filters import get_related_entities, has_access
 from ...models import Announcement, Team, Member
 
 
@@ -23,12 +23,11 @@ def list_announcements():
 @login_required
 def get_announcement(announcement_id):
     announcement = Announcement.query.get_or_404(announcement_id)
+    if not has_access(announcement, session['_user_id'], session['_user_roles'], ['Admin', 'Editor']):
+        flash("You have not access here")
+        return redirect(url_for('ca.dashboard'))
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-
-    return render_template('private/announcements/single_announcement.html',
-                           user=sess_user,
-                           announcement=announcement,
-                           title="Dashboard")
+    return render_template('private/announcements/single_announcement.html', user=sess_user, announcement=announcement, title="Dashboard")
 
 
 @ca.route('/announcements/add', methods=['GET', 'POST'])

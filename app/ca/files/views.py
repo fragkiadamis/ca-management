@@ -9,7 +9,7 @@ from .. import ca
 from app.models import File, Team, Member
 from ... import db
 from ...decorators import permissions_required
-from ...filters import get_related_entities
+from ...filters import get_related_entities, has_access
 
 
 @ca.route('/files')
@@ -71,6 +71,9 @@ def edit_file(file_id):
 @login_required
 def download_file(file_id):
     file = File.query.get_or_404(file_id)
+    if not has_access(file, session['_user_id'], session['_user_roles'], ['Admin', 'Editor']):
+        flash("You have not access here")
+        return redirect(url_for('ca.dashboard'))
     return send_from_directory(directory=os.path.dirname(f'{os.path.dirname(__file__)}/../../static/files/'), path=file.file_name)
 
 

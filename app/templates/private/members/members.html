@@ -110,9 +110,13 @@
                     <tr id="{{ member.id }}">
                         <td>{{ member.ca_reg_number if member.ca_reg_number }}</td>
                         <td>
-                            <a href="{{ url_for('ca.get_member', member_id=member.id) }}">
+                            {% if 'Admin' in user.roles or 'Admin Council' in user.roles %}
+                                <a href="{{ url_for('ca.get_member', member_id=member.id) }}">
+                                    {{ member.first_name }} {{ member.last_name }}
+                                </a>
+                            {% else %}
                                 {{ member.first_name }} {{ member.last_name }}
-                            </a>
+                            {% endif %}
                         </td>
                         <td>{{ member.username }}</td>
                         <td>{{ member.email }}</td>

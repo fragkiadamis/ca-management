@@ -1,4 +1,4 @@
-from sqlalchemy import select, exists, and_
+from sqlalchemy import exists, and_
 
 from app import db
 from app.models import Team, Member, Announcement, Activity, TeamActivities, File, TeamFiles, TeamAnnouncements
@@ -61,14 +61,16 @@ def filter_by_team(filter_args, teams, entities_type):
             if entity_filter == 'team':
                 for team in teams:
                     entities[team.name] = team.files
-    else:
-        team = [t for t in teams if t.id == int(entity_id)][0]
-        if entities_type == 'activities':
-            entities[team.name] = team.activities
-        elif entities_type == 'announcements':
-            entities[team.name] = team.announcements
-        elif entities_type == 'files':
-            entities[team.name] = team.files
+    elif entity_id.isnumeric():
+        filtered_list = list(filter(lambda t: t.id == int(entity_id), teams))
+        team = filtered_list[0] if len(filtered_list) else None
+        if team:
+            if entities_type == 'activities':
+                entities[team.name] = team.activities
+            elif entities_type == 'announcements':
+                entities[team.name] = team.announcements
+            elif entities_type == 'files':
+                entities[team.name] = team.files
 
     # Sort by creation date
     for key in entities:
@@ -77,19 +79,22 @@ def filter_by_team(filter_args, teams, entities_type):
     return entities
 
 
-def filter_entities():
-    """asd"""
-
-
 def get_related_entities(filter_args, member, permissions, entities_type):
     member_roles_set = set([r.name for r in member.roles])
     has_permission = True if len(member_roles_set.intersection(permissions)) else False
+    teams = []
 
     if not has_permission:
         teams = member.teams
         entities = filter_by_team(filter_args, teams, entities_type)
     else:
-        teams = Team.query.all()
+        # teams = Team.query.all()
+        if entities_type == 'activities':
+            teams = db.session.query(Team).filter(exists().where(and_(Team.id == TeamActivities.team_id))).all()
+        if entities_type == 'announcements':
+            teams = db.session.query(Team).filter(exists().where(and_(Team.id == TeamAnnouncements.team_id))).all()
+        if entities_type == 'files':
+            teams = db.session.query(Team).filter(exists().where(and_(Team.id == TeamFiles.team_id))).all()
         entities = filter_by_team(filter_args, teams, entities_type)
 
     return entities, teams

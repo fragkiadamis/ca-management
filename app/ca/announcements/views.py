@@ -14,9 +14,9 @@ from ...models import Announcement, Team, Member
 def list_announcements():
     filter_by = request.args.get('filter_by')
     member = Member.query.get_or_404(int(session['_user_id']))
-    announcements, teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'announcements')
+    announcements, *entities = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'announcements')
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/announcements/announcements.html', user=sess_user, announcements=announcements, teams=teams, title="Announcements")
+    return render_template('private/announcements/announcements.html', user=sess_user, announcements=announcements, teams=entities[0], title="Announcements")
 
 
 @ca.route('/announcement/<int:announcement_id>')

@@ -2,90 +2,88 @@
 {% from "_macros.html" import render_field, render_field_with_value, render_messages %}
 {% block title %}Profile{% endblock %}
 {% block body %}
-    {% if 'Admin' in user.roles or 'Admin Council' in user.roles %}
-        <div class="bg-light clearfix p-3">
-            <div class="float-start d-flex align-items-center">
-                <div class="dropdown me-2">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Group By
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='role') }}">Role</a>
-                        </li>
-                        <li><a class="dropdown-item"
-                               href="{{ url_for('ca.list_members', filter_by='status') }}">Status</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='team') }}">Team</a>
-                        </li>
-                        <li><a class="dropdown-item"
-                               href="{{ url_for('ca.list_members', filter_by='school') }}">School</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='department') }}">Department</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="dropdown me-2">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Filter By
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='current') }}">Current
-                            Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='pending') }}">Pending
-                            Members</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='active') }}">Active
-                            Members</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='inactive') }}">Inactive
-                            Members</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li class="dropdown-list">
-                            <a class="dropdown-item" href="#">Roles</a>
-                            <ul class="dropdown-list-menu list-unstyled">
-                                {% for role in roles %}
-                                    <li><a class="dropdown-item"
-                                           href="{{ url_for('ca.list_members', filter_by='role_' + role.id|string) }}">{{ role.name }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                        <li class="dropdown-list">
-                            <a class="dropdown-item" href="#">Teams</a>
-                            <ul class="dropdown-list-menu list-unstyled">
-                                {% for team in teams %}
-                                    <li><a class="dropdown-item"
-                                           href="{{ url_for('ca.list_members', filter_by='team_' + team.id|string) }}">{{ team.name }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                        <li class="dropdown-list">
-                            <a class="dropdown-item" href="#">Schools</a>
-                            <ul class="dropdown-list-menu list-unstyled">
-                                {% for school in schools %}
-                                    <li><a class="dropdown-item"
-                                           href="{{ url_for('ca.list_members', filter_by='school_' + school.id|string) }}">{{ school.name }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                        <li class="dropdown-list">
-                            <a class="dropdown-item" href="#">Departments</a>
-                            <ul class="dropdown-list-menu list-unstyled">
-                                {% for department in departments %}
-                                    <li><a class="dropdown-item"
-                                           href="{{ url_for('ca.list_members', filter_by='department_' + department.id|string) }}">{{ department.name }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+    <div class="bg-light clearfix p-3">
+        <div class="float-start d-flex align-items-center">
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Group By
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='role') }}">Role</a>
+                    </li>
+                    <li><a class="dropdown-item"
+                           href="{{ url_for('ca.list_members', filter_by='status') }}">Status</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='team') }}">Team</a>
+                    </li>
+                    <li><a class="dropdown-item"
+                           href="{{ url_for('ca.list_members', filter_by='school') }}">School</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='department') }}">Department</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">Filter By
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='current') }}">Current
+                        Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='pending') }}">Pending
+                        Members</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='active') }}">Active
+                        Members</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_members', filter_by='inactive') }}">Inactive
+                        Members</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="dropdown-list">
+                        <a class="dropdown-item" href="#">Roles</a>
+                        <ul class="dropdown-list-menu list-unstyled">
+                            {% for role in roles %}
+                                <li><a class="dropdown-item"
+                                       href="{{ url_for('ca.list_members', filter_by='role_' + role.id|string) }}">{{ role.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="dropdown-list">
+                        <a class="dropdown-item" href="#">Teams</a>
+                        <ul class="dropdown-list-menu list-unstyled">
+                            {% for team in teams %}
+                                <li><a class="dropdown-item"
+                                       href="{{ url_for('ca.list_members', filter_by='team_' + team.id|string) }}">{{ team.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="dropdown-list">
+                        <a class="dropdown-item" href="#">Schools</a>
+                        <ul class="dropdown-list-menu list-unstyled">
+                            {% for school in schools %}
+                                <li><a class="dropdown-item"
+                                       href="{{ url_for('ca.list_members', filter_by='school_' + school.id|string) }}">{{ school.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="dropdown-list">
+                        <a class="dropdown-item" href="#">Departments</a>
+                        <ul class="dropdown-list-menu list-unstyled">
+                            {% for department in departments %}
+                                <li><a class="dropdown-item"
+                                       href="{{ url_for('ca.list_members', filter_by='department_' + department.id|string) }}">{{ department.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
-    {% endif %}
+    </div>
     {{ render_messages() }}
     {% for key in members %}
         {% if members[key] %}

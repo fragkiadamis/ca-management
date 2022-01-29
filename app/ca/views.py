@@ -17,7 +17,13 @@ def ca_home():
 def dashboard():
     filter_by = request.args.get('filter_by')
     member = Member.query.get_or_404(int(session['_user_id']))
-    activities, teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'activities')
-    announcements, teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'announcements')
+    activities, *activity_related_teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'activities')
+    announcements, *announcement_related_teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'announcements')
+
+    # From second list keep only the teams that do not exist in the first list
+    additional_teams = list(set(announcement_related_teams[0]) - set(activity_related_teams[0]))
+    # Combine the lists
+    teams = activity_related_teams[0] + additional_teams
+
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
     return render_template('private/dashboard.html', user=sess_user, activities=activities, announcements=announcements, teams=teams, title="Dashboard")

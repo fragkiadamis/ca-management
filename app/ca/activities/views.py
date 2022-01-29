@@ -14,9 +14,9 @@ from ...filters import get_related_entities, has_access
 def list_activities():
     filter_by = request.args.get('filter_by')
     member = Member.query.get_or_404(int(session['_user_id']))
-    activities, teams = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'activities')
+    activities, *entities = get_related_entities(filter_by, member, ('Admin', 'Editor'), 'activities')
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/activities/activities.html', user=sess_user, activities=activities, teams=teams, title="Activities")
+    return render_template('private/activities/activities.html', user=sess_user, activities=activities, teams=entities[0], title="Activities")
 
 
 @ca.route('/activity/<int:activity_id>')

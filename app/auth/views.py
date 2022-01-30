@@ -17,6 +17,7 @@ def register():
             telephone=form.telephone.data, uni_reg_number=form.uni_reg_number.data,
             city=form.city.data, address=form.address.data
         )
+        member.roles.append(Role.query.filter(Role.name == 'Basic').first())
         for team_id in form.teams.data:
             member.teams.append(Team.query.get_or_404(team_id))
         db.session.add(member)

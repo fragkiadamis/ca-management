@@ -2,34 +2,32 @@
 {% from "_macros.html" import render_messages %}
 {% block title %}Announcements{% endblock %}
 {% block body %}
-    {% if 'Admin' in user.roles or 'Admin Council' in user.roles or 'Treasurer' in user.roles %}
-        <div class="bg-light clearfix p-3">
-            <div class="float-start d-flex align-items-center">
-                <div class="dropdown me-2">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury') }}">Team</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='type') }}">Type</a></li>
-                    </ul>
-                </div>
-                <div class="dropdown me-2">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries') }}">All</a></li>
-                        {% for treasury in treasuries %}
-                            <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury_' + treasury.id|string) }}">{{ treasury.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
+    <div class="bg-light clearfix p-3">
+        <div class="float-start d-flex align-items-center">
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Group By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury') }}">Team</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='type') }}">Type</a></li>
+                </ul>
             </div>
-            {% if 'Admin' in user.roles or 'Editor' in user.roles %}
-                <div class="float-end">
-                    <a class="btn btn-primary me-2" href="{{ url_for('ca.add_transaction') }}">Add Transaction</a>
-                    {#            <a class="btn btn-primary" href="{{ url_for('ca.transfer_money') }}">Transfer Money</a>#}
-                </div>
-            {% endif %}
+            <div class="dropdown me-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter By</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries') }}">All</a></li>
+                    {% for treasury in treasuries %}
+                        <li><a class="dropdown-item" href="{{ url_for('ca.list_treasuries', filter_by='treasury_' + treasury.id|string) }}">{{ treasury.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-    {% endif %}
+        {% if 'Admin' in user.roles or 'Treasurer' in user.roles %}
+            <div class="float-end">
+                <a class="btn btn-primary me-2" href="{{ url_for('ca.add_transaction') }}">Add Transaction</a>
+                {#            <a class="btn btn-primary" href="{{ url_for('ca.transfer_money') }}">Transfer Money</a>#}
+            </div>
+        {% endif %}
+    </div>
     {{ render_messages() }}
     {% for entity in entities %}
         {% if entity[2]|length %}

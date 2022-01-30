@@ -4,21 +4,21 @@ from flask import render_template, session, flash, redirect, url_for, request
 from flask_login import login_required
 
 from .forms import TransactionForm, TransferForm
-from .helpers import filter_treasuries
 from .. import ca
 from ... import db
 from ...decorators import permissions_required, is_not_commission
-from ...models import Team, Transaction, Treasury, Member
+from ...filters import get_related_entities
+from ...models import Transaction, Treasury, Member
 
 
 @ca.route('/treasuries')
 @login_required
 def list_treasuries():
     filter_by = request.args.get('filter_by')
-    treasuries = Treasury.query.all()
-    entities = filter_treasuries(filter_by, treasuries)
+    member = Member.query.get_or_404(int(session['_user_id']))
+    treasuries, *entities = get_related_entities(filter_by, member, ('Admin', 'Treasurer'), 'treasuries')
     sess_user = {'id': session['_user_id'], 'username': session['_username'], 'roles': session['_user_roles']}
-    return render_template('private/treasuries/treasuries.html', user=sess_user, entities=entities, treasuries=treasuries, title="Treasuries")
+    return render_template('private/treasuries/treasuries.html', user=sess_user, entities=treasuries, treasuries=entities[0], title="Treasuries")
 
 
 @ca.route('/transaction/add', methods=['GET', 'POST'])

@@ -1,14 +1,17 @@
 from sqlalchemy import exists, and_
 
 from app import db
-from app.models import Team, Member, Announcement, Activity, TeamActivities, File, TeamFiles, TeamAnnouncements, MemberTeams, Department, Role, MemberRoles
+from app.models import Team, Member, Announcement, Activity, TeamActivities, File, TeamFiles, TeamAnnouncements, MemberTeams, Department, Role, MemberRoles, Treasury, Transaction
 
 
 def filter_members(filter_args, all_members, teams, roles, departments, schools, has_permission):
     members_list = {}
 
     if filter_args is None or filter_args == 'current':
-        return {'Current': [m for m in all_members if m.is_active]}
+        members_list['Current'] = [m for m in all_members if m.is_active]
+        for key in members_list:
+            members_list[key].sort(key=lambda e: e.create_date, reverse=True)
+        return members_list
 
     filter_args = filter_args.split('_')
     entity_filter = filter_args[0]
@@ -57,7 +60,59 @@ def filter_members(filter_args, all_members, teams, roles, departments, schools,
         else:
             members_list = {'Current': Member.query.filter(Member.is_verified == 1, Member.is_active == 1).all()}
 
+    # Sort by creation date
+    for key in members_list:
+        members_list[key].sort(key=lambda e: e.create_date, reverse=True)
+
     return members_list
+
+
+def filter_treasuries(filter_args, treasuries):
+    entities = []
+
+    if filter_args is None:
+        entities = [['Total Amount', 0, []]]
+        for treasury in treasuries:
+            entities[0][1] += treasury.amount
+            entities[0][2] = Transaction.query.all()
+            entities[0][2].sort(key=lambda e: e.create_date, reverse=True)
+
+        return entities
+
+    filter_args = filter_args.split('_')
+    treasury_filter = filter_args[0]
+    entity_id = None
+    if len(filter_args) > 1:
+        entity_id = filter_args[1]
+
+    if not entity_id:
+        if treasury_filter == 'treasury':
+            for treasury in treasuries:
+                entities.append([treasury.name, treasury.amount, treasury.transactions])
+        elif treasury_filter == 'type':
+            transactions = {}
+            all_transactions = []
+            for treasury in treasuries:
+                all_transactions.extend(treasury.transactions)
+            for transaction in all_transactions:
+                if transaction.type not in transactions:
+                    transactions[transaction.type] = [transaction]
+                else:
+                    transactions[transaction.type].append(transaction)
+            for key in transactions:
+                type_total_amount = 0
+                for transaction in transactions[key]:
+                    type_total_amount += transaction.amount
+                entities.append([key, type_total_amount, transactions[key]])
+    elif entity_id and entity_id.isnumeric():
+        entity_id = int(entity_id)
+        if treasury_filter == 'treasury':
+            treasury = [t for t in treasuries if t.id == entity_id][0]
+            entities.append([treasury.name, treasury.amount, treasury.transactions])
+
+    for entity in entities:
+        entity[2].sort(key=lambda e: e.create_date, reverse=True)
+    return entities
 
 
 def filter_entities(filter_args, teams, entities_type):
@@ -131,14 +186,15 @@ def filter_entities(filter_args, teams, entities_type):
 def get_related_entities(filter_args, member, permissions, entities_type):
     member_roles_set = set([r.name for r in member.roles])
     has_permission = True if len(member_roles_set.intersection(permissions)) else False
+    entities = []
     teams = []
     schools = []
     departments = []
     roles = []
 
     if not has_permission:
-        teams = member.teams
         if entities_type == 'members':
+            teams = member.teams
             all_members = []
             for team in teams:
                 all_members.extend(team.members)
@@ -154,7 +210,13 @@ def get_related_entities(filter_args, member, permissions, entities_type):
             schools = list(dict.fromkeys(schools))
 
             entities = filter_members(filter_args, all_members, teams, roles, departments, schools, has_permission)
+        elif entities_type == 'treasuries':
+            teams = [t.treasury for t in member.teams if t.treasury.transactions]
+            if not filter_args:
+                filter_args = 'treasury'
+            entities = filter_treasuries(filter_args, teams)
         else:
+            teams = member.teams
             entities = filter_entities(filter_args, teams, entities_type)
         return entities, teams, departments, schools, roles
     else:
@@ -175,11 +237,16 @@ def get_related_entities(filter_args, member, permissions, entities_type):
         else:
             if entities_type == 'activities':
                 teams = db.session.query(Team).filter(exists().where(and_(Team.id == TeamActivities.team_id))).all()
+                entities = filter_entities(filter_args, teams, entities_type)
             elif entities_type == 'announcements':
                 teams = db.session.query(Team).filter(exists().where(and_(Team.id == TeamAnnouncements.team_id))).all()
+                entities = filter_entities(filter_args, teams, entities_type)
             elif entities_type == 'files':
                 teams = db.session.query(Team).filter(exists().where(and_(Team.id == TeamFiles.team_id))).all()
-            entities = filter_entities(filter_args, teams, entities_type)
+                entities = filter_entities(filter_args, teams, entities_type)
+            elif entities_type == 'treasuries':
+                teams = Treasury.query.filter(Treasury.transactions).all() # Actually get the team treasuries that have transactions
+                entities = filter_treasuries(filter_args, teams)
 
     return entities, teams, departments, schools, roles
 
